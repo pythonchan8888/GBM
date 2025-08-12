@@ -43,6 +43,7 @@ jobs:
 
       - name: Run weekly training pipeline
         env:
+          FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           # Full run (no quick mode)

@@ -45,6 +45,8 @@ jobs:
           fi
 
       - name: Run daily prediction pipeline
+        env:
+            FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
         run: |
           python gbm_dc_ev_model.py
 

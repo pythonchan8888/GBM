@@ -13,11 +13,12 @@ import requests
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta # Ensure timedelta is imported
+import os
 
 print("\n--- Section 1 (Revised): Unified Data Fetching & Flagging ---")
 
 # --- Configuration ---
-API_KEY = '76b520495072b8f1b1f6ca6a379f51d5dfab642f38f6f5f5d1f9f543378400fd'
+API_KEY = os.environ.get('FOOTYSTATS_API_KEY', '')
 PAST_SEASONS_TO_FETCH = 5
 RUN_ID = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
 
