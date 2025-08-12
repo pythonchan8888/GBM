@@ -1,0 +1,61 @@
+name: weekly-train
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"  # Mondays at 07:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  train-and-commit-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          if [ -f requirements.txt ]; then
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+          else
+            python -m pip install --upgrade pip
+            pip install numpy pandas requests lightgbm scikit-learn scipy seaborn matplotlib optuna psycopg2-binary shap
+          fi
+
+      - name: Run weekly training pipeline
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          # Full run (no quick mode)
+          python gbm_dc_ev_model.py
+
+      - name: Commit artifacts
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -d artifacts ]; then
+            git add artifacts
+            git commit -m "chore(artifacts): update artifacts $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit"
+            git push || echo "Skip push"
+          fi
+

@@ -1,0 +1,4 @@
+﻿artifacts/
+*.log
+__pycache__/
+.venv/
