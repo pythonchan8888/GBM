@@ -1746,6 +1746,7 @@ except ImportError:  # pragma: no cover
 from sklearn.model_selection import KFold  # Kept for reference
 from sklearn.model_selection import TimeSeriesSplit  # Robust CV for time series
 from sklearn.metrics import mean_poisson_deviance # A good metric for Poisson objectives
+from sklearn.isotonic import IsotonicRegression
 import lightgbm as lgb
 import numpy as np
 import pandas as pd
@@ -2006,7 +2007,6 @@ print(f"TUNED Away Goals Model - Test Poisson Deviance (from training): {final_m
 print(f"TUNED Away Goals Model - Test RMSE: {rmse_away_tuned:.4f}, Test MAE: {mae_away_tuned:.4f}")
 
 
-from sklearn.isotonic import IsotonicRegression
 import joblib
 
 # Fit isotonic calibration for home and away goal predictions (lambdas)
