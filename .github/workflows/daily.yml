@@ -81,82 +81,101 @@ jobs:
           python - <<'PY'
           import os, csv
           import psycopg2
+          from datetime import datetime
+          
           db = os.environ.get('DATABASE_URL')
           if not db:
               raise SystemExit(0)
-          conn = psycopg2.connect(db); cur = conn.cursor()
-          # Latest run
-          cur.execute("""
-          select run_id, started_at, finished_at, train_rows, test_rows, poisson_home_loss, poisson_away_loss
-          from runs order by finished_at desc nulls last limit 1
-          """)
-          latest = cur.fetchone()
-          metrics_rows = []
-          if latest:
-              keys = ["run_id","started_at","finished_at","train_rows","test_rows","poisson_home_loss","poisson_away_loss"]
-              for k, v in zip(keys, latest):
-                  metrics_rows.append((k, v if v is not None else ""))
-          # 30-day aggregates
-          cur.execute("""
-          select coalesce(sum(pl),0) as pnl_30d, coalesce(sum(stake),0) as stake_30d, count(*) as bets_30d
-          from bets
-          where dt_gmt8 > now() - interval '30 days'
-          """)
-          pnl_30d, stake_30d, bets_30d = cur.fetchone()
-          roi_30d = (float(pnl_30d)/float(stake_30d)*100.0) if stake_30d and float(stake_30d)>0 else 0.0
-          metrics_rows += [("pnl_30d", pnl_30d), ("stake_30d", stake_30d), ("bets_30d", bets_30d), ("roi_30d_pct", roi_30d)]
-          # Write metrics.csv
-          os.makedirs('site', exist_ok=True)
-          with open('site/metrics.csv','w', newline='', encoding='utf-8') as f:
-              w = csv.writer(f); w.writerow(["metric","value"]); w.writerows(metrics_rows)
-          # P&L by month & league
-          cur.execute("""
-          select to_char(date_trunc('month', dt_gmt8),'YYYY-MM') as month, league, sum(pl) as pnl
-          from bets group by 1,2 order by 1,2
-          """)
-          rows = cur.fetchall()
-          with open('site/pnl_by_month.csv','w', newline='', encoding='utf-8') as f:
-              w = csv.writer(f); w.writerow(["month","league","pnl"]); w.writerows(rows)
-          # Bankroll series (last 90 days)
-          cur.execute("""
-          select dt_gmt8, cum_bankroll from bets
-          where dt_gmt8 > now() - interval '90 days' order by dt_gmt8
-          """)
-          rows = cur.fetchall()
-          with open('site/bankroll_series_90d.csv','w', newline='', encoding='utf-8') as f:
-              w = csv.writer(f); w.writerow(["dt_gmt8","cum_bankroll"]); w.writerows(rows)
-          # Latest recommendations (7 days)
-          cur.execute("""
-          select dt_gmt8, league, home, away, rec_text, line, odds, ev, confidence
-          from recommendations where dt_gmt8 >= now() - interval '7 days' order by dt_gmt8
-          """)
-          rows = cur.fetchall()
-          with open('site/latest_recommendations.csv','w', newline='', encoding='utf-8') as f:
-              w = csv.writer(f); w.writerow(["dt_gmt8","league","home","away","rec_text","line","odds","ev","confidence"]); w.writerows(rows)
-          cur.close(); conn.close()
-          print("Exported metrics and datasets to site/.")
           
-          # --- Build ROI heatmap (Tier x AH line) and Top Segments from bets ---
-          import math
-          import psycopg2
-          import collections
-          
-          # Reconnect for a new cursor
-          conn = psycopg2.connect(db); cur = conn.cursor()
-          # Try to get bets with needed fields; tolerate missing columns
-          cur.execute("""
-          SELECT 
-            COALESCE(league, '') as league,
-            COALESCE(line_betted_on_refined, line, 0) as line,
-            COALESCE(dynamic_league_tier, league_tier) as tier,
-            COALESCE(stake, 0) as stake,
-            COALESCE(pl, 0) as pl,
-            dt_gmt8
-          FROM bets
-          WHERE dt_gmt8 > now() - interval '730 days'
-          """)
-          bets = cur.fetchall()
-          cur.close(); conn.close()
+          try:
+              conn = psycopg2.connect(db); cur = conn.cursor()
+              # Latest run
+              cur.execute("""
+              select run_id, started_at, finished_at, train_rows, test_rows, poisson_home_loss, poisson_away_loss
+              from runs order by finished_at desc nulls last limit 1
+              """)
+              latest = cur.fetchone()
+              metrics_rows = []
+              if latest:
+                  keys = ["run_id","started_at","finished_at","train_rows","test_rows","poisson_home_loss","poisson_away_loss"]
+                  for k, v in zip(keys, latest):
+                      metrics_rows.append((k, v if v is not None else ""))
+              # 30-day aggregates
+              cur.execute("""
+              select coalesce(sum(pl),0) as pnl_30d, coalesce(sum(stake),0) as stake_30d, count(*) as bets_30d
+              from bets
+              where dt_gmt8 > now() - interval '30 days'
+              """)
+              pnl_30d, stake_30d, bets_30d = cur.fetchone()
+              roi_30d = (float(pnl_30d)/float(stake_30d)*100.0) if stake_30d and float(stake_30d)>0 else 0.0
+              metrics_rows += [("pnl_30d", pnl_30d), ("stake_30d", stake_30d), ("bets_30d", bets_30d), ("roi_30d_pct", roi_30d)]
+              # Write metrics.csv
+              os.makedirs('site', exist_ok=True)
+              with open('site/metrics.csv','w', newline='', encoding='utf-8') as f:
+                  w = csv.writer(f); w.writerow(["metric","value"]); w.writerows(metrics_rows)
+              # P&L by month & league
+              cur.execute("""
+              select to_char(date_trunc('month', dt_gmt8),'YYYY-MM') as month, league, sum(pl) as pnl
+              from bets group by 1,2 order by 1,2
+              """)
+              rows = cur.fetchall()
+              with open('site/pnl_by_month.csv','w', newline='', encoding='utf-8') as f:
+                  w = csv.writer(f); w.writerow(["month","league","pnl"]); w.writerows(rows)
+              # Bankroll series (last 90 days)
+              cur.execute("""
+              select dt_gmt8, cum_bankroll from bets
+              where dt_gmt8 > now() - interval '90 days' order by dt_gmt8
+              """)
+              rows = cur.fetchall()
+              with open('site/bankroll_series_90d.csv','w', newline='', encoding='utf-8') as f:
+                  w = csv.writer(f); w.writerow(["dt_gmt8","cum_bankroll"]); w.writerows(rows)
+              # Latest recommendations (7 days)
+              cur.execute("""
+              select dt_gmt8, league, home, away, rec_text, line, odds, ev, confidence
+              from recommendations where dt_gmt8 >= now() - interval '7 days' order by dt_gmt8
+              """)
+              rows = cur.fetchall()
+              with open('site/latest_recommendations.csv','w', newline='', encoding='utf-8') as f:
+                  w = csv.writer(f); w.writerow(["dt_gmt8","league","home","away","rec_text","line","odds","ev","confidence"]); w.writerows(rows)
+              cur.close(); conn.close()
+              print("Exported metrics and datasets to site/.")
+              
+              # --- Build ROI heatmap (Tier x AH line) and Top Segments from bets ---
+              import math
+              import collections
+              
+              # Reconnect for a new cursor
+              conn = psycopg2.connect(db); cur = conn.cursor()
+              # Try to get bets with needed fields; tolerate missing columns
+              cur.execute("""
+              SELECT 
+                COALESCE(league, '') as league,
+                COALESCE(line_betted_on_refined, line, 0) as line,
+                COALESCE(dynamic_league_tier, league_tier) as tier,
+                COALESCE(stake, 0) as stake,
+                COALESCE(pl, 0) as pl,
+                dt_gmt8
+              FROM bets
+              WHERE dt_gmt8 > now() - interval '730 days'
+              """)
+              bets = cur.fetchall()
+              cur.close(); conn.close()
+          except Exception as e:
+              print(f"Database connection failed: {e}")
+              print("Creating fallback CSV files...")
+              os.makedirs('site', exist_ok=True)
+              # Create empty fallback CSVs
+              with open('site/metrics.csv','w', newline='', encoding='utf-8') as f:
+                  w = csv.writer(f); w.writerow(["metric","value"])
+                  w.writerow(["status", "DB_unavailable"])
+                  w.writerow(["generated_at", datetime.now().isoformat()])
+              with open('site/pnl_by_month.csv','w', newline='', encoding='utf-8') as f:
+                  w = csv.writer(f); w.writerow(["month","league","pnl"])
+              with open('site/bankroll_series_90d.csv','w', newline='', encoding='utf-8') as f:
+                  w = csv.writer(f); w.writerow(["dt_gmt8","cum_bankroll"])
+              with open('site/latest_recommendations.csv','w', newline='', encoding='utf-8') as f:
+                  w = csv.writer(f); w.writerow(["dt_gmt8","league","home","away","rec_text","line","odds","ev","confidence"])
+              bets = []  # Empty list for heatmap processing
 
           # Static fallback for tier mapping if DB rows don't contain a tier
           LEAGUE_TIERS = {
