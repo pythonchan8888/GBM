@@ -54,6 +54,7 @@ jobs:
         if: ${{ env.DATABASE_URL != '' }}
         env:
           FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           python - <<'PY'
           import os
@@ -66,16 +67,24 @@ jobs:
       - name: Prepare site folder
         run: |
           mkdir -p site
+          # Copy ML model artifacts
           if [ -d artifacts/latest ]; then
             cp -r artifacts/latest/* site/ || true
           fi
-          # Ensure at least an index exists
+          # Copy ParlayKing dashboard files
+          cp index.html site/ || echo "index.html not found"
+          cp styles.css site/ || echo "styles.css not found" 
+          cp app.js site/ || echo "app.js not found"
+          # Ensure dashboard is the main entry point (fallback only if dashboard missing)
           if [ ! -f site/index.html ]; then
             echo "<html><body><h3>No report found</h3><p>Run did not produce artifacts/latest.</p></body></html>" > site/index.html
           fi
+          echo "Site folder prepared with dashboard and artifacts"
 
       - name: Export metrics and datasets to CSV (from Postgres)
         if: ${{ env.DATABASE_URL != '' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         shell: bash
         run: |
           python - <<'PY'
