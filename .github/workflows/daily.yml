@@ -108,7 +108,30 @@ jobs:
               """)
               pnl_30d, stake_30d, bets_30d = cur.fetchone()
               roi_30d = (float(pnl_30d)/float(stake_30d)*100.0) if stake_30d and float(stake_30d)>0 else 0.0
-              metrics_rows += [("pnl_30d", pnl_30d), ("stake_30d", stake_30d), ("bets_30d", bets_30d), ("roi_30d_pct", roi_30d)]
+              
+              # Win rate and performance metrics (30-day)
+              cur.execute("""
+              select 
+                count(case when pl > 0 then 1 end) as wins,
+                count(case when pl >= 0 then 1 end) as non_losing,
+                count(*) as total_bets,
+                avg(case when pl > 0 then (pl/stake)*100.0 end) as avg_win_return_pct
+              from bets 
+              where dt_gmt8 > now() - interval '30 days' and stake > 0
+              """)
+              win_stats = cur.fetchone()
+              if win_stats and win_stats[2] > 0:
+                  win_rate = (float(win_stats[0]) / float(win_stats[2])) * 100.0
+                  non_losing_rate = (float(win_stats[1]) / float(win_stats[2])) * 100.0
+                  avg_win_return = float(win_stats[3] or 0)
+              else:
+                  win_rate = non_losing_rate = avg_win_return = 0.0
+              
+              metrics_rows += [
+                  ("pnl_30d", pnl_30d), ("stake_30d", stake_30d), ("bets_30d", bets_30d), ("roi_30d_pct", roi_30d),
+                  ("win_rate_30d_pct", win_rate), ("non_losing_rate_30d_pct", non_losing_rate), 
+                  ("avg_win_return_30d_pct", avg_win_return)
+              ]
               # Write metrics.csv
               os.makedirs('site', exist_ok=True)
               with open('site/metrics.csv','w', newline='', encoding='utf-8') as f:
