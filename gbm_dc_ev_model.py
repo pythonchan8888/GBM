@@ -2022,7 +2022,16 @@ calib_away.fit(pred_away_goals_test_tuned.reshape(-1, 1), y_test_away_goals)
 calibrated_home_test = calib_home.predict(pred_home_goals_test_tuned.reshape(-1, 1))
 calibrated_away_test = calib_away.predict(pred_away_goals_test_tuned.reshape(-1, 1))
 
-# Save
+# Save calibrators - ensure artifact dirs exist
+from pathlib import Path
+if 'artifacts_dir' not in locals():
+    timestamp_str = pd.Timestamp.utcnow().strftime('%Y%m%d_%H%M%S')
+    artifacts_dir = Path(f"artifacts/{timestamp_str}")
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+if 'latest_dir' not in locals():
+    latest_dir = Path("artifacts/latest")
+    latest_dir.mkdir(parents=True, exist_ok=True)
+
 joblib.dump(calib_home, artifacts_dir / 'calib_home_goals.joblib')
 joblib.dump(calib_away, artifacts_dir / 'calib_away_goals.joblib')
 
