@@ -163,6 +163,8 @@ jobs:
           except Exception as e:
               print(f"Database connection failed: {e}")
               print("Creating fallback CSV files...")
+              import math
+              import collections
               os.makedirs('site', exist_ok=True)
               # Create empty fallback CSVs
               with open('site/metrics.csv','w', newline='', encoding='utf-8') as f:
