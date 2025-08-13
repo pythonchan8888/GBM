@@ -1623,8 +1623,10 @@ import pandas as pd
 import numpy as np
 import lightgbm as lgb
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.isotonic import IsotonicRegression
 import matplotlib.pyplot as plt
 import seaborn as sns
+import shap
 
 print("\n--- Section 5: Model Training (LightGBM for Goal Prediction) ---")
 
