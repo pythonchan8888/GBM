@@ -1072,6 +1072,119 @@ body {
   }
 }
 
+/* ≤600px: compact scale for better mobile experience */
+@media (max-width: 600px) {
+  .filter-content { 
+    padding: var(--space-md); 
+    gap: var(--space-md); 
+  }
+  
+  .kpi-card { 
+    padding: var(--space-lg); 
+  }
+  
+  .kpi-card .kpi-value { 
+    font-size: 1.75rem; 
+  }
+  
+  .parlay-grid { 
+    grid-template-columns: 1fr; 
+    padding: var(--space-lg); 
+  }
+  
+  .parlay-item { 
+    padding: var(--space-md); 
+  }
+  
+  .chart-container { 
+    height: 280px; 
+  }
+  
+  .recommendations-table th, 
+  .recommendations-table td { 
+    padding: var(--space-md); 
+  }
+  
+  /* Hide less critical column (Time) for more space */
+  .recommendations-table th:nth-child(7), 
+  .recommendations-table td:nth-child(7) { 
+    display: none; 
+  }
+  
+  /* Compact export button */
+  #export-recommendations { 
+    padding: var(--space-sm) var(--space-md); 
+  }
+  
+  /* Tighter parlay leg spacing */
+  .parlay-legs {
+    gap: var(--space-xs);
+  }
+  
+  .parlay-leg {
+    padding: var(--space-xs);
+  }
+}
+
+/* ≤420px: extra compact for small phones */
+@media (max-width: 420px) {
+  .kpi-card .kpi-value { 
+    font-size: 1.5rem; 
+  }
+  
+  .kpi-trend { 
+    font-size: var(--font-size-xs);
+    padding: var(--space-xs);
+  }
+  
+  .parlay-stats .stat-value { 
+    font-size: 1.25rem; 
+  }
+  
+  .chart-container { 
+    height: 220px; 
+  }
+  
+  .recommendations-table th, 
+  .recommendations-table td { 
+    font-size: 0.8rem; 
+    padding: var(--space-sm);
+  }
+  
+  /* Hide another column (EV) for more space */
+  .recommendations-table th:nth-child(5), 
+  .recommendations-table td:nth-child(5) { 
+    display: none; 
+  }
+  
+  /* Icon-only export button on very small screens */
+  #export-recommendations { 
+    min-width: 44px; /* Ensure tappable size */
+    font-size: 1.1rem; /* Larger icon */
+  }
+  
+  /* Compact main container */
+  .main-container {
+    padding: var(--space-md);
+  }
+  
+  /* Smaller hero card values */
+  .kpi-card.hero-card .kpi-value {
+    font-size: 1.75rem;
+  }
+  
+  /* Tighter parlay stats */
+  .parlay-stats {
+    gap: var(--space-lg);
+  }
+  
+  /* Compact chart controls */
+  .toggle-btn, .range-btn {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-xs);
+  }
+}
+
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
   * {

@@ -479,6 +479,7 @@ class ParlayKing {
     initializeUI() {
         this.setupEventListeners();
         this.setFilterValues();
+        this.setupChartResize();
     }
 
     setupEventListeners() {
@@ -699,8 +700,8 @@ class ParlayKing {
 
     // Chart Management
     updateChart() {
-        const activeMode = document.querySelector('.toggle-btn.active').dataset.mode;
-        const activeRange = document.querySelector('.range-btn.active').dataset.range;
+        const activeMode = document.querySelector('.toggle-btn.active')?.dataset.mode || 'bankroll';
+        const activeRange = document.querySelector('.range-btn.active')?.dataset.range || '30';
         
         let filteredData = [...this.data.bankrollSeries];
         
@@ -732,6 +733,19 @@ class ParlayKing {
         // Create custom chart
         this.createCustomChart('bankroll-chart', chartData, {
             formatY: activeMode === 'roi' ? (v) => v.toFixed(1) + '%' : (v) => v.toFixed(1)
+        });
+    }
+
+    // Debounced chart resize for mobile responsiveness
+    setupChartResize() {
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (this.data.bankrollSeries && this.data.bankrollSeries.length > 0) {
+                    this.updateChart();
+                }
+            }, 150); // 150ms debounce
         });
     }
 
