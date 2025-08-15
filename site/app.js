@@ -29,7 +29,7 @@ class ParlayKing {
     // Data Loading with Caching
     async loadCSV(filename, useCache = true) {
         const cacheKey = `csv_${filename}`;
-
+        
         // If we already have it in-memory, prefer that immediately
         if (useCache && this.cache.has(cacheKey)) {
             return this.cache.get(cacheKey);
@@ -54,15 +54,15 @@ class ParlayKing {
             }
 
             const csvText = await response.text();
-            const data = Papa.parse(csvText, {
-                header: true,
+            const data = Papa.parse(csvText, { 
+                header: true, 
                 dynamicTyping: true,
                 skipEmptyLines: true
             }).data;
 
             // Cache the data
             this.cache.set(cacheKey, data);
-
+            
             // Store ETag for future requests
             const etag = response.headers.get('ETag');
             if (etag) {
@@ -89,6 +89,11 @@ class ParlayKing {
                 this.loadCSV('settled_bets.csv') // For parlay calculation
             ]);
 
+            console.log('Debug - Raw CSV data loaded:');
+            console.log('metrics:', metrics);
+            console.log('bankrollSeries:', bankrollSeries);
+            console.log('recommendations:', recommendations);
+
             // Store data
             this.data = {
                 metrics: this.parseMetrics(metrics),
@@ -99,6 +104,11 @@ class ParlayKing {
                 topSegments,
                 settledBets: this.parseSettledBets(settledBets)
             };
+
+            console.log('Debug - Parsed data:');
+            console.log('parsedMetrics:', this.data.metrics);
+            console.log('parsedBankrollSeries:', this.data.bankrollSeries);
+            console.log('parsedRecommendations:', this.data.recommendations);
 
             // Calculate parlay wins
             this.data.parlayWins = this.calculateParlayWins();
@@ -570,13 +580,14 @@ class ParlayKing {
         }
         
         const metrics = this.data.metrics;
+        console.log('Debug - Parsed metrics:', metrics); // Debug output
         
         // Hero Metrics - Win Rate (Main attraction)
         const winRate = parseFloat(metrics.win_rate_30d_pct || 0);
         const winRateEl = document.getElementById('win-rate');
         if (winRateEl) winRateEl.textContent = `${winRate.toFixed(1)}%`;
         
-        // Hero Metrics - ROI Performance  
+        // Hero Metrics - ROI Performance
         const roi = parseFloat(metrics.roi_30d_pct || 0);
         const roiEl = document.getElementById('roi-performance');
         if (roiEl) roiEl.textContent = `+${roi.toFixed(1)}%`;
