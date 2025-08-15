@@ -946,8 +946,8 @@ class ParlayKing {
 
     showError(message) {
         console.error(message);
-        // You could implement a toast notification here
-        alert(message);
+        // Silent error logging - no intrusive alerts
+        // Could implement toast notifications in the future
     }
 
     // Analytics Page Methods
@@ -1196,8 +1196,8 @@ class ParlayKing {
         
         // Sort recommendations by datetime (newest first), then by EV (highest first)
         const sortedRecommendations = [...this.data.recommendations].sort((a, b) => {
-            const dateA = new Date(a.dt_gmt8);
-            const dateB = new Date(b.dt_gmt8);
+            const dateA = new Date(a.datetime || a.dt_gmt8);
+            const dateB = new Date(b.datetime || b.dt_gmt8);
             
             // First sort by date (newest first)
             if (dateA.getTime() !== dateB.getTime()) {
@@ -1211,10 +1211,10 @@ class ParlayKing {
         sortedRecommendations.forEach(rec => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${this.formatDateTime(rec.dt_gmt8)}</td>
+                <td>${this.formatDateTime(rec.datetime || rec.dt_gmt8)}</td>
                 <td><strong>${rec.home}</strong> vs <strong>${rec.away}</strong></td>
                 <td>${rec.league}</td>
-                <td>${rec.rec_text}</td>
+                <td>${rec.recommendation || rec.rec_text || 'N/A'}</td>
                 <td>${parseFloat(rec.odds).toFixed(2)}</td>
                 <td class="${rec.ev > 0 ? 'positive' : 'negative'}">${rec.ev >= 0 ? '+' : ''}${(parseFloat(rec.ev) * 100).toFixed(1)}%</td>
                 <td>
