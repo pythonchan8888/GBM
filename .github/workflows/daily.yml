@@ -171,6 +171,16 @@ jobs:
               rows = cur.fetchall()
               with open('site/latest_recommendations.csv','w', newline='', encoding='utf-8') as f:
                   w = csv.writer(f); w.writerow(["dt_gmt8","league","home","away","rec_text","line","odds","ev","confidence"]); w.writerows(rows)
+              # Settled bets for parlay calculation (30 days)
+              cur.execute("""
+              select fixture_id, league, home, away, home_score, away_score,
+                     line_betted_on_refined, bet_type_refined_ah, odds_betted_on_refined, 
+                     stake, pl, status, dt_gmt8
+              from bets where status = 'settled' and dt_gmt8 >= now() - interval '30 days' order by dt_gmt8 desc
+              """)
+              rows = cur.fetchall()
+              with open('site/settled_bets.csv','w', newline='', encoding='utf-8') as f:
+                  w = csv.writer(f); w.writerow(["fixture_id","league","home","away","home_score","away_score","line_betted_on_refined","bet_type_refined_ah","odds_betted_on_refined","stake","pl","status","dt_gmt8"]); w.writerows(rows)
               cur.close(); conn.close()
               print("Exported metrics and datasets to site/.")
               
@@ -211,6 +221,8 @@ jobs:
                   w = csv.writer(f); w.writerow(["dt_gmt8","cum_bankroll"])
               with open('site/latest_recommendations.csv','w', newline='', encoding='utf-8') as f:
                   w = csv.writer(f); w.writerow(["dt_gmt8","league","home","away","rec_text","line","odds","ev","confidence"])
+              with open('site/settled_bets.csv','w', newline='', encoding='utf-8') as f:
+                  w = csv.writer(f); w.writerow(["fixture_id","league","home","away","home_score","away_score","line_betted_on_refined","bet_type_refined_ah","odds_betted_on_refined","stake","pl","status","dt_gmt8"])
               bets = []  # Empty list for heatmap processing
 
           # Static fallback for tier mapping if DB rows don't contain a tier

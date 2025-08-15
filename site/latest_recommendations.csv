@@ -1,0 +1,6 @@
+dt_gmt8,league,home,away,rec_text,line,odds,ev,confidence
+2024-08-12 18:00:00,England Premier League,Manchester United,Liverpool,AH +0.5,-0.5,1.85,0.08,High
+2024-08-12 20:45:00,Spain La Liga,Barcelona,Real Madrid,AH -1.0,-1.0,2.10,0.12,High
+2024-08-11 19:30:00,Germany Bundesliga,Bayern Munich,Borussia Dortmund,AH +0.75,0.75,1.92,0.06,Medium
+2024-08-11 17:00:00,Italy Serie A,AC Milan,Inter Milan,AH -0.25,-0.25,1.78,0.04,Medium
+2024-08-10 21:00:00,France Ligue 1,PSG,Marseille,AH -1.5,-1.5,2.25,0.15,High

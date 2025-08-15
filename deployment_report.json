@@ -1,0 +1,178 @@
+{
+  "timestamp": "2025-08-15T01:38:01.432535",
+  "summary": {
+    "total_checks": 22,
+    "passed": 12,
+    "failed": 10,
+    "warnings": 0
+  },
+  "checks": [
+    {
+      "name": "File gbm_dc_ev_model.py",
+      "status": "PASS",
+      "message": "Exists (235.8KB)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:56.164198"
+    },
+    {
+      "name": "File requirements.txt",
+      "status": "PASS",
+      "message": "Exists (0.2KB)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:56.164198"
+    },
+    {
+      "name": "File index.html",
+      "status": "PASS",
+      "message": "Exists (10.3KB)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:56.165195"
+    },
+    {
+      "name": "File styles.css",
+      "status": "PASS",
+      "message": "Exists (20.2KB)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:56.165195"
+    },
+    {
+      "name": "File app.js",
+      "status": "PASS",
+      "message": "Exists (31.2KB)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:56.165195"
+    },
+    {
+      "name": "File DASHBOARD_CSV_INTEGRATION.md",
+      "status": "PASS",
+      "message": "Exists (10.5KB)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:56.165195"
+    },
+    {
+      "name": "Secret FOOTYSTATS_API_KEY",
+      "status": "FAIL",
+      "message": "Not set in environment",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:56.166356"
+    },
+    {
+      "name": "Secret DATABASE_URL",
+      "status": "FAIL",
+      "message": "Not set in environment",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:56.166356"
+    },
+    {
+      "name": "Secret GBM_QUICK",
+      "status": "FAIL",
+      "message": "Not set in environment",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:56.166356"
+    },
+    {
+      "name": "CSV artifacts/latest/recommendations_latest.csv",
+      "status": "FAIL",
+      "message": "File not found (404)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:56.746411"
+    },
+    {
+      "name": "CSV site/metrics.csv",
+      "status": "FAIL",
+      "message": "File not found (404)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:57.258014"
+    },
+    {
+      "name": "CSV site/pnl_by_month.csv",
+      "status": "FAIL",
+      "message": "File not found (404)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:57.746769"
+    },
+    {
+      "name": "CSV site/bankroll_series_90d.csv",
+      "status": "FAIL",
+      "message": "File not found (404)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:58.208357"
+    },
+    {
+      "name": "CSV site/roi_heatmap.csv",
+      "status": "FAIL",
+      "message": "File not found (404)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:58.687431"
+    },
+    {
+      "name": "CSV site/top_segments.csv",
+      "status": "FAIL",
+      "message": "File not found (404)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:59.204725"
+    },
+    {
+      "name": "Dashboard ",
+      "status": "PASS",
+      "message": "Accessible (1.3KB)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:37:59.938724"
+    },
+    {
+      "name": "Dashboard index.html",
+      "status": "PASS",
+      "message": "Accessible (10.1KB)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:38:00.419686"
+    },
+    {
+      "name": "Dashboard styles.css",
+      "status": "PASS",
+      "message": "Accessible (19.2KB)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:38:00.903756"
+    },
+    {
+      "name": "Dashboard app.js",
+      "status": "PASS",
+      "message": "Accessible (30.4KB)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:38:01.403834"
+    },
+    {
+      "name": "Database Connection",
+      "status": "FAIL",
+      "message": "DATABASE_URL not set",
+      "level": "info",
+      "timestamp": "2025-08-15T01:38:01.419244"
+    },
+    {
+      "name": "Workflow .github/workflows/daily.yml",
+      "status": "PASS",
+      "message": "File exists (322 lines)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:38:01.421266"
+    },
+    {
+      "name": "Workflow .github/workflows/weekly.yml",
+      "status": "PASS",
+      "message": "File exists (63 lines)",
+      "level": "info",
+      "timestamp": "2025-08-15T01:38:01.421690"
+    }
+  ],
+  "errors": [
+    "Secret FOOTYSTATS_API_KEY: Not set in environment",
+    "Secret DATABASE_URL: Not set in environment",
+    "Secret GBM_QUICK: Not set in environment",
+    "CSV artifacts/latest/recommendations_latest.csv: File not found (404)",
+    "CSV site/metrics.csv: File not found (404)",
+    "CSV site/pnl_by_month.csv: File not found (404)",
+    "CSV site/bankroll_series_90d.csv: File not found (404)",
+    "CSV site/roi_heatmap.csv: File not found (404)",
+    "CSV site/top_segments.csv: File not found (404)",
+    "Database Connection: DATABASE_URL not set"
+  ],
+  "warnings": []
+}

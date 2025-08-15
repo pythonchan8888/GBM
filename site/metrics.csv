@@ -1,0 +1,15 @@
+metric,value
+run_id,test_run_001
+started_at,2024-08-12 14:30:00
+finished_at,2024-08-12 14:45:00
+train_rows,5000
+test_rows,1200
+poisson_home_loss,0.8234
+poisson_away_loss,0.8567
+pnl_30d,1250.75
+stake_30d,5000.00
+bets_30d,85
+roi_30d_pct,25.02
+win_rate_30d_pct,62.4
+non_losing_rate_30d_pct,71.8
+avg_win_return_30d_pct,45.6

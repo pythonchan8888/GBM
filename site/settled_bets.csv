@@ -1,0 +1,21 @@
+fixture_id,league,home,away,home_score,away_score,line_betted_on_refined,bet_type_refined_ah,odds_betted_on_refined,stake,pl,status,dt_gmt8
+12345,England Premier League,Manchester United,Liverpool,2,1,-0.5,AH,1.85,100,85.0,settled,2024-08-10 15:00:00
+12346,England Premier League,Arsenal,Chelsea,3,1,-0.75,AH,1.92,100,92.0,settled,2024-08-10 17:30:00
+12347,Spain La Liga,Barcelona,Real Madrid,2,0,-1.0,AH,2.10,100,110.0,settled,2024-08-10 20:00:00
+12348,Germany Bundesliga,Bayern Munich,Borussia Dortmund,3,1,0.75,AH,1.78,100,78.0,settled,2024-08-09 19:30:00
+12349,Italy Serie A,AC Milan,Inter Milan,1,0,-0.25,AH,1.88,100,88.0,settled,2024-08-09 21:00:00
+12350,France Ligue 1,PSG,Marseille,4,0,-1.5,AH,2.25,100,125.0,settled,2024-08-09 22:45:00
+12351,England Premier League,Tottenham,Newcastle,2,2,0.0,AH,1.95,100,47.5,settled,2024-08-08 16:00:00
+12352,Spain La Liga,Atletico Madrid,Valencia,1,0,-0.5,AH,1.82,100,82.0,settled,2024-08-08 18:30:00
+12353,Germany Bundesliga,RB Leipzig,Eintracht Frankfurt,2,1,-0.25,AH,1.90,100,90.0,settled,2024-08-08 20:15:00
+12354,England Premier League,Brighton,West Ham,3,2,0.25,AH,1.85,100,85.0,settled,2024-08-07 19:45:00
+12355,Italy Serie A,Juventus,Napoli,1,1,0.0,AH,1.95,100,47.5,settled,2024-08-07 21:30:00
+12356,France Ligue 1,Monaco,Lyon,2,0,-0.75,AH,2.05,100,105.0,settled,2024-08-07 22:00:00
+12357,Spain La Liga,Sevilla,Real Sociedad,1,0,-0.5,AH,1.75,100,75.0,settled,2024-08-06 20:30:00
+12358,Germany Bundesliga,Wolfsburg,Bayer Leverkusen,0,2,0.5,AH,1.88,100,88.0,settled,2024-08-06 18:45:00
+12359,England Premier League,Crystal Palace,Fulham,2,1,-0.25,AH,1.93,100,93.0,settled,2024-08-06 17:00:00
+12360,Italy Serie A,AS Roma,Lazio,1,0,-0.5,AH,1.80,100,80.0,settled,2024-08-05 21:15:00
+12361,France Ligue 1,Lille,Nice,3,1,-1.0,AH,2.15,100,115.0,settled,2024-08-05 19:30:00
+12362,England Premier League,Aston Villa,Everton,2,0,-0.75,AH,1.87,100,87.0,settled,2024-08-04 16:30:00
+12363,Spain La Liga,Real Betis,Villarreal,1,1,0.0,AH,1.95,100,47.5,settled,2024-08-04 18:00:00
+12364,Germany Bundesliga,Borussia Monchengladbach,Union Berlin,2,1,-0.5,AH,1.83,100,83.0,settled,2024-08-04 20:00:00
