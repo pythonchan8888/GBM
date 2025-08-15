@@ -3695,10 +3695,20 @@ else:
                     bet_type_refined_ah text,
                     odds_betted_on_refined numeric
                 );
+                
+                -- Add missing columns to existing tables (safe if columns already exist)
+                ALTER TABLE bets ADD COLUMN IF NOT EXISTS status text DEFAULT 'open';
+                ALTER TABLE bets ADD COLUMN IF NOT EXISTS settled_at timestamptz;
+                ALTER TABLE bets ADD COLUMN IF NOT EXISTS fixture_id text;
+                ALTER TABLE bets ADD COLUMN IF NOT EXISTS home_score int;
+                ALTER TABLE bets ADD COLUMN IF NOT EXISTS away_score int;
+                ALTER TABLE bets ADD COLUMN IF NOT EXISTS line_betted_on_refined numeric;
+                ALTER TABLE bets ADD COLUMN IF NOT EXISTS bet_type_refined_ah text;
+                ALTER TABLE bets ADD COLUMN IF NOT EXISTS odds_betted_on_refined numeric;
                 """)
                 insert_sql = """
-                INSERT INTO bets(run_id, dt_gmt8, league, home, away, tier, comp_type, side, line, odds, ev, stake, pl, cum_bankroll)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                INSERT INTO bets(run_id, dt_gmt8, league, home, away, tier, comp_type, side, line, odds, ev, stake, pl, cum_bankroll, line_betted_on_refined, bet_type_refined_ah, odds_betted_on_refined)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 """
                 # prepare cumulative bankroll
                 running = 100.0
@@ -3713,7 +3723,8 @@ else:
                             r.get('competition_type'),
                             'home' if r.get('bet_type_refined_ah') == 'bet_home_refined_ah' else 'away',
                             r.get('line_betted_on_refined'), r.get('odds_betted_on_refined'), r.get('ev_for_bet_refined'),
-                            r.get('stake_ah'), r.get('profit_loss_refined_ah'), running
+                            r.get('stake_ah'), r.get('profit_loss_refined_ah'), running,
+                            r.get('line_betted_on_refined'), r.get('bet_type_refined_ah'), r.get('odds_betted_on_refined')
                         )
                     )
                 conn.commit(); cur.close(); conn.close()
