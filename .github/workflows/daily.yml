@@ -195,7 +195,7 @@ jobs:
               SELECT 
                 COALESCE(league, '') as league,
                 COALESCE(line_betted_on_refined, line, 0) as line,
-                COALESCE(dynamic_league_tier, league_tier) as tier,
+                COALESCE(tier, 1) as tier,
                 COALESCE(stake, 0) as stake,
                 COALESCE(pl, 0) as pl,
                 dt_gmt8
