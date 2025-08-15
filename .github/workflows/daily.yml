@@ -155,18 +155,22 @@ jobs:
               rows = cur.fetchall()
               with open('site/pnl_by_month.csv','w', newline='', encoding='utf-8') as f:
                   w = csv.writer(f); w.writerow(["month","league","pnl"]); w.writerows(rows)
-              # Bankroll series (last 90 days)
+              # Bankroll series (last 90 days) with clean formatting
               cur.execute("""
-              select dt_gmt8, cum_bankroll from bets
+              select dt_gmt8, ROUND(CAST(cum_bankroll AS NUMERIC), 2) as cum_bankroll 
+              from bets
               where dt_gmt8 > now() - interval '90 days' order by dt_gmt8
               """)
               rows = cur.fetchall()
               with open('site/bankroll_series_90d.csv','w', newline='', encoding='utf-8') as f:
                   w = csv.writer(f); w.writerow(["dt_gmt8","cum_bankroll"]); w.writerows(rows)
-              # Latest recommendations (7 days) - deduplicated by best EV per match
+              # Latest recommendations (7 days) - deduplicated by best EV per match with clean formatting
               cur.execute("""
-              SELECT dt_gmt8, league, home, away, rec_text, line, odds, 
-                     ROUND(CAST(ev AS NUMERIC), 4) as ev, confidence
+              SELECT dt_gmt8, league, home, away, rec_text, 
+                     ROUND(CAST(line AS NUMERIC), 2) as line,
+                     ROUND(CAST(odds AS NUMERIC), 2) as odds, 
+                     ROUND(CAST(ev AS NUMERIC), 4) as ev, 
+                     confidence
               FROM (
                   SELECT dt_gmt8, league, home, away, rec_text, line, odds, ev, confidence,
                          ROW_NUMBER() OVER (PARTITION BY dt_gmt8, home, away ORDER BY ev DESC) as rn

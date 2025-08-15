@@ -149,7 +149,7 @@ class ParlayKing {
                 recommendation: row.rec_text || '',
                 line: parseFloat(row.line) || 0,
                 odds: parseFloat(row.odds) || 0,
-                ev: parseFloat(row.ev) || 0,
+                ev: parseFloat(row.ev) || 0, // Already formatted as decimal from backend
                 confidence: row.confidence || 'Medium'
             }))
             .sort((a, b) => b.datetime - a.datetime);
@@ -422,7 +422,7 @@ class ParlayKing {
         const tooltip = container.querySelector('.chart-tooltip');
         tooltip.innerHTML = `
             <strong>${this.formatDate(data.date)}</strong><br>
-            Value: ${data.value.toFixed(2)}
+            Value: ${this.formatCurrency(data.value)}
         `;
         tooltip.style.left = (event.pageX + 10) + 'px';
         tooltip.style.top = (event.pageY - 10) + 'px';
@@ -732,7 +732,7 @@ class ParlayKing {
 
         // Create custom chart
         this.createCustomChart('bankroll-chart', chartData, {
-            formatY: activeMode === 'roi' ? (v) => v.toFixed(1) + '%' : (v) => v.toFixed(1)
+            formatY: activeMode === 'roi' ? (v) => v.toFixed(1) + '%' : (v) => this.formatCurrency(v)
         });
     }
 
@@ -767,8 +767,8 @@ class ParlayKing {
                 <td><strong>${rec.home}</strong> vs ${rec.away}</td>
                 <td><span class="league-badge">${rec.league}</span></td>
                 <td><strong>${rec.recommendation}</strong></td>
-                <td>${rec.odds.toFixed(2)}</td>
-                <td class="${rec.ev >= 0 ? 'positive' : 'negative'}">${rec.ev >= 0 ? '+' : ''}${rec.ev.toFixed(3)}</td>
+                <td>${parseFloat(rec.odds).toFixed(2)}</td>
+                <td class="${rec.ev >= 0 ? 'positive' : 'negative'}">${rec.ev >= 0 ? '+' : ''}${(parseFloat(rec.ev) * 100).toFixed(1)}%</td>
                 <td><span class="confidence-chip confidence-${rec.confidence.toLowerCase()}">${rec.confidence}</span></td>
                 <td>${this.formatDateTime(rec.datetime)}</td>
             `;
@@ -843,8 +843,11 @@ class ParlayKing {
         return new Intl.NumberFormat().format(num);
     }
 
-    formatCurrency(amount) {
-        const sign = amount >= 0 ? '+' : '';
+    formatCurrency(amount, showSign = false) {
+        const sign = showSign && amount >= 0 ? '+' : '';
+        if (Math.abs(amount) >= 1000) {
+            return `${sign}${(amount / 1000).toFixed(1)}k`;
+        }
         return `${sign}${amount.toFixed(2)}`;
     }
 
@@ -923,19 +926,28 @@ class ParlayKing {
 
     renderTopSegments() {
         const tbody = document.getElementById('segments-tbody');
-        if (!tbody || !this.data.topSegments) return;
+        if (!tbody) return;
         
         tbody.innerHTML = '';
+        
+        if (!this.data.topSegments || this.data.topSegments.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--muted); padding: var(--space-xl);">No segment data available</td></tr>';
+            return;
+        }
+        
         this.data.topSegments.slice(0, 10).forEach(segment => {
             const row = document.createElement('tr');
+            const roiValue = parseFloat(segment.roi_pct);
+            const lineValue = parseFloat(segment.line);
+            
             row.innerHTML = `
                 <td>Tier ${segment.tier}</td>
-                <td>${segment.line}</td>
-                <td class="positive">${segment.roi_pct}%</td>
-                <td>${segment.n}</td>
+                <td>${lineValue > 0 ? '+' : ''}${lineValue.toFixed(2)}</td>
+                <td class="positive">${roiValue.toFixed(1)}%</td>
+                <td>${this.formatNumber(segment.n)}</td>
                 <td>
-                    <span class="performance-badge ${segment.roi_pct > 10 ? 'excellent' : segment.roi_pct > 5 ? 'good' : 'moderate'}">
-                        ${segment.roi_pct > 10 ? 'Excellent' : segment.roi_pct > 5 ? 'Good' : 'Moderate'}
+                    <span class="performance-badge ${roiValue > 10 ? 'excellent' : roiValue > 5 ? 'good' : 'moderate'}">
+                        ${roiValue > 10 ? 'Excellent' : roiValue > 5 ? 'Good' : 'Moderate'}
                     </span>
                 </td>
             `;
@@ -965,12 +977,12 @@ class ParlayKing {
         this.data.recommendations.forEach(rec => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${new Date(rec.dt_gmt8).toLocaleString()}</td>
+                <td>${this.formatDateTime(rec.dt_gmt8)}</td>
                 <td><strong>${rec.home}</strong> vs <strong>${rec.away}</strong></td>
                 <td>${rec.league}</td>
                 <td>${rec.rec_text}</td>
-                <td>${rec.odds}</td>
-                <td class="${rec.ev > 0 ? 'positive' : 'negative'}">${rec.ev}%</td>
+                <td>${parseFloat(rec.odds).toFixed(2)}</td>
+                <td class="${rec.ev > 0 ? 'positive' : 'negative'}">${rec.ev >= 0 ? '+' : ''}${(parseFloat(rec.ev) * 100).toFixed(1)}%</td>
                 <td>
                     <span class="confidence-badge ${rec.confidence.toLowerCase()}">${rec.confidence}</span>
                 </td>
