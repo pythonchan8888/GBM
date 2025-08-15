@@ -3,7 +3,16 @@
 class ParlayKing {
     constructor() {
         this.cache = new Map();
-        this.data = {};
+        this.data = {
+            metrics: {},
+            pnlByMonth: [],
+            bankrollSeries: [],
+            recommendations: [],
+            roiHeatmap: [],
+            topSegments: [],
+            settledBets: [],
+            parlayWins: []
+        };
         this.filters = this.getFiltersFromURL();
         
         this.init();
@@ -20,18 +29,24 @@ class ParlayKing {
     // Data Loading with Caching
     async loadCSV(filename, useCache = true) {
         const cacheKey = `csv_${filename}`;
-        
+
+        // If we already have it in-memory, prefer that immediately
         if (useCache && this.cache.has(cacheKey)) {
             return this.cache.get(cacheKey);
         }
 
         try {
-            const response = await fetch(filename, {
-                headers: useCache ? { 'If-None-Match': localStorage.getItem(`etag_${filename}`) || '' } : {}
-            });
+            // Only send If-None-Match when we actually have an in-memory cache entry
+            const haveInMemory = this.cache.has(cacheKey);
+            const headers = useCache && haveInMemory
+                ? { 'If-None-Match': localStorage.getItem(`etag_${filename}`) || '' }
+                : {};
 
-            if (response.status === 304) {
-                return this.cache.get(cacheKey);
+            let response = await fetch(filename, { headers });
+
+            // If server returns 304 but we don't have an in-memory copy (cold load), refetch without ETag
+            if (response.status === 304 && !haveInMemory) {
+                response = await fetch(`${filename}?t=${Date.now()}`, { cache: 'no-store' });
             }
 
             if (!response.ok) {
@@ -39,15 +54,15 @@ class ParlayKing {
             }
 
             const csvText = await response.text();
-            const data = Papa.parse(csvText, { 
-                header: true, 
+            const data = Papa.parse(csvText, {
+                header: true,
                 dynamicTyping: true,
                 skipEmptyLines: true
             }).data;
 
             // Cache the data
             this.cache.set(cacheKey, data);
-            
+
             // Store ETag for future requests
             const etag = response.headers.get('ETag');
             if (etag) {
@@ -99,8 +114,10 @@ class ParlayKing {
 
     parseMetrics(rawMetrics) {
         const metrics = {};
+        if (!Array.isArray(rawMetrics)) return metrics;
+        
         rawMetrics.forEach(row => {
-            if (row.metric && row.value !== null && row.value !== '') {
+            if (row && row.metric && row.value !== null && row.value !== undefined && row.value !== '') {
                 metrics[row.metric] = row.value;
             }
         });
@@ -108,8 +125,10 @@ class ParlayKing {
     }
 
     parseBankrollSeries(rawSeries) {
+        if (!Array.isArray(rawSeries)) return [];
+        
         return rawSeries
-            .filter(row => row.dt_gmt8 && row.cum_bankroll !== null)
+            .filter(row => row && row.dt_gmt8 && row.cum_bankroll !== null && row.cum_bankroll !== undefined)
             .map(row => ({
                 date: new Date(row.dt_gmt8),
                 bankroll: parseFloat(row.cum_bankroll) || 0
@@ -118,8 +137,10 @@ class ParlayKing {
     }
 
     parseRecommendations(rawRecs) {
+        if (!Array.isArray(rawRecs)) return [];
+        
         return rawRecs
-            .filter(row => row.dt_gmt8 && row.home && row.away)
+            .filter(row => row && row.dt_gmt8 && row.home && row.away)
             .map(row => ({
                 datetime: new Date(row.dt_gmt8),
                 league: row.league || '',
@@ -135,8 +156,10 @@ class ParlayKing {
     }
 
     parseSettledBets(rawBets) {
+        if (!Array.isArray(rawBets)) return [];
+        
         return rawBets
-            .filter(row => row.dt_gmt8 && row.status === 'settled')
+            .filter(row => row && row.dt_gmt8 && row.status === 'settled')
             .map(row => ({
                 datetime: new Date(row.dt_gmt8),
                 league: row.league || '',
@@ -456,6 +479,7 @@ class ParlayKing {
     initializeUI() {
         this.setupEventListeners();
         this.setFilterValues();
+        this.setupChartResize();
     }
 
     setupEventListeners() {
@@ -540,22 +564,31 @@ class ParlayKing {
     }
 
     updateKPIs() {
+        if (!this.data || !this.data.metrics) {
+            console.warn('Data not loaded yet, showing default values');
+            return;
+        }
+        
         const metrics = this.data.metrics;
         
         // Hero Metrics - Win Rate (Main attraction)
         const winRate = parseFloat(metrics.win_rate_30d_pct || 0);
-        document.getElementById('win-rate').textContent = `${winRate.toFixed(1)}%`;
+        const winRateEl = document.getElementById('win-rate');
+        if (winRateEl) winRateEl.textContent = `${winRate.toFixed(1)}%`;
         
-        // Hero Metrics - ROI Performance
+        // Hero Metrics - ROI Performance  
         const roi = parseFloat(metrics.roi_30d_pct || 0);
-        document.getElementById('roi-performance').textContent = `+${roi.toFixed(1)}%`;
+        const roiEl = document.getElementById('roi-performance');
+        if (roiEl) roiEl.textContent = `+${roi.toFixed(1)}%`;
         
         // Non-Losing Rate (wins + pushes)
         const nonLosingRate = parseFloat(metrics.non_losing_rate_30d_pct || 0);
-        document.getElementById('non-losing-rate').textContent = `${nonLosingRate.toFixed(1)}%`;
+        const nonLosingEl = document.getElementById('non-losing-rate');
+        if (nonLosingEl) nonLosingEl.textContent = `${nonLosingRate.toFixed(1)}%`;
 
         // Total Bets
-        document.getElementById('total-bets').textContent = this.formatNumber(metrics.bets_30d || 0);
+        const totalBetsEl = document.getElementById('total-bets');
+        if (totalBetsEl) totalBetsEl.textContent = this.formatNumber(metrics.bets_30d || 0);
         
         // Update trend indicators with more compelling language
         this.updateMarketingTrend('win-rate-trend', winRate, 'win');
@@ -667,8 +700,8 @@ class ParlayKing {
 
     // Chart Management
     updateChart() {
-        const activeMode = document.querySelector('.toggle-btn.active').dataset.mode;
-        const activeRange = document.querySelector('.range-btn.active').dataset.range;
+        const activeMode = document.querySelector('.toggle-btn.active')?.dataset.mode || 'bankroll';
+        const activeRange = document.querySelector('.range-btn.active')?.dataset.range || '30';
         
         let filteredData = [...this.data.bankrollSeries];
         
@@ -700,6 +733,19 @@ class ParlayKing {
         // Create custom chart
         this.createCustomChart('bankroll-chart', chartData, {
             formatY: activeMode === 'roi' ? (v) => v.toFixed(1) + '%' : (v) => v.toFixed(1)
+        });
+    }
+
+    // Debounced chart resize for mobile responsiveness
+    setupChartResize() {
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (this.data.bankrollSeries && this.data.bankrollSeries.length > 0) {
+                    this.updateChart();
+                }
+            }, 150); // 150ms debounce
         });
     }
 
@@ -959,6 +1005,17 @@ window.addEventListener('error', (event) => {
 // Initialize the application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.parlayKing = new ParlayKing();
+    
+    // Initialize specific page methods based on current page
+    const currentPage = window.location.pathname;
+    
+    setTimeout(() => {
+        if (currentPage.includes('analytics.html') && typeof window.parlayKing.initAnalyticsPage === 'function') {
+            window.parlayKing.initAnalyticsPage();
+        } else if (currentPage.includes('recommendations.html') && typeof window.parlayKing.initRecommendationsPage === 'function') {
+            window.parlayKing.initRecommendationsPage();
+        }
+    }, 500); // Wait for initial data to load
 });
 
 // Handle page visibility changes to refresh data
