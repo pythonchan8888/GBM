@@ -163,10 +163,18 @@ jobs:
               rows = cur.fetchall()
               with open('site/bankroll_series_90d.csv','w', newline='', encoding='utf-8') as f:
                   w = csv.writer(f); w.writerow(["dt_gmt8","cum_bankroll"]); w.writerows(rows)
-              # Latest recommendations (7 days)
+              # Latest recommendations (7 days) - deduplicated by best EV per match
               cur.execute("""
-              select dt_gmt8, league, home, away, rec_text, line, odds, ev, confidence
-              from recommendations where dt_gmt8 >= now() - interval '7 days' order by dt_gmt8
+              SELECT dt_gmt8, league, home, away, rec_text, line, odds, 
+                     ROUND(CAST(ev AS NUMERIC), 4) as ev, confidence
+              FROM (
+                  SELECT dt_gmt8, league, home, away, rec_text, line, odds, ev, confidence,
+                         ROW_NUMBER() OVER (PARTITION BY dt_gmt8, home, away ORDER BY ev DESC) as rn
+                  FROM recommendations 
+                  WHERE dt_gmt8 >= now() - interval '7 days'
+              ) ranked
+              WHERE rn = 1
+              ORDER BY dt_gmt8, ev DESC
               """)
               rows = cur.fetchall()
               with open('site/latest_recommendations.csv','w', newline='', encoding='utf-8') as f:
