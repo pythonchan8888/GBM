@@ -89,11 +89,6 @@ class ParlayKing {
                 this.loadCSV('settled_bets.csv') // For parlay calculation
             ]);
 
-            console.log('Debug - Raw CSV data loaded:');
-            console.log('metrics:', metrics);
-            console.log('bankrollSeries:', bankrollSeries);
-            console.log('recommendations:', recommendations);
-
             // Store data
             this.data = {
                 metrics: this.parseMetrics(metrics),
@@ -104,11 +99,6 @@ class ParlayKing {
                 topSegments,
                 settledBets: this.parseSettledBets(settledBets)
             };
-
-            console.log('Debug - Parsed data:');
-            console.log('parsedMetrics:', this.data.metrics);
-            console.log('parsedBankrollSeries:', this.data.bankrollSeries);
-            console.log('parsedRecommendations:', this.data.recommendations);
 
             // Calculate parlay wins
             this.data.parlayWins = this.calculateParlayWins();
@@ -580,7 +570,6 @@ class ParlayKing {
         }
         
         const metrics = this.data.metrics;
-        console.log('Debug - Parsed metrics:', metrics); // Debug output
         
         // Hero Metrics - Win Rate (Main attraction)
         const winRate = parseFloat(metrics.win_rate_30d_pct || 0);
