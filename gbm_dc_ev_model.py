@@ -3685,7 +3685,15 @@ else:
                     ev numeric,
                     stake numeric,
                     pl numeric,
-                    cum_bankroll numeric
+                    cum_bankroll numeric,
+                    status text DEFAULT 'open',
+                    settled_at timestamptz,
+                    fixture_id text,
+                    home_score int,
+                    away_score int,
+                    line_betted_on_refined numeric,
+                    bet_type_refined_ah text,
+                    odds_betted_on_refined numeric
                 );
                 """)
                 insert_sql = """
@@ -3959,7 +3967,7 @@ def settle_open_bets(footystats_api_key: str, db_url: str, hours_buffer: int = 2
     """Settle open bets in the Postgres `bets` table using FootyStats final scores.
 
     Requirements (DB columns, with fallbacks handled where possible):
-      - id or bet_id (primary key)
+      - bet_id (primary key)
       - dt_gmt8 (timestamp, fixture datetime in GMT+8)
       - league, home, away (strings)
       - line_betted_on_refined or line (number)
@@ -3989,7 +3997,7 @@ def settle_open_bets(footystats_api_key: str, db_url: str, hours_buffer: int = 2
         cur.execute(
             """
             SELECT 
-              COALESCE(NULLIF(CAST(bet_id AS TEXT), ''), NULLIF(CAST(id AS TEXT), '')) AS bet_key,
+              CAST(bet_id AS TEXT) AS bet_key,
               dt_gmt8, league, home, away,
               COALESCE(line_betted_on_refined, line) AS line_val,
               COALESCE(odds_betted_on_refined, odds) AS odds_val,
@@ -4107,9 +4115,9 @@ def settle_open_bets(footystats_api_key: str, db_url: str, hours_buffer: int = 2
                     """
                     UPDATE bets
                     SET pl = %s, status = 'settled', settled_at = NOW()
-                    WHERE (CAST(bet_id AS TEXT) = %s OR CAST(id AS TEXT) = %s)
+                    WHERE CAST(bet_id AS TEXT) = %s
                     """,
-                    (profit, str(bet_id), str(bet_id))
+                    (profit, str(bet_id))
                 )
                 settled += 1
             except Exception as e:
