@@ -29,18 +29,24 @@ class ParlayKing {
     // Data Loading with Caching
     async loadCSV(filename, useCache = true) {
         const cacheKey = `csv_${filename}`;
-        
+
+        // If we already have it in-memory, prefer that immediately
         if (useCache && this.cache.has(cacheKey)) {
             return this.cache.get(cacheKey);
         }
 
         try {
-            const response = await fetch(filename, {
-                headers: useCache ? { 'If-None-Match': localStorage.getItem(`etag_${filename}`) || '' } : {}
-            });
+            // Only send If-None-Match when we actually have an in-memory cache entry
+            const haveInMemory = this.cache.has(cacheKey);
+            const headers = useCache && haveInMemory
+                ? { 'If-None-Match': localStorage.getItem(`etag_${filename}`) || '' }
+                : {};
 
-            if (response.status === 304) {
-                return this.cache.get(cacheKey);
+            let response = await fetch(filename, { headers });
+
+            // If server returns 304 but we don't have an in-memory copy (cold load), refetch without ETag
+            if (response.status === 304 && !haveInMemory) {
+                response = await fetch(`${filename}?t=${Date.now()}`, { cache: 'no-store' });
             }
 
             if (!response.ok) {
@@ -48,15 +54,15 @@ class ParlayKing {
             }
 
             const csvText = await response.text();
-            const data = Papa.parse(csvText, { 
-                header: true, 
+            const data = Papa.parse(csvText, {
+                header: true,
                 dynamicTyping: true,
                 skipEmptyLines: true
             }).data;
 
             // Cache the data
             this.cache.set(cacheKey, data);
-            
+
             // Store ETag for future requests
             const etag = response.headers.get('ETag');
             if (etag) {
