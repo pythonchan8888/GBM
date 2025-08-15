@@ -4493,11 +4493,21 @@ else:
                         (RUN_ID, len(df_for_training_and_testing) if 'df_for_training_and_testing' in globals() else None,
                          len(test_matches_df) if 'test_matches_df' in globals() else None)
                     )
-                    # Insert recommendations
+                    # Insert recommendations with deduplication safeguard
                     insert_sql = """
                     INSERT INTO recommendations(run_id, dt_gmt8, league, home, away, rec_text, line, odds, ev, confidence)
                     VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    ON CONFLICT (run_id, dt_gmt8, home, away, line) 
+                    DO UPDATE SET 
+                        rec_text = EXCLUDED.rec_text,
+                        odds = EXCLUDED.odds,
+                        ev = EXCLUDED.ev,
+                        confidence = EXCLUDED.confidence
                     """
+                    
+                    # First, clean up old recommendations for this run to avoid stale data
+                    cur.execute("DELETE FROM recommendations WHERE run_id = %s", (RUN_ID,))
+                    
                     for _, r in df_to_write.iterrows():
                         cur.execute(
                             insert_sql,

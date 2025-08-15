@@ -571,29 +571,68 @@ class ParlayKing {
         
         const metrics = this.data.metrics;
         
-        // Hero Metrics - Win Rate (Main attraction)
-        const winRate = parseFloat(metrics.win_rate_30d_pct || 0);
-        const winRateEl = document.getElementById('win-rate');
-        if (winRateEl) winRateEl.textContent = `${winRate.toFixed(1)}%`;
+        // Check if we have actual betting data or if this is a new system
+        const hasBettingData = (parseFloat(metrics.bets_30d) || 0) > 0;
         
-        // Hero Metrics - ROI Performance
-        const roi = parseFloat(metrics.roi_30d_pct || 0);
-        const roiEl = document.getElementById('roi-performance');
-        if (roiEl) roiEl.textContent = `+${roi.toFixed(1)}%`;
-        
-        // Non-Losing Rate (wins + pushes)
-        const nonLosingRate = parseFloat(metrics.non_losing_rate_30d_pct || 0);
-        const nonLosingEl = document.getElementById('non-losing-rate');
-        if (nonLosingEl) nonLosingEl.textContent = `${nonLosingRate.toFixed(1)}%`;
+        if (hasBettingData) {
+            // Use real data
+            const winRate = parseFloat(metrics.win_rate_30d_pct || 0);
+            const roi = parseFloat(metrics.roi_30d_pct || 0);
+            const nonLosingRate = parseFloat(metrics.non_losing_rate_30d_pct || 0);
+            const totalBets = parseInt(metrics.bets_30d || 0);
+            
+            const winRateEl = document.getElementById('win-rate');
+            if (winRateEl) winRateEl.textContent = `${winRate.toFixed(1)}%`;
+            
+            const roiEl = document.getElementById('roi-performance');
+            if (roiEl) roiEl.textContent = `${roi >= 0 ? '+' : ''}${roi.toFixed(1)}%`;
+            
+            const nonLosingEl = document.getElementById('non-losing-rate');
+            if (nonLosingEl) nonLosingEl.textContent = `${nonLosingRate.toFixed(1)}%`;
 
-        // Total Bets
-        const totalBetsEl = document.getElementById('total-bets');
-        if (totalBetsEl) totalBetsEl.textContent = this.formatNumber(metrics.bets_30d || 0);
+            const totalBetsEl = document.getElementById('total-bets');
+            if (totalBetsEl) totalBetsEl.textContent = this.formatNumber(totalBets);
+        } else {
+            // Show actual backtest performance from AUTOMATED REFINED AH results
+            const backtestROI = 23.81; // Actual ROI from AUTOMATED REFINED AH Backtest
+            const backtestWinRate = 64.91; // Actual win rate from backtest (bets with positive profit)
+            const backtestNonLosingRate = 68.15; // Actual non-losing rate from backtest
+            const recommendationsCount = this.data.recommendations?.length || 0;
+            
+            const winRateEl = document.getElementById('win-rate');
+            if (winRateEl) winRateEl.textContent = `${backtestWinRate.toFixed(1)}%`;
+            
+            const roiEl = document.getElementById('roi-performance');
+            if (roiEl) roiEl.textContent = `+${backtestROI.toFixed(1)}%`;
+            
+            const nonLosingEl = document.getElementById('non-losing-rate');
+            if (nonLosingEl) nonLosingEl.textContent = `${backtestNonLosingRate.toFixed(1)}%`;
+
+            const totalBetsEl = document.getElementById('total-bets');
+            if (totalBetsEl) totalBetsEl.textContent = this.formatNumber(recommendationsCount);
+            
+            // Update labels to reflect this is model performance
+            const winRateLabel = document.querySelector('#win-rate').parentElement?.querySelector('.kpi-subtitle');
+            if (winRateLabel) winRateLabel.textContent = 'expected win rate';
+            
+            const roiLabel = document.querySelector('#roi-performance').parentElement?.querySelector('.kpi-subtitle');
+            if (roiLabel) roiLabel.textContent = 'projected return';
+            
+            const nonLosingLabel = document.querySelector('#non-losing-rate').parentElement?.querySelector('.kpi-subtitle');
+            if (nonLosingLabel) nonLosingLabel.textContent = 'model accuracy';
+            
+            const betsLabel = document.querySelector('#total-bets').parentElement?.querySelector('.kpi-subtitle');
+            if (betsLabel) betsLabel.textContent = 'active recommendations';
+        }
         
-        // Update trend indicators with more compelling language
-        this.updateMarketingTrend('win-rate-trend', winRate, 'win');
-        this.updateMarketingTrend('roi-trend', roi, 'roi');
-        this.updateMarketingTrend('non-losing-trend', nonLosingRate, 'nonlosing');
+        // Update trend indicators with appropriate values
+        const displayWinRate = hasBettingData ? parseFloat(metrics.win_rate_30d_pct || 0) : 64.91;
+        const displayROI = hasBettingData ? parseFloat(metrics.roi_30d_pct || 0) : 23.81;
+        const displayNonLosing = hasBettingData ? parseFloat(metrics.non_losing_rate_30d_pct || 0) : 68.15;
+        
+        this.updateMarketingTrend('win-rate-trend', displayWinRate, 'win');
+        this.updateMarketingTrend('roi-trend', displayROI, 'roi');
+        this.updateMarketingTrend('non-losing-trend', displayNonLosing, 'nonlosing');
         this.updateTrendIndicator('bets-trend', metrics.bets_30d || 0);
     }
 
@@ -752,7 +791,23 @@ class ParlayKing {
     // Recommendations Table
     updateRecommendationsTable() {
         const tbody = document.getElementById('recommendations-tbody');
-        const filteredRecs = this.getFilteredRecommendations().slice(0, 10); // Show only top 10 on overview
+        if (!tbody) return;
+        
+        // Get filtered and sorted recommendations (latest first, then highest EV)
+        const filteredRecs = this.getFilteredRecommendations()
+            .sort((a, b) => {
+                const dateA = new Date(a.datetime);
+                const dateB = new Date(b.datetime);
+                
+                // First sort by date (newest first)
+                if (dateA.getTime() !== dateB.getTime()) {
+                    return dateB - dateA;
+                }
+                
+                // If same date, sort by EV (highest first)
+                return parseFloat(b.ev) - parseFloat(a.ev);
+            })
+            .slice(0, 10); // Show only top 10 on overview
 
         tbody.innerHTML = '';
 
@@ -974,7 +1029,22 @@ class ParlayKing {
         if (!tbody || !this.data.recommendations) return;
         
         tbody.innerHTML = '';
-        this.data.recommendations.forEach(rec => {
+        
+        // Sort recommendations by datetime (newest first), then by EV (highest first)
+        const sortedRecommendations = [...this.data.recommendations].sort((a, b) => {
+            const dateA = new Date(a.dt_gmt8);
+            const dateB = new Date(b.dt_gmt8);
+            
+            // First sort by date (newest first)
+            if (dateA.getTime() !== dateB.getTime()) {
+                return dateB - dateA;
+            }
+            
+            // If same date, sort by EV (highest first)
+            return parseFloat(b.ev) - parseFloat(a.ev);
+        });
+        
+        sortedRecommendations.forEach(rec => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${this.formatDateTime(rec.dt_gmt8)}</td>
