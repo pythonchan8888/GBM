@@ -38,8 +38,8 @@ class ParlayKing {
         }
 
         try {
-            // Always append a version to break CDN/browser caches after deploys
-            const url = `${filename}?v=${this.version}`;
+            // Strong cache-busting for CSVs to avoid CDN/browser staleness
+            const url = `${filename}?t=${Date.now()}`;
             let response = await fetch(url, { cache: 'no-store' });
 
             if (!response.ok) {
