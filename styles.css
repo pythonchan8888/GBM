@@ -7,7 +7,7 @@
   --border: #30363D;
   --text: #F0F6FC;
   --muted: #7D8590;
-  --primary: #FF7B00;
+  --primary: #FF7A45; /* modern neutral orange */
   --cta: #0969DA;
   --positive: #238636;
   --negative: #DA3633;
@@ -15,7 +15,7 @@
   
   /* Subtle Gradients */
   --gradient-bg: linear-gradient(180deg, #0F1419 0%, #1C2128 100%);
-  --gradient-primary: linear-gradient(135deg, #FF7B00 0%, #FF9500 100%);
+  --gradient-primary: linear-gradient(135deg, #FF7A45 0%, #FFA866 100%);
   --gradient-secondary: linear-gradient(135deg, #0969DA 0%, #218BFF 100%);
   --gradient-panel: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
   
@@ -901,6 +901,13 @@ body {
   border-radius: var(--radius);
   border: 2px dashed var(--border);
 }
+
+/* Simple heatmap styles */
+.heatmap-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(44px,1fr)); gap:8px; }
+.heatmap-cell { padding:10px; border-radius:8px; text-align:center; font-weight:600; }
+.heat-pos { background: rgba(34,197,94,0.18); color: #16a34a; }
+.heat-mid { background: rgba(234,179,8,0.18); color: #ca8a04; }
+.heat-neg { background: rgba(239,68,68,0.18); color: #ef4444; }
 
 .performance-badge {
   padding: var(--space-xs) var(--space-sm);

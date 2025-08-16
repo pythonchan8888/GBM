@@ -326,12 +326,12 @@ class ParlayKing {
         
         const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
         stop1.setAttribute('offset', '0%');
-        stop1.setAttribute('stop-color', '#FF8C42');
+        stop1.setAttribute('stop-color', '#FF7A45');
         stop1.setAttribute('stop-opacity', '0.3');
         
         const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
         stop2.setAttribute('offset', '100%');
-        stop2.setAttribute('stop-color', '#FF8C42');
+        stop2.setAttribute('stop-color', '#FF7A45');
         stop2.setAttribute('stop-opacity', '0.05');
         
         gradient.appendChild(stop1);
@@ -695,7 +695,7 @@ class ParlayKing {
     }
 
     updateLastRunStatus() {
-        const lastUpdate = this.data.metrics.finished_at;
+        const lastUpdate = this.data.metrics.finished_at || this.data.metrics.started_at;
         if (lastUpdate) {
             document.getElementById('last-update').textContent = `Last run: ${this.formatTimeAgo(lastUpdate)}`;
         }
@@ -972,6 +972,19 @@ class ParlayKing {
     initAnalyticsPage() {
         this.showLoading(true);
         this.loadAllData().then(() => {
+            // Wire analytics-specific controls
+            const tierSel = document.getElementById('tier-select');
+            if (tierSel) tierSel.addEventListener('change', () => this.renderROIHeatmap());
+            document.querySelectorAll('.range-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+                    e.currentTarget.classList.add('active');
+                    this.renderROIHeatmap();
+                });
+            });
+            const segTierSel = document.getElementById('segments-tier-select');
+            if (segTierSel) segTierSel.addEventListener('change', () => this.renderTopSegments());
+
             this.renderROIHeatmap();
             this.renderPnLChart();
             this.renderTopSegments();
@@ -986,18 +999,37 @@ class ParlayKing {
     renderROIHeatmap() {
         const container = document.getElementById('roi-heatmap');
         if (!container) return;
-        
-        // Use real data if available, otherwise show backtest-based heatmap
-        if (this.data.roiHeatmap && this.data.roiHeatmap.length > 0) {
-            // TODO: Implement actual heatmap visualization
-            container.innerHTML = '<div class="chart-placeholder">ROI Heatmap visualization coming soon</div>';
-        } else {
-            // Show backtest-derived ROI heatmap data
-            container.innerHTML = this.createBacktestROIHeatmap();
+
+        const minBets = parseInt(document.querySelector('.range-btn.active')?.dataset.minBets || '30', 10);
+        const tier = parseInt(document.getElementById('tier-select')?.value || '1', 10);
+
+        // Normalize source data
+        const src = (Array.isArray(this.data.roiHeatmap) && this.data.roiHeatmap.length > 0)
+            ? this.data.roiHeatmap.map(r => ({ tier: +r.tier, line: +r.line, roi_pct: +r.roi_pct, n: +r.n }))
+            : this.getBacktestROIHeatmapFallback();
+
+        const rows = src.filter(r => r.tier === tier && r.n >= minBets);
+        const lines = [...new Set(rows.map(r => r.line))].sort((a, b) => a - b);
+
+        if (lines.length === 0) {
+            container.innerHTML = '<div class="chart-placeholder">No segments meet the selected filters</div>';
+            return;
         }
+
+        // Build a simple responsive grid of cells
+        const maxCols = Math.max(lines.length, 1);
+        let html = `<div class="heatmap-grid" style="grid-template-columns: repeat(${maxCols}, 1fr);">`;
+        lines.forEach(l => {
+            const r = rows.find(x => x.line === l) || { roi_pct: 0, n: 0 };
+            const roi = r.roi_pct;
+            const cls = roi >= 10 ? 'heat-pos' : (roi >= 3 ? 'heat-mid' : 'heat-neg');
+            html += `<div class="heatmap-cell ${cls}">${roi.toFixed(1)}%<br><small>${l >= 0 ? '+' : ''}${l.toFixed(2)} · ${r.n} bets</small></div>`;
+        });
+        html += '</div>';
+        container.innerHTML = html;
     }
 
-    createBacktestROIHeatmap() {
+    getBacktestROIHeatmapFallback() {
         // Based on AUTOMATED REFINED AH Backtest: 493 bets, 23.81% ROI
         // Create realistic tier x line performance matrix
         const backtestData = [
@@ -1012,59 +1044,41 @@ class ParlayKing {
             { tier: 2, line: 0.25, roi: 17.2, bets: 38 },
             { tier: 3, line: 0.0, roi: 15.8, bets: 20 }
         ];
-
-        return `
-            <div class="heatmap-grid" style="display: grid; grid-template-columns: auto repeat(6, 1fr); gap: 8px; padding: 20px;">
-                <div style="font-weight: 600; color: var(--muted);">Tier \\ Line</div>
-                <div style="font-weight: 600; color: var(--muted); text-align: center;">-0.5</div>
-                <div style="font-weight: 600; color: var(--muted); text-align: center;">-0.25</div>
-                <div style="font-weight: 600; color: var(--muted); text-align: center;">0.0</div>
-                <div style="font-weight: 600; color: var(--muted); text-align: center;">+0.25</div>
-                <div style="font-weight: 600; color: var(--muted); text-align: center;">+0.5</div>
-                <div style="font-weight: 600; color: var(--muted); text-align: center;">Avg</div>
-                
-                <div style="font-weight: 600; color: var(--muted);">Tier 1</div>
-                <div class="heatmap-cell excellent" style="text-align: center; padding: 12px; border-radius: 6px; background: rgba(34, 197, 94, 0.2);">28.4%<br><small>67 bets</small></div>
-                <div class="heatmap-cell excellent" style="text-align: center; padding: 12px; border-radius: 6px; background: rgba(34, 197, 94, 0.2);">25.1%<br><small>54 bets</small></div>
-                <div class="heatmap-cell good" style="text-align: center; padding: 12px; border-radius: 6px; background: rgba(234, 179, 8, 0.2);">22.7%<br><small>89 bets</small></div>
-                <div class="heatmap-cell good" style="text-align: center; padding: 12px; border-radius: 6px; background: rgba(234, 179, 8, 0.2);">19.8%<br><small>43 bets</small></div>
-                <div class="heatmap-cell excellent" style="text-align: center; padding: 12px; border-radius: 6px; background: rgba(34, 197, 94, 0.2);">24.3%<br><small>31 bets</small></div>
-                <div style="text-align: center; padding: 12px; font-weight: 600; color: var(--positive);">24.1%</div>
-                
-                <div style="font-weight: 600; color: var(--muted);">Tier 2</div>
-                <div class="heatmap-cell good" style="text-align: center; padding: 12px; border-radius: 6px; background: rgba(234, 179, 8, 0.2);">21.6%<br><small>39 bets</small></div>
-                <div class="heatmap-cell moderate" style="text-align: center; padding: 12px; border-radius: 6px; background: rgba(156, 163, 175, 0.2);">18.9%<br><small>45 bets</small></div>
-                <div class="heatmap-cell good" style="text-align: center; padding: 12px; border-radius: 6px; background: rgba(234, 179, 8, 0.2);">20.4%<br><small>67 bets</small></div>
-                <div class="heatmap-cell moderate" style="text-align: center; padding: 12px; border-radius: 6px; background: rgba(156, 163, 175, 0.2);">17.2%<br><small>38 bets</small></div>
-                <div style="color: var(--muted);">—</div>
-                <div style="text-align: center; padding: 12px; font-weight: 600; color: var(--positive);">19.5%</div>
-                
-                <div style="font-weight: 600; color: var(--muted);">Tier 3</div>
-                <div style="color: var(--muted);">—</div>
-                <div style="color: var(--muted);">—</div>
-                <div class="heatmap-cell moderate" style="text-align: center; padding: 12px; border-radius: 6px; background: rgba(156, 163, 175, 0.2);">15.8%<br><small>20 bets</small></div>
-                <div style="color: var(--muted);">—</div>
-                <div style="color: var(--muted);">—</div>
-                <div style="text-align: center; padding: 12px; font-weight: 600; color: var(--positive);">15.8%</div>
-            </div>
-            <div style="padding: 16px; text-align: center; color: var(--muted); font-size: 0.9em;">
-                📊 Backtest Performance Matrix (493 total bets, 23.81% overall ROI)
-            </div>
-        `;
+        return backtestData.map(d => ({ tier: d.tier, line: d.line, roi_pct: d.roi, n: d.bets }));
     }
 
     renderPnLChart() {
         const container = document.getElementById('pnl-chart');
         if (!container) return;
         
-        // Use real data if available, otherwise show backtest-based P&L progression
-        if (this.data.pnlByMonth && this.data.pnlByMonth.length > 0) {
-            // TODO: Implement actual P&L chart
-            container.innerHTML = '<div class="chart-placeholder">P&L Chart visualization coming soon</div>';
-        } else {
-            // Show backtest P&L progression
-            this.createBacktestPnLChart(container);
-        }
+        const rows = (Array.isArray(this.data.pnlByMonth) && this.data.pnlByMonth.length > 0)
+            ? this.data.pnlByMonth
+            : [
+                { month: '2024-03', league: 'England Premier League', pnl: 2138.77 },
+                { month: '2024-04', league: 'Mixed', pnl: 3336.79 },
+                { month: '2024-05', league: 'Mixed', pnl: 399.01 }
+            ];
+
+        // Aggregate by month
+        const totals = rows.reduce((acc, r) => {
+            const k = String(r.month);
+            const v = parseFloat(r.pnl) || 0;
+            acc[k] = (acc[k] || 0) + v;
+            return acc;
+        }, {});
+
+        // Build cumulative series
+        const series = Object.keys(totals)
+            .sort()
+            .map(m => ({ date: new Date(m + '-01'), value: totals[m] }))
+            .sort((a, b) => a.date - b.date);
+        let cum = 0;
+        const cumulative = series.map(d => ({ date: d.date, value: (cum += d.value) }));
+
+        container.innerHTML = '<div id="pnl-line" class="custom-chart" style="height:300px;"></div>';
+        setTimeout(() => {
+            this.createCustomChart('pnl-line', cumulative, { formatY: v => this.formatCurrency(v, true) });
+        }, 50);
     }
 
     createBacktestPnLChart(container) {
@@ -1122,13 +1136,18 @@ class ParlayKing {
         
         tbody.innerHTML = '';
         
+        const tierFilter = parseInt(document.getElementById('segments-tier-select')?.value || '1', 10);
         if (!this.data.topSegments || this.data.topSegments.length === 0) {
             // Show backtest top segments
-            this.renderBacktestTopSegments(tbody);
+            this.renderBacktestTopSegments(tbody, tierFilter);
             return;
         }
         
-        this.data.topSegments.slice(0, 10).forEach(segment => {
+        this.data.topSegments
+            .filter(s => parseInt(s.tier) === tierFilter)
+            .sort((a, b) => parseFloat(b.roi_pct) - parseFloat(a.roi_pct))
+            .slice(0, 10)
+            .forEach(segment => {
             const row = document.createElement('tr');
             const roiValue = parseFloat(segment.roi_pct);
             const lineValue = parseFloat(segment.line);
@@ -1148,7 +1167,7 @@ class ParlayKing {
         });
     }
 
-    renderBacktestTopSegments(tbody) {
+    renderBacktestTopSegments(tbody, tierFilter = 1) {
         // Top performing segments from AUTOMATED REFINED AH Backtest
         const backtestSegments = [
             { tier: 1, line: -0.5, roi_pct: 28.4, n: 67 },
@@ -1162,8 +1181,11 @@ class ParlayKing {
             { tier: 2, line: 0.25, roi_pct: 17.2, n: 38 },
             { tier: 3, line: 0.0, roi_pct: 15.8, n: 20 }
         ];
-
-        backtestSegments.forEach(segment => {
+        backtestSegments
+            .filter(s => s.tier === tierFilter)
+            .sort((a, b) => b.roi_pct - a.roi_pct)
+            .slice(0, 10)
+            .forEach(segment => {
             const row = document.createElement('tr');
             const roiValue = parseFloat(segment.roi_pct);
             const lineValue = parseFloat(segment.line);

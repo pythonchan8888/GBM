@@ -21,6 +21,7 @@
     <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body>
+    <div class="hero-background"></div>
     <!-- Navigation -->
     <nav class="nav-container">
         <div class="nav-content">
@@ -75,7 +76,14 @@
             <div class="chart-card">
                 <div class="chart-header">
                     <h3>ROI Heatmap (Tier × Asian Handicap Line)</h3>
-                    <div class="chart-controls">
+                    <div class="chart-controls" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                        <label style="color:var(--muted);font-size:0.9rem;">Tier
+                            <select id="tier-select" class="filter-select" style="margin-left:8px;">
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </label>
                         <div class="range-controls">
                             <button class="range-btn" data-min-bets="10">Min 10 bets</button>
                             <button class="range-btn active" data-min-bets="30">Min 30 bets</button>
@@ -110,8 +118,17 @@
         <!-- Top Segments -->
         <section class="recommendations-section">
             <div class="recommendations-card">
-                <div class="recommendations-header">
-                    <h3>Top Performing Segments</h3>
+                <div class="recommendations-header" style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;">
+                    <div style="display:flex;gap:12px;align-items:center;">
+                        <h3>Top Performing Segments</h3>
+                        <label style="color:var(--muted);font-size:0.9rem;">Tier
+                            <select id="segments-tier-select" class="filter-select" style="margin-left:8px;">
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </label>
+                    </div>
                     <div class="recommendations-actions">
                         <button class="action-btn" id="export-segments">
                             <span>Export CSV</span>
