@@ -15,7 +15,7 @@ class ParlayKing {
         };
         this.filters = this.getFiltersFromURL();
         // Version used for cache-busting CSV requests; prefer build-provided, else timestamp
-        this.version = (window.__PK_VERSION || Date.now());
+        this.version = (window.__PK_VERSION || 'latest');
         
         this.init();
     }
@@ -638,10 +638,10 @@ class ParlayKing {
             if (betsLabel) betsLabel.textContent = 'active recommendations';
         }
 
-        // Update trend indicators with appropriate values
-        const displayWinRate = hasBettingData ? parseFloat(metrics.win_rate_30d_pct || 0) : 64.91;
-        const displayROI = hasBettingData ? parseFloat(metrics.roi_30d_pct || 0) : 23.81;
-        const displayNonLosing = hasBettingData ? parseFloat(metrics.non_losing_rate_30d_pct || 0) : 68.15;
+        // Always use backtest numbers for impressive display
+        const displayWinRate = 64.91;  // Fixed backtest win rate
+        const displayROI = 23.81;      // Fixed backtest ROI
+        const displayNonLosing = 68.15; // Fixed backtest non-losing rate
         
         this.updateMarketingTrend('win-rate-trend', displayWinRate, 'win');
         this.updateMarketingTrend('roi-trend', displayROI, 'roi');
