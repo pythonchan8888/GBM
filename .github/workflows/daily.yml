@@ -113,12 +113,13 @@ jobs:
           if [ -d artifacts/latest ]; then
             cp -r artifacts/latest/* site/ || true
           fi
-          # Copy ParlayKing dashboard files (these will be the main site)
-          cp index.html site/ || echo "Warning: index.html not found"
-          cp analytics.html site/ || echo "Warning: analytics.html not found"
-          cp recommendations.html site/ || echo "Warning: recommendations.html not found"
-          cp styles.css site/ || echo "Warning: styles.css not found" 
-          cp app.js site/ || echo "Warning: app.js not found"
+          # Use committed assets under site/ as the single source of truth
+          # Avoid copying root-level files over site/ to prevent overwriting newer site assets
+          [ -f site/index.html ] || echo "❌ site/index.html missing"
+          [ -f site/analytics.html ] || echo "❌ site/analytics.html missing"
+          [ -f site/recommendations.html ] || echo "❌ site/recommendations.html missing"
+          [ -f site/styles.css ] || echo "❌ site/styles.css missing"
+          [ -f site/app.js ] || echo "❌ site/app.js missing"
           # Copy static assets
           [ -f favicon.svg ] && cp favicon.svg site/ || true
           [ -f site/favicon.svg ] && cp site/favicon.svg site/ || true
