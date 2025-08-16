@@ -133,6 +133,22 @@ class ParlayKing {
         }
     }
 
+    // Parse a datetime string that represents GMT+8 (dt_gmt8) and return a proper Date
+    // We interpret the components as Asia/Singapore time and convert to a JS Date in UTC
+    parseGmt8(value) {
+        if (!value) return null;
+        try {
+            const [datePart, timePart = '00:00:00'] = String(value).split(' ');
+            const [y, m, d] = datePart.split('-').map(Number);
+            const [hh, mm, ss] = timePart.split(':').map(Number);
+            // Convert the GMT+8 wall-clock to UTC milliseconds
+            const utcMs = Date.UTC(y, (m || 1) - 1, d || 1, (hh || 0) - 8, mm || 0, ss || 0);
+            return new Date(utcMs);
+        } catch (_) {
+            return this.parseDateTimeSafe(value);
+        }
+    }
+
     parseBankrollSeries(rawSeries) {
         if (!Array.isArray(rawSeries)) return [];
         
@@ -151,7 +167,7 @@ class ParlayKing {
         return rawRecs
             .filter(row => row && row.dt_gmt8 && row.home && row.away)
             .map(row => {
-                const dt = this.parseDateTimeSafe(row.dt_gmt8);
+                const dt = this.parseGmt8(row.dt_gmt8);
                 return {
                     datetime: dt || new Date(),
                     league: row.league || '',
@@ -164,7 +180,7 @@ class ParlayKing {
                     confidence: row.confidence || 'Medium'
                 };
             })
-            .sort((a, b) => b.datetime - a.datetime);
+            .sort((a, b) => a.datetime - b.datetime); // soonest first
     }
 
     parseSettledBets(rawBets) {
@@ -809,15 +825,11 @@ class ParlayKing {
         // Get filtered and sorted recommendations (latest first, then highest EV)
         const filteredRecs = this.getFilteredRecommendations()
             .sort((a, b) => {
-                const dateA = new Date(a.datetime);
-                const dateB = new Date(b.datetime);
-                
-                // First sort by date (newest first)
-                if (dateA.getTime() !== dateB.getTime()) {
-                    return dateB - dateA;
-                }
-                
-                // If same date, sort by EV (highest first)
+                // Primary: time ascending (upcoming first)
+                const tA = (a.datetime || 0).getTime();
+                const tB = (b.datetime || 0).getTime();
+                if (tA !== tB) return tA - tB;
+                // Secondary: EV descending
                 return parseFloat(b.ev) - parseFloat(a.ev);
             })
             .slice(0, 10); // Show only top 10 on overview
@@ -920,23 +932,23 @@ class ParlayKing {
     }
 
     formatDate(date) {
-        if (date instanceof Date) {
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        }
-        const d = this.parseDateTimeSafe(date);
+        const d = date instanceof Date ? date : this.parseDateTimeSafe(date);
         if (!d) return '--';
-        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'Asia/Singapore' }).format(d);
     }
 
     formatDateTime(value) {
         const date = value instanceof Date ? value : this.parseDateTimeSafe(value);
         if (!date) return '--';
-        return date.toLocaleDateString('en-US', { 
-            month: 'short', 
+        // Always display in GMT+8
+        return new Intl.DateTimeFormat('en-US', {
+            month: 'short',
             day: 'numeric',
             hour: '2-digit',
-            minute: '2-digit'
-        });
+            minute: '2-digit',
+            hour12: true,
+            timeZone: 'Asia/Singapore'
+        }).format(date);
     }
 
     formatTimeAgo(dateStr) {
