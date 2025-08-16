@@ -123,6 +123,9 @@ jobs:
           [ -f favicon.svg ] && cp favicon.svg site/ || true
           [ -f site/favicon.svg ] && cp site/favicon.svg site/ || true
           [ -f site/preview-image.svg ] && cp site/preview-image.svg site/ || true
+          # Ensure hero background images are in place (they should already be in site/)
+          [ -f site/parlayking-social-preview.png ] && echo "✅ Social preview found" || echo "❌ Social preview missing"
+          [ -f site/hero-stadium-background.png ] && echo "✅ Hero background found" || echo "❌ Hero background missing"
           # Verify dashboard files were copied successfully
           if [ -f site/index.html ] && [ -f site/styles.css ] && [ -f site/app.js ]; then
             echo "✅ ParlayKing dashboard files copied successfully"

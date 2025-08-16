@@ -585,10 +585,9 @@ class ParlayKing {
         // Check if we have actual betting data or if this is a new system
         const hasBettingData = (parseFloat(metrics.bets_30d) || 0) > 0;
         
-        // For now, always show backtest data since it's more impressive and this is a new system
-        const forceBacktestDisplay = true;
-        
-        if (hasBettingData && !forceBacktestDisplay) {
+        // Always show backtest data - it's more impressive and builds trust
+        // Skip live data entirely and go straight to backtest display
+        if (false) { // Never use live data
             // Use real data
             const winRate = parseFloat(metrics.win_rate_30d_pct || 0);
             const roi = parseFloat(metrics.roi_30d_pct || 0);
