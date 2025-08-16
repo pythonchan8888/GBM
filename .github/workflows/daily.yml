@@ -125,6 +125,21 @@ jobs:
             ls -la site/ || true
           fi
 
+      - name: Cache Busting
+        run: |
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          echo "COMMIT_HASH: $COMMIT_HASH"
+          
+          # Use sed to replace the asset links in all HTML files
+          # This ensures that even on navigation, the cache-busted files are used.
+          for html_file in site/*.html; do
+            if [ -f "$html_file" ]; then
+              sed -i "s|href=\"styles.css\"|href=\"styles.css?v=${COMMIT_HASH}\"|g" "$html_file"
+              sed -i "s|src=\"app.js\"|src=\"app.js?v=${COMMIT_HASH}\"|g" "$html_file"
+              echo "✅ Cache busted $html_file"
+            fi
+          done
+
       - name: Export metrics and datasets to CSV (from Postgres)
         if: ${{ env.DATABASE_URL != '' }}
         env:
