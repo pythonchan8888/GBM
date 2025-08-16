@@ -49,6 +49,15 @@ jobs:
           # Full run (no quick mode)
           python gbm_dc_ev_model.py
 
+      - name: Retry training if failed
+        if: failure()
+        env:
+          FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          echo "⚠️ Retrying weekly training pipeline..."
+          python gbm_dc_ev_model.py || echo "Training retry failed"
+
       - name: Commit artifacts
         if: success()
         run: |
@@ -59,4 +68,10 @@ jobs:
             git commit -m "chore(artifacts): update artifacts $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit"
             git push || echo "Skip push"
           fi
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "🚨 Weekly training workflow failed! Check the logs above for details."
+          echo "This may affect model performance - manual intervention may be required."
 

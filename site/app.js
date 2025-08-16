@@ -38,9 +38,18 @@ class ParlayKing {
         }
 
         try {
-            // Strong cache-busting for CSVs to avoid CDN/browser staleness
-            const url = `${filename}?t=${Date.now()}`;
-            let response = await fetch(url, { cache: 'no-store' });
+            // Enhanced caching with ETag support for better performance
+            const haveInMemory = this.cache.has(cacheKey);
+            const headers = useCache && haveInMemory
+                ? { 'If-None-Match': localStorage.getItem(`etag_${filename}`) || '' }
+                : {};
+
+            let response = await fetch(filename, { headers });
+
+            // If server returns 304 but we don't have an in-memory copy (cold load), refetch without ETag
+            if (response.status === 304 && !haveInMemory) {
+                response = await fetch(`${filename}?t=${Date.now()}`, { cache: 'no-store' });
+            }
 
             if (!response.ok) {
                 throw new Error(`Failed to load ${filename}: ${response.status}`);
@@ -53,8 +62,13 @@ class ParlayKing {
                 skipEmptyLines: true
             }).data;
 
-            // Cache the data
+            // Cache the data and store ETag for future requests
             this.cache.set(cacheKey, data);
+            const etag = response.headers.get('ETag');
+            if (etag) {
+                localStorage.setItem(`etag_${filename}`, etag);
+            }
+
             return data;
         } catch (error) {
             console.warn(`Failed to load ${filename}:`, error);
@@ -804,17 +818,32 @@ class ParlayKing {
         });
     }
 
-    // Debounced chart resize for mobile responsiveness
+    // Enhanced chart resize for mobile responsiveness
     setupChartResize() {
         let resizeTimeout;
-        window.addEventListener('resize', () => {
+        
+        const handleResize = () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 if (this.data.bankrollSeries && this.data.bankrollSeries.length > 0) {
                     this.updateChart();
                 }
+                // Also update analytics charts if on analytics page
+                if (window.location.pathname.includes('analytics.html')) {
+                    this.renderROIHeatmap();
+                    this.renderPnLChart();
+                }
             }, 150); // 150ms debounce
-        });
+        };
+
+        // Listen to multiple resize events for better mobile support
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('orientationchange', handleResize);
+        
+        // Additional mobile-specific handling
+        if ('screen' in window && 'orientation' in window.screen) {
+            window.screen.orientation.addEventListener('change', handleResize);
+        }
     }
 
     // Recommendations Table
@@ -822,7 +851,7 @@ class ParlayKing {
         const tbody = document.getElementById('recommendations-tbody');
         if (!tbody) return;
         
-        // Get filtered and sorted recommendations (latest first, then highest EV)
+        // Get filtered and sorted recommendations (upcoming first, then highest EV)
         const filteredRecs = this.getFilteredRecommendations()
             .sort((a, b) => {
                 // Primary: time ascending (upcoming first)

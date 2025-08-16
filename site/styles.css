@@ -7,7 +7,7 @@
   --border: #30363D;
   --text: #F0F6FC;
   --muted: #7D8590;
-  --primary: #FF7B00;
+  --primary: #fffbf7;
   --cta: #0969DA;
   --positive: #238636;
   --negative: #DA3633;
@@ -15,7 +15,7 @@
   
   /* Subtle Gradients */
   --gradient-bg: linear-gradient(180deg, #0F1419 0%, #1C2128 100%);
-  --gradient-primary: linear-gradient(135deg, #FF7B00 0%, #FF9500 100%);
+  --gradient-primary: linear-gradient(135deg, #fffbf7 0%, #E0E0E0 100%);
   --gradient-secondary: linear-gradient(135deg, #0969DA 0%, #218BFF 100%);
   --gradient-panel: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
   
@@ -80,6 +80,23 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hero Background */
+.hero-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('hero-stadium-background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  opacity: 0.3;
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* Navigation */
@@ -1027,12 +1044,27 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  /* Navigation improvements */
   .nav-content {
     flex-direction: column;
     gap: var(--space-lg);
     padding: var(--space-lg);
   }
   
+  .nav-tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-sm);
+  }
+  
+  .nav-tab {
+    min-width: 100px;
+    text-align: center;
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-sm);
+  }
+  
+  /* Filter bar improvements */
   .filter-content {
     flex-direction: column;
     align-items: stretch;
@@ -1043,32 +1075,165 @@ body {
     min-width: auto;
   }
   
+  .filter-select,
+  .filter-input {
+    font-size: 16px; /* Prevent zoom on iOS */
+    min-height: 44px; /* Touch-friendly */
+  }
+  
+  /* Main content improvements */
   .main-container {
     padding: var(--space-lg);
   }
   
   .kpi-grid {
     grid-template-columns: 1fr;
+    gap: var(--space-md);
   }
   
+  .kpi-value {
+    font-size: var(--font-size-2xl); /* Slightly smaller on mobile */
+  }
+  
+  /* Chart improvements */
   .chart-header {
     flex-direction: column;
     align-items: stretch;
+    gap: var(--space-md);
   }
   
   .chart-controls {
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
   }
   
+  .chart-container {
+    overflow-x: auto; /* Allow horizontal scroll if needed */
+    max-width: 100%;
+    height: 300px; /* Smaller on mobile */
+  }
+  
+  .toggle-group {
+    flex-wrap: wrap;
+  }
+  
+  .toggle-btn,
+  .range-btn {
+    font-size: var(--font-size-xs);
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 32px;
+  }
+  
+  /* Table improvements */
+  .table-container {
+    overflow-x: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  }
+  
+  .recommendations-table {
+    min-width: 600px; /* Ensure table doesn't break */
+  }
+  
+  .recommendations-table th,
+  .recommendations-table td {
+    font-size: var(--font-size-xs);
+    padding: var(--space-sm);
+    white-space: nowrap;
+  }
+  
+  /* Recommendations header */
   .recommendations-header {
     flex-direction: column;
     gap: var(--space-lg);
     align-items: stretch;
   }
   
+  .recommendations-actions {
+    justify-content: stretch;
+    gap: var(--space-sm);
+  }
+  
+  .action-btn {
+    flex: 1;
+    justify-content: center;
+    min-height: 44px; /* Touch-friendly */
+  }
+  
+  /* Parlay improvements */
+  .parlay-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+  
+  .parlay-stats {
+    flex-direction: column;
+    gap: var(--space-md);
+    text-align: center;
+  }
+  
+  /* Footer improvements */
   .footer-content {
     flex-direction: column;
     text-align: center;
+    gap: var(--space-md);
+  }
+  
+  .footer-links {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+  
+  /* Hero background mobile optimization */
+  .hero-background {
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll; /* Better performance on mobile */
+    min-height: 100vh;
+  }
+  
+  /* Loading overlay improvements */
+  .loading-overlay {
+    padding: var(--space-xl);
+  }
+  
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Extra small devices (phones in landscape, less than 576px) */
+@media (max-width: 576px) {
+  .main-container {
+    padding: var(--space-md);
+  }
+  
+  .kpi-grid {
+    gap: var(--space-sm);
+  }
+  
+  .chart-container {
+    height: 250px;
+  }
+  
+  .parlay-wins-header {
+    padding: var(--space-md);
+  }
+  
+  .parlay-grid {
+    padding: var(--space-md);
+  }
+  
+  .recommendations-table th,
+  .recommendations-table td {
+    padding: var(--space-xs);
+  }
+  
+  .brand-title {
+    font-size: var(--font-size-xl);
   }
 }
 

@@ -92,6 +92,15 @@ jobs:
         run: |
           python gbm_dc_ev_model.py
 
+      - name: Retry prediction if failed
+        if: failure()
+        env:
+            FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
+            DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          echo "⚠️ Retrying prediction pipeline..."
+          python gbm_dc_ev_model.py || echo "Retry also failed, continuing with deployment"
+
       - name: Settle open bets (update P&L)
         if: ${{ env.DATABASE_URL != '' }}
         env:
@@ -136,7 +145,7 @@ jobs:
           echo "Listing site/ contents:"
           ls -la site/ || true
 
-      - name: Cache Busting
+      - name: Enhanced Cache Busting
         run: |
           COMMIT_HASH=$(git rev-parse --short HEAD)
           echo "COMMIT_HASH: $COMMIT_HASH"
@@ -154,6 +163,14 @@ jobs:
               echo "✅ Cache busted $html_file"
             fi
           done
+          
+          # Enhanced: Bust cache for images in CSS files
+          if [ -f "site/styles.css" ]; then
+            sed -i "s|url('hero-stadium-background\.png')|url('hero-stadium-background.png?v=${COMMIT_HASH}')|g" site/styles.css
+            sed -i "s|url('parlayking-social-preview\.png')|url('parlayking-social-preview.png?v=${COMMIT_HASH}')|g" site/styles.css
+            sed -i "s|url('favicon\.svg')|url('favicon.svg?v=${COMMIT_HASH}')|g" site/styles.css
+            echo "✅ Cache busted images in CSS"
+          fi
 
       - name: Export metrics and datasets to CSV (from Postgres)
         if: ${{ env.DATABASE_URL != '' }}
@@ -416,4 +433,10 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         continue-on-error: true
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "🚨 Daily workflow failed! Check the logs above for details."
+          echo "Common issues: API rate limits, database connection, or CSV parsing errors."
 
