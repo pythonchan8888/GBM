@@ -140,12 +140,16 @@ jobs:
           COMMIT_HASH=$(git rev-parse --short HEAD)
           echo "COMMIT_HASH: $COMMIT_HASH"
           
-          # Use sed to replace the asset links in all HTML files
-          # This ensures that even on navigation, the cache-busted files are used.
+          # Use sed to replace the asset links in all HTML files (idempotent)
+          # Remove any existing version params first, then add new ones
           for html_file in site/*.html; do
             if [ -f "$html_file" ]; then
-              sed -i "s|href=\"styles.css\"|href=\"styles.css?v=${COMMIT_HASH}\"|g" "$html_file"
-              sed -i "s|src=\"app.js\"|src=\"app.js?v=${COMMIT_HASH}\"|g" "$html_file"
+              # Remove existing version parameters first
+              sed -i "s|href=\"styles\.css[^\"]*\"|href=\"styles.css\"|g" "$html_file"
+              sed -i "s|src=\"app\.js[^\"]*\"|src=\"app.js\"|g" "$html_file"
+              # Add new version parameters
+              sed -i "s|href=\"styles\.css\"|href=\"styles.css?v=${COMMIT_HASH}\"|g" "$html_file"
+              sed -i "s|src=\"app\.js\"|src=\"app.js?v=${COMMIT_HASH}\"|g" "$html_file"
               echo "✅ Cache busted $html_file"
             fi
           done
