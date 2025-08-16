@@ -14,6 +14,8 @@ class ParlayKing {
             parlayWins: []
         };
         this.filters = this.getFiltersFromURL();
+        // Version used for cache-busting CSV requests; prefer build-provided, else timestamp
+        this.version = (window.__PK_VERSION || Date.now());
         
         this.init();
     }
@@ -36,18 +38,9 @@ class ParlayKing {
         }
 
         try {
-            // Only send If-None-Match when we actually have an in-memory cache entry
-            const haveInMemory = this.cache.has(cacheKey);
-            const headers = useCache && haveInMemory
-                ? { 'If-None-Match': localStorage.getItem(`etag_${filename}`) || '' }
-                : {};
-
-            let response = await fetch(filename, { headers });
-
-            // If server returns 304 but we don't have an in-memory copy (cold load), refetch without ETag
-            if (response.status === 304 && !haveInMemory) {
-                response = await fetch(`${filename}?t=${Date.now()}`, { cache: 'no-store' });
-            }
+            // Always append a version to break CDN/browser caches after deploys
+            const url = `${filename}?v=${this.version}`;
+            let response = await fetch(url, { cache: 'no-store' });
 
             if (!response.ok) {
                 throw new Error(`Failed to load ${filename}: ${response.status}`);
@@ -62,13 +55,6 @@ class ParlayKing {
 
             // Cache the data
             this.cache.set(cacheKey, data);
-            
-            // Store ETag for future requests
-            const etag = response.headers.get('ETag');
-            if (etag) {
-                localStorage.setItem(`etag_${filename}`, etag);
-            }
-
             return data;
         } catch (error) {
             console.warn(`Failed to load ${filename}:`, error);
@@ -124,13 +110,36 @@ class ParlayKing {
         return metrics;
     }
 
+    // Robust date-time parsing for strings like "YYYY-MM-DD HH:MM:SS"
+    parseDateTimeSafe(value) {
+        if (!value) return null;
+        if (value instanceof Date) return isNaN(value) ? null : value;
+        try {
+            // Try ISO without timezone
+            let iso = String(value).replace(' ', 'T');
+            let d = new Date(iso);
+            if (!isNaN(d)) return d;
+            // Try ISO with Z (UTC)
+            d = new Date(iso + 'Z');
+            if (!isNaN(d)) return d;
+            // Manual parse fallback
+            const [datePart, timePart] = String(value).split(' ');
+            const [y, m, d2] = datePart.split('-').map(Number);
+            const [hh = 0, mm = 0, ss = 0] = (timePart || '').split(':').map(Number);
+            const local = new Date(y, (m || 1) - 1, d2 || 1, hh, mm, ss);
+            return isNaN(local) ? null : local;
+        } catch (_) {
+            return null;
+        }
+    }
+
     parseBankrollSeries(rawSeries) {
         if (!Array.isArray(rawSeries)) return [];
         
         return rawSeries
-            .filter(row => row && row.dt_gmt8 && row.cum_bankroll !== null && row.cum_bankroll !== undefined)
+            .filter(row => row && row.dt_gmt8 && row.cum_bankroll !== undefined)
             .map(row => ({
-                date: new Date(row.dt_gmt8),
+                date: this.parseDateTimeSafe(row.dt_gmt8),
                 bankroll: parseFloat(row.cum_bankroll) || 0
             }))
             .sort((a, b) => a.date - b.date);
@@ -141,17 +150,20 @@ class ParlayKing {
         
         return rawRecs
             .filter(row => row && row.dt_gmt8 && row.home && row.away)
-            .map(row => ({
-                datetime: new Date(row.dt_gmt8),
-                league: row.league || '',
-                home: row.home,
-                away: row.away,
-                recommendation: row.rec_text || '',
-                line: parseFloat(row.line) || 0,
-                odds: parseFloat(row.odds) || 0,
-                ev: parseFloat(row.ev) || 0, // Already formatted as decimal from backend
-                confidence: row.confidence || 'Medium'
-            }))
+            .map(row => {
+                const dt = this.parseDateTimeSafe(row.dt_gmt8);
+                return {
+                    datetime: dt || new Date(),
+                    league: row.league || '',
+                    home: row.home,
+                    away: row.away,
+                    recommendation: row.rec_text || row.recommendation || '',
+                    line: parseFloat(row.line) || 0,
+                    odds: parseFloat(row.odds) || 0,
+                    ev: parseFloat(row.ev) || 0, // Already decimal from backend
+                    confidence: row.confidence || 'Medium'
+                };
+            })
             .sort((a, b) => b.datetime - a.datetime);
     }
 
@@ -159,21 +171,23 @@ class ParlayKing {
         if (!Array.isArray(rawBets)) return [];
         
         return rawBets
-            .filter(row => row && row.dt_gmt8 && row.status === 'settled')
+            .filter(row => row && row.home && row.away)
             .map(row => ({
-                datetime: new Date(row.dt_gmt8),
+                fixture_id: row.fixture_id,
                 league: row.league || '',
-                home: row.home || '',
-                away: row.away || '',
-                recommendation: row.bet_type_refined_ah || `AH ${row.line_betted_on_refined || ''}`,
-                line: parseFloat(row.line_betted_on_refined) || 0,
-                odds: parseFloat(row.odds_betted_on_refined) || 0,
-                stake: parseFloat(row.stake) || 0,
-                pl: parseFloat(row.pl) || 0,
-                isWin: parseFloat(row.pl) > 0,
-                confidence: 'High'
+                home: row.home,
+                away: row.away,
+                home_score: parseInt(row.home_score || 0),
+                away_score: parseInt(row.away_score || 0),
+                bet_type: row.bet_type_refined_ah || row.bet_type || '',
+                line: parseFloat(row.line_betted_on_refined || row.line || 0),
+                odds: parseFloat(row.odds_betted_on_refined || row.odds || 0),
+                stake: parseFloat(row.stake || 0),
+                pl: parseFloat(row.pl || 0),
+                status: row.status || '',
+                datetime: this.parseDateTimeSafe(row.dt_gmt8)
             }))
-            .sort((a, b) => b.datetime - a.datetime);
+            .sort((a, b) => (b.datetime || 0) - (a.datetime || 0));
     }
 
     // Parlay Wins Calculation
@@ -564,17 +578,12 @@ class ParlayKing {
     }
 
     updateKPIs() {
-        if (!this.data || !this.data.metrics) {
-            console.warn('Data not loaded yet, showing default values');
-            return;
-        }
+        if (!this.data) return; // Do not early-return on missing metrics
         
-        const metrics = this.data.metrics;
-        console.log('Metrics data:', metrics); // Debug logging
+        const metrics = this.data.metrics || {};
         
         // Check if we have actual betting data or if this is a new system
         const hasBettingData = (parseFloat(metrics.bets_30d) || 0) > 0;
-        console.log('Has betting data:', hasBettingData, 'bets_30d:', metrics.bets_30d); // Debug logging
         
         // For now, always show backtest data since it's more impressive and this is a new system
         const forceBacktestDisplay = true;
@@ -583,7 +592,7 @@ class ParlayKing {
             // Use real data
             const winRate = parseFloat(metrics.win_rate_30d_pct || 0);
             const roi = parseFloat(metrics.roi_30d_pct || 0);
-        const nonLosingRate = parseFloat(metrics.non_losing_rate_30d_pct || 0);
+            const nonLosingRate = parseFloat(metrics.non_losing_rate_30d_pct || 0);
             const totalBets = parseInt(metrics.bets_30d || 0);
             
             const winRateEl = document.getElementById('win-rate');
@@ -599,34 +608,22 @@ class ParlayKing {
             if (totalBetsEl) totalBetsEl.textContent = this.formatNumber(totalBets);
         } else {
             // Show actual backtest performance from AUTOMATED REFINED AH results
-            const backtestROI = 23.81; // Actual ROI from AUTOMATED REFINED AH Backtest
-            const backtestWinRate = 64.91; // Actual win rate from backtest (bets with positive profit)
-            const backtestNonLosingRate = 68.15; // Actual non-losing rate from backtest
+            const backtestROI = 23.81; // ROI from backtest
+            const backtestWinRate = 64.91; // Win rate from backtest
+            const backtestNonLosingRate = 68.15; // Non-losing rate from backtest
             const recommendationsCount = this.data.recommendations?.length || 0;
             
             const winRateEl = document.getElementById('win-rate');
-            if (winRateEl) {
-                winRateEl.textContent = `${backtestWinRate.toFixed(1)}%`;
-                console.log('Updated win rate:', winRateEl.textContent);
-            }
+            if (winRateEl) winRateEl.textContent = `${backtestWinRate.toFixed(1)}%`;
             
             const roiEl = document.getElementById('roi-performance');
-            if (roiEl) {
-                roiEl.textContent = `+${backtestROI.toFixed(1)}%`;
-                console.log('Updated ROI:', roiEl.textContent);
-            }
+            if (roiEl) roiEl.textContent = `+${backtestROI.toFixed(1)}%`;
             
             const nonLosingEl = document.getElementById('non-losing-rate');
-            if (nonLosingEl) {
-                nonLosingEl.textContent = `${backtestNonLosingRate.toFixed(1)}%`;
-                console.log('Updated non-losing rate:', nonLosingEl.textContent);
-            }
+            if (nonLosingEl) nonLosingEl.textContent = `${backtestNonLosingRate.toFixed(1)}%`;
 
             const totalBetsEl = document.getElementById('total-bets');
-            if (totalBetsEl) {
-                totalBetsEl.textContent = this.formatNumber(recommendationsCount);
-                console.log('Updated total bets:', totalBetsEl.textContent);
-            }
+            if (totalBetsEl) totalBetsEl.textContent = this.formatNumber(recommendationsCount);
             
             // Update labels to reflect this is model performance
             const winRateLabel = document.querySelector('#win-rate').parentElement?.querySelector('.kpi-subtitle');
@@ -641,7 +638,7 @@ class ParlayKing {
             const betsLabel = document.querySelector('#total-bets').parentElement?.querySelector('.kpi-subtitle');
             if (betsLabel) betsLabel.textContent = 'active recommendations';
         }
-        
+
         // Update trend indicators with appropriate values
         const displayWinRate = hasBettingData ? parseFloat(metrics.win_rate_30d_pct || 0) : 64.91;
         const displayROI = hasBettingData ? parseFloat(metrics.roi_30d_pct || 0) : 23.81;
@@ -650,7 +647,7 @@ class ParlayKing {
         this.updateMarketingTrend('win-rate-trend', displayWinRate, 'win');
         this.updateMarketingTrend('roi-trend', displayROI, 'roi');
         this.updateMarketingTrend('non-losing-trend', displayNonLosing, 'nonlosing');
-        this.updateTrendIndicator('bets-trend', metrics.bets_30d || 0);
+        this.updateTrendIndicator('bets-trend', (this.data.metrics && this.data.metrics.bets_30d) || 0);
     }
 
     updateMarketingTrend(elementId, value, type) {
@@ -924,12 +921,17 @@ class ParlayKing {
     }
 
     formatDate(date) {
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        if (date instanceof Date) {
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        const d = this.parseDateTimeSafe(date);
+        if (!d) return '--';
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
 
-    formatDateTime(dateStr) {
-        if (!dateStr) return '--';
-        const date = new Date(dateStr);
+    formatDateTime(value) {
+        const date = value instanceof Date ? value : this.parseDateTimeSafe(value);
+        if (!date) return '--';
         return date.toLocaleDateString('en-US', { 
             month: 'short', 
             day: 'numeric',
