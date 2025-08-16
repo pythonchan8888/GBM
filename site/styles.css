@@ -7,7 +7,7 @@
   --border: #30363D;
   --text: #F0F6FC;
   --muted: #7D8590;
-  --primary: #fffbf7;
+  --primary: #FF7A45; /* Neutral modern orange for accents */
   --cta: #0969DA;
   --positive: #238636;
   --negative: #DA3633;
@@ -15,7 +15,7 @@
   
   /* Subtle Gradients */
   --gradient-bg: linear-gradient(180deg, #0F1419 0%, #1C2128 100%);
-  --gradient-primary: linear-gradient(135deg, #fffbf7 0%, #E0E0E0 100%);
+  --gradient-primary: linear-gradient(135deg, #FF7A45 0%, #FFA866 100%); /* Orange gradient for general use */
   --gradient-secondary: linear-gradient(135deg, #0969DA 0%, #218BFF 100%);
   --gradient-panel: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
   
@@ -128,7 +128,7 @@ body {
 .brand-title {
   font-size: var(--font-size-2xl);
   font-weight: 700;
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, #F5F5F5 0%, #E0E0E0 100%); /* Soft white gradient specifically for logo */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -158,12 +158,12 @@ body {
 
 .nav-tab:hover {
   color: var(--text);
-  background: rgba(255, 140, 66, 0.1);
+  background: rgba(255, 140, 66, 0.1); /* Subtle orange hover */
 }
 
 .nav-tab.active {
-  color: var(--text);
-  background: var(--gradient-primary);
+  color: #0F1419; /* Dark text for contrast on active */
+  background: #FFFFFF; /* White background for active tab */
   box-shadow: var(--shadow-sm);
 }
 
@@ -1258,4 +1258,141 @@ body {
 .action-btn:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.3);
+}
+
+/* Card View Styles */
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+}
+
+.rec-card {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  transition: all var(--duration) var(--transition);
+}
+
+.rec-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.card-date {
+  font-size: var(--font-size-sm);
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.card-match {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.card-league {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--muted);
+}
+
+.card-recommendation {
+  margin: 0;
+  font-size: var(--font-size-base);
+  color: var(--text);
+  font-weight: 500;
+}
+
+.card-odds {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border);
+}
+
+.card-odds .ev {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+/* View Toggle Styles */
+.view-toggle-section {
+  margin-bottom: var(--space-lg);
+}
+
+.view-toggle {
+  display: flex;
+  gap: var(--space-sm);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-xs);
+}
+
+.view-btn {
+  padding: var(--space-sm) var(--space-md);
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--duration) var(--transition);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.view-btn:hover {
+  color: var(--text);
+  background: rgba(255, 140, 66, 0.1);
+}
+
+.view-btn.active {
+  color: #0F1419;
+  background: #FFFFFF;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Mobile card adjustments */
+@media (max-width: 768px) {
+  .recommendations-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    padding: var(--space-md);
+  }
+  
+  .rec-card {
+    padding: var(--space-md);
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+  }
+  
+  .card-odds {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+  }
 }

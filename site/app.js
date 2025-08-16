@@ -181,20 +181,30 @@ class ParlayKing {
         return rawRecs
             .filter(row => row && row.dt_gmt8 && row.home && row.away)
             .map(row => {
-                const dt = this.parseGmt8(row.dt_gmt8);
+                const dt = this.parseGmt8(row.dt_gmt8) || this.parseDateTimeSafe(row.dt_gmt8);
+                if (!dt) {
+                    console.warn(`Invalid date for recommendation: ${row.dt_gmt8}`);
+                    return null; // Skip invalid dates
+                }
                 return {
-                    datetime: dt || new Date(),
+                    datetime: dt,
                     league: row.league || '',
                     home: row.home,
                     away: row.away,
                     recommendation: row.rec_text || row.recommendation || '',
                     line: parseFloat(row.line) || 0,
                     odds: parseFloat(row.odds) || 0,
-                    ev: parseFloat(row.ev) || 0, // Already decimal from backend
+                    ev: parseFloat(row.ev) || 0,
                     confidence: row.confidence || 'Medium'
                 };
             })
-            .sort((a, b) => a.datetime - b.datetime); // soonest first
+            .filter(Boolean) // Remove null entries
+            .sort((a, b) => {
+                // Primary: time ascending (closest first)
+                const result = a.datetime - b.datetime;
+                console.log(`Sorting: ${a.home} vs ${a.away} (${a.datetime}) vs ${b.home} vs ${b.away} (${b.datetime}) = ${result}`);
+                return result;
+            });
     }
 
     parseSettledBets(rawBets) {
@@ -1255,12 +1265,78 @@ class ParlayKing {
         tbody.appendChild(footerRow);
     }
 
+    // New: Render card view
+    renderRecommendationsCards() {
+        const grid = document.getElementById('recommendations-cards');
+        if (!grid || !this.data.recommendations) return;
+        
+        grid.innerHTML = '';
+        
+        // Sort recommendations the same way as table (closest first, then highest EV)
+        const sortedRecs = [...this.data.recommendations].sort((a, b) => {
+            if (a.datetime.getTime() !== b.datetime.getTime()) {
+                return a.datetime - b.datetime;
+            }
+            return parseFloat(b.ev) - parseFloat(a.ev);
+        });
+        
+        sortedRecs.forEach(rec => {
+            const card = document.createElement('div');
+            card.className = 'rec-card';
+            card.innerHTML = `
+                <div class="card-header">
+                    <span class="card-date">${this.formatDateTime(rec.datetime)}</span>
+                    <span class="confidence-badge ${rec.confidence.toLowerCase()}">${rec.confidence}</span>
+                </div>
+                <h3 class="card-match">${rec.home} vs ${rec.away}</h3>
+                <p class="card-league">League: ${rec.league}</p>
+                <p class="card-recommendation">Bet: ${rec.recommendation}</p>
+                <div class="card-odds">
+                    <span>Odds: ${parseFloat(rec.odds).toFixed(2)}</span>
+                    <span class="ev ${rec.ev > 0 ? 'positive' : 'negative'}">
+                        EV: ${rec.ev >= 0 ? '+' : ''}${(parseFloat(rec.ev) * 100).toFixed(1)}%
+                    </span>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    // New: Initialize view toggle buttons
+    initViewToggle() {
+        const tableBtn = document.querySelector('[data-view="table"]');
+        const cardsBtn = document.querySelector('[data-view="cards"]');
+        const tableSection = document.getElementById('table-view');
+        const cardsSection = document.getElementById('cards-view');
+        
+        if (!tableBtn || !cardsBtn || !tableSection || !cardsSection) {
+            console.warn('View toggle elements not found');
+            return;
+        }
+        
+        tableBtn.addEventListener('click', () => {
+            tableBtn.classList.add('active');
+            cardsBtn.classList.remove('active');
+            tableSection.classList.remove('hidden');
+            cardsSection.classList.add('hidden');
+        });
+        
+        cardsBtn.addEventListener('click', () => {
+            cardsBtn.classList.add('active');
+            tableBtn.classList.remove('active');
+            cardsSection.classList.remove('hidden');
+            tableSection.classList.add('hidden');
+        });
+    }
+
     // Recommendations Page Methods
     initRecommendationsPage() {
         this.showLoading(true);
         this.loadAllData().then(() => {
             this.renderRecommendationsTable();
+            this.renderRecommendationsCards(); // New: Render card view
             this.initRecommendationsFilters();
+            this.initViewToggle(); // New: Initialize view toggle
             this.showLoading(false);
         }).catch(error => {
             console.error('Failed to load recommendations data:', error);
@@ -1275,14 +1351,11 @@ class ParlayKing {
         
         tbody.innerHTML = '';
         
-        // Sort recommendations by datetime (newest first), then by EV (highest first)
+        // Sort recommendations by datetime (closest first), then by EV (highest first)
         const sortedRecommendations = [...this.data.recommendations].sort((a, b) => {
-            const dateA = new Date(a.datetime || a.dt_gmt8);
-            const dateB = new Date(b.datetime || b.dt_gmt8);
-            
-            // First sort by date (newest first)
-            if (dateA.getTime() !== dateB.getTime()) {
-                return dateB - dateA;
+            // First sort by date (closest/upcoming first)
+            if (a.datetime.getTime() !== b.datetime.getTime()) {
+                return a.datetime - b.datetime;
             }
             
             // If same date, sort by EV (highest first)
