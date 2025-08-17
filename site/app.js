@@ -30,6 +30,14 @@ class ParlayKing {
 
     // Data Loading with Caching
     async loadCSV(filename, useCache = true) {
+        if (!window.Papa) {
+            await new Promise(resolve => {
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/papaparse@5.4.1/papaparse.min.js';
+                script.onload = resolve;
+                document.head.appendChild(script);
+            });
+        }
         const cacheKey = `csv_${filename}`;
         
         // If we already have it in-memory, prefer that immediately
@@ -105,6 +113,10 @@ class ParlayKing {
 
             // Populate filter options
             this.populateFilterOptions();
+
+            document.querySelectorAll('.lazy-load').forEach(el => {
+                el.classList.add('loaded'); // Trigger fade-in after load
+            });
 
         } catch (error) {
             console.error('Failed to load data:', error);
@@ -791,7 +803,7 @@ class ParlayKing {
     }
 
     // Chart Management
-    updateChart() {
+    updateChart(options = {}) {
         const activeMode = document.querySelector('.toggle-btn.active')?.dataset.mode || 'bankroll';
         const activeRange = document.querySelector('.range-btn.active')?.dataset.range || '30';
         
@@ -836,11 +848,14 @@ class ParlayKing {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 if (this.data.bankrollSeries && this.data.bankrollSeries.length > 0) {
-                    this.updateChart();
+                    const isMobile = window.innerWidth <= 768;
+                    this.updateChart({ simplified: isMobile }); // Pass mobile flag for simplified view
                 }
                 // Also update analytics charts if on analytics page
-                if (window.location.pathname.includes('analytics.html')) {
+                if (document.getElementById('roi-heatmap')) {
                     this.renderROIHeatmap();
+                }
+                if (document.getElementById('pnl-chart')) {
                     this.renderPnLChart();
                 }
             }, 150); // 150ms debounce
@@ -1365,17 +1380,17 @@ class ParlayKing {
         sortedRecommendations.forEach(rec => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${this.formatDateTime(rec.datetime || rec.dt_gmt8)}</td>
-                <td><strong>${rec.home}</strong> vs <strong>${rec.away}</strong></td>
-                <td>${rec.league}</td>
-                <td>${rec.recommendation || rec.rec_text || 'N/A'}</td>
-                <td>${parseFloat(rec.odds).toFixed(2)}</td>
-                <td class="${rec.ev > 0 ? 'positive' : 'negative'}">${rec.ev >= 0 ? '+' : ''}${(parseFloat(rec.ev) * 100).toFixed(1)}%</td>
-                <td>
+                <td data-label="Time">${this.formatDateTime(rec.datetime || rec.dt_gmt8)}</td>
+                <td data-label="Match"><strong>${rec.home}</strong> vs <strong>${rec.away}</strong></td>
+                <td data-label="League">${rec.league}</td>
+                <td data-label="Recommendation">${rec.recommendation || rec.rec_text || 'N/A'}</td>
+                <td data-label="Odds">${parseFloat(rec.odds).toFixed(2)}</td>
+                <td data-label="EV" class="${rec.ev > 0 ? 'positive' : 'negative'}">${rec.ev >= 0 ? '+' : ''}${(parseFloat(rec.ev) * 100).toFixed(1)}%</td>
+                <td data-label="Confidence">
                     <span class="confidence-badge ${rec.confidence.toLowerCase()}">${rec.confidence}</span>
                 </td>
-                <td>
-                    <button class="action-btn-sm">Copy</button>
+                <td data-label="Actions">
+                    <button class="action-btn-sm share-btn" onclick="parlayKing.shareRec('${rec.home} vs ${rec.away}', '${rec.recommendation}')">Share</button>
                 </td>
             `;
             tbody.appendChild(row);
@@ -1383,8 +1398,49 @@ class ParlayKing {
     }
 
     initRecommendationsFilters() {
-        // Add filter event listeners here
-        console.log('Recommendations filters initialized');
+        const debounce = (func, delay) => {
+            let timeout;
+            return (...args) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func(...args), delay);
+            };
+        };
+
+        const handleFilterChange = debounce(() => {
+            this.renderRecommendationsTable();
+            this.renderRecommendationsCards();
+        }, 300); // 300ms debounce for mobile typing/tapping
+
+        // Add listeners with debounce
+        document.getElementById('date-range-recs').addEventListener('change', handleFilterChange);
+        document.getElementById('league-filter-recs').addEventListener('change', handleFilterChange);
+        document.getElementById('min-ev-recs').addEventListener('input', handleFilterChange);
+        document.getElementById('confidence-filter-recs').addEventListener('change', handleFilterChange);
+        document.getElementById('reset-filters-recs').addEventListener('click', () => {
+            this.resetFilters();
+            handleFilterChange(); // Apply reset with debounce
+        });
+
+        // Restore from localStorage
+        const savedDate = localStorage.getItem('recDateRange');
+        if (savedDate) document.getElementById('date-range-recs').value = savedDate;
+        const savedLeague = localStorage.getItem('recLeagueFilter');
+        if (savedLeague) document.getElementById('league-filter-recs').value = savedLeague;
+        const savedMinEV = localStorage.getItem('recMinEVFilter');
+        if (savedMinEV) document.getElementById('min-ev-recs').value = savedMinEV;
+        const savedConfidence = localStorage.getItem('recConfidenceFilter');
+        if (savedConfidence) document.getElementById('confidence-filter-recs').value = savedConfidence;
+    }
+
+    // Share function
+    shareRec(match, rec) {
+        const url = `${window.location.origin}/recommendations.html#${encodeURIComponent(match)}`;
+        if (navigator.share) {
+            navigator.share({ title: match, text: rec, url }); // Native share
+        } else {
+            navigator.clipboard.writeText(url); // Fallback copy
+            alert('Link copied!');
+        }
     }
 }
 

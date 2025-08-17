@@ -172,6 +172,22 @@ jobs:
             echo "✅ Cache busted images in CSS"
           fi
 
+      - name: Minify Assets
+        run: |
+          npm install -g uglify-js clean-css-cli
+          uglifyjs site/app.js -c -m -o site/app.min.js
+          cleancss --level 2 -o site/styles.min.css site/styles.css
+          # Replace in HTML
+          sed -i 's/app.js/app.min.js/g' site/*.html
+          sed -i 's/styles.css/styles.min.css/g' site/*.html
+
+      - name: Optimize Images
+        run: |
+          npm install -g imagemin-cli imagemin-webp
+          imagemin site/hero-stadium-background.png --plugin=webp > site/hero-stadium-background.webp
+          # Update HTML to use WebP
+          sed -i 's/hero-stadium-background.png/hero-stadium-background.webp/g' site/*.html site/styles.css
+
       - name: Export metrics and datasets to CSV (from Postgres)
         if: ${{ env.DATABASE_URL != '' }}
         env:

@@ -22,7 +22,9 @@
     <!-- Open Graph Meta Tags for Social Media -->
     <meta property="og:title" content="Football Betting Analytics Dashboard - ParlayKing">
     <meta property="og:description" content="Track your betting performance with advanced analytics, ROI heatmaps, and comprehensive statistics dashboard.">
-    <meta property="og:image" content="https://www.parlayking.xyz/parlayking-social-preview.png">
+    <meta property="og:image" content="https://www.parlayking.xyz/parlayking-social-preview.png?v=1">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:secure_url" content="https://www.parlayking.xyz/parlayking-social-preview.png?v=1">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:url" content="https://www.parlayking.xyz/analytics.html">
@@ -99,7 +101,7 @@
     <main class="main-container">
         <!-- ROI Heatmap -->
         <section class="chart-section">
-            <div class="chart-card">
+            <div class="chart-card glass-panel">
                 <div class="chart-header">
                     <h3>ROI Heatmap (Tier × Asian Handicap Line)</h3>
                     <div class="chart-controls" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
@@ -117,7 +119,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="chart-container">
+                <div class="chart-container lazy-load">
                     <div id="roi-heatmap" class="heatmap-chart"></div>
                 </div>
             </div>
@@ -125,7 +127,7 @@
 
         <!-- P&L by Month -->
         <section class="chart-section">
-            <div class="chart-card">
+            <div class="chart-card glass-panel">
                 <div class="chart-header">
                     <h3>P&L by Month and League</h3>
                     <div class="chart-controls">
@@ -135,7 +137,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="chart-container">
+                <div class="chart-container lazy-load">
                     <div id="pnl-chart" class="custom-chart"></div>
                 </div>
             </div>
@@ -143,7 +145,7 @@
 
         <!-- Top Segments -->
         <section class="recommendations-section">
-            <div class="recommendations-card">
+            <div class="recommendations-card glass-panel">
                 <div class="recommendations-header" style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;">
                     <div style="display:flex;gap:12px;align-items:center;">
                         <h3>Top Performing Segments</h3>
