@@ -173,20 +173,49 @@ jobs:
           fi
 
       - name: Minify Assets
+        continue-on-error: true
         run: |
-          npm install -g uglify-js clean-css-cli
-          uglifyjs site/app.js -c -m -o site/app.min.js
-          cleancss --level 2 -o site/styles.min.css site/styles.css
-          # Replace in HTML
-          sed -i 's/app.js/app.min.js/g' site/*.html
-          sed -i 's/styles.css/styles.min.css/g' site/*.html
+          echo "Installing minification tools..."
+          npm install -g uglify-js clean-css-cli || echo "Warning: npm install failed, continuing..."
+          
+          echo "Minifying JavaScript..."
+          if command -v uglifyjs &> /dev/null; then
+            uglifyjs site/app.js -c -m -o site/app.min.js
+            sed -i 's/app.js/app.min.js/g' site/*.html
+            echo "✅ JavaScript minified successfully"
+          else
+            echo "⚠️  uglifyjs not available, copying original file"
+            cp site/app.js site/app.min.js
+          fi
+          
+          echo "Minifying CSS..."
+          if command -v cleancss &> /dev/null; then
+            cleancss -o site/styles.min.css site/styles.css
+            sed -i 's/styles.css/styles.min.css/g' site/*.html
+            echo "✅ CSS minified successfully"
+          else
+            echo "⚠️  cleancss not available, copying original file"
+            cp site/styles.css site/styles.min.css
+          fi
 
       - name: Optimize Images
+        continue-on-error: true
         run: |
-          npm install -g imagemin-cli imagemin-webp
-          imagemin site/hero-stadium-background.png --plugin=webp > site/hero-stadium-background.webp
-          # Update HTML to use WebP
-          sed -i 's/hero-stadium-background.png/hero-stadium-background.webp/g' site/*.html site/styles.css
+          echo "Installing image optimization tools..."
+          npm install -g imagemin-cli imagemin-webp || echo "Warning: imagemin install failed, continuing..."
+          
+          echo "Converting images to WebP..."
+          if [ -f "site/hero-stadium-background.png" ] && command -v imagemin &> /dev/null; then
+            imagemin site/hero-stadium-background.png --plugin=webp > site/hero-stadium-background.webp
+            if [ -f "site/hero-stadium-background.webp" ]; then
+              sed -i 's/hero-stadium-background\.png/hero-stadium-background.webp/g' site/*.html site/styles.css
+              echo "✅ Images optimized successfully"
+            else
+              echo "⚠️  WebP conversion failed, keeping original"
+            fi
+          else
+            echo "⚠️  Image optimization tools not available or PNG not found, skipping"
+          fi
 
       - name: Export metrics and datasets to CSV (from Postgres)
         if: ${{ env.DATABASE_URL != '' }}
