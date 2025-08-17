@@ -1200,6 +1200,42 @@ class ParlayKing {
         `;
     }
 
+    // Helper: seeded random for deterministic sparkline
+    seededRandom(seed) {
+        let h = 2166136261 >>> 0;
+        for (let i = 0; i < seed.length; i++) { h ^= seed.charCodeAt(i); h = Math.imul(h, 16777619); }
+        return () => { h += 0x6D2B79F5; let t = Math.imul(h ^ h >>> 15, 1 | h); t ^= t + Math.imul(t ^ t >>> 7, 61 | t); return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+    }
+
+    // Build sparkline SVG from ROI value
+    createSparklineFromRoi(roiPct, seedKey) {
+        const rnd = this.seededRandom(String(seedKey));
+        const width = 80, height = 24, padding = 2;
+        const points = Array.from({ length: 8 }, (_, i) => {
+            const base = 0.45 + (roiPct / 100) * 0.3; // scale with ROI
+            const noise = (rnd() - 0.5) * 0.2; // subtle jitter
+            return Math.max(0.1, Math.min(0.9, base + noise));
+        });
+        const step = (width - padding * 2) / (points.length - 1);
+        const coords = points.map((p, i) => [padding + i * step, height - padding - p * (height - padding * 2)]);
+        let path = `M ${coords[0][0]} ${coords[0][1]}`;
+        for (let i = 1; i < coords.length; i++) path += ` L ${coords[i][0]} ${coords[i][1]}`;
+        // Area under curve
+        const areaPath = `${path} L ${coords[coords.length - 1][0]} ${height - padding} L ${coords[0][0]} ${height - padding} Z`;
+        return `<svg class="spark-svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">
+      <path d="${areaPath}" class="spark-area"></path>
+      <path d="${path}" class="spark-line"></path>
+    </svg>`;
+    }
+
+    // Utility: classify ROI value
+    classForRoi(roi) {
+        if (roi >= 10) return 'excellent';
+        if (roi >= 3) return 'good';
+        return 'moderate';
+    }
+
+    // Override renderTopSegments with ROI highlighting and sparkline
     renderTopSegments() {
         const tbody = document.getElementById('segments-tbody');
         if (!tbody) return;
@@ -1208,7 +1244,6 @@ class ParlayKing {
         
         const tierFilter = parseInt(document.getElementById('segments-tier-select')?.value || '1', 10);
         if (!this.data.topSegments || this.data.topSegments.length === 0) {
-            // Show backtest top segments
             this.renderBacktestTopSegments(tbody, tierFilter);
             return;
         }
@@ -1216,29 +1251,30 @@ class ParlayKing {
         this.data.topSegments
             .filter(s => parseInt(s.tier) === tierFilter)
             .sort((a, b) => parseFloat(b.roi_pct) - parseFloat(a.roi_pct))
-            .slice(0, 10)
             .forEach(segment => {
-            const row = document.createElement('tr');
-            const roiValue = parseFloat(segment.roi_pct);
-            const lineValue = parseFloat(segment.line);
-            
-            row.innerHTML = `
-                <td>Tier ${segment.tier}</td>
-                <td>${lineValue > 0 ? '+' : ''}${lineValue.toFixed(2)}</td>
-                <td class="positive">${roiValue.toFixed(1)}%</td>
-                <td>${this.formatNumber(segment.n)}</td>
-                <td>
-                    <span class="performance-badge ${roiValue > 10 ? 'excellent' : roiValue > 5 ? 'good' : 'moderate'}">
-                        ${roiValue > 10 ? 'Excellent' : roiValue > 5 ? 'Good' : 'Moderate'}
-                    </span>
-                </td>
-            `;
-            tbody.appendChild(row);
-        });
+                const row = document.createElement('tr');
+                const roiValue = parseFloat(segment.roi_pct);
+                const lineValue = parseFloat(segment.line);
+                const perfCls = this.classForRoi(roiValue);
+                const spark = this.createSparklineFromRoi(roiValue, `${segment.tier}-${lineValue}`);
+                row.innerHTML = `
+                    <td>Tier ${segment.tier}</td>
+                    <td>${lineValue > 0 ? '+' : ''}${lineValue.toFixed(2)}</td>
+                    <td class="roi-cell"><span class="roi-pill ${perfCls}">${roiValue.toFixed(1)}%</span></td>
+                    <td>${this.formatNumber(segment.n)}</td>
+                    <td>
+                        <div class="row-performance">
+                            ${spark}
+                            <span class="performance-badge ${roiValue > 10 ? 'excellent' : roiValue > 5 ? 'good' : 'moderate'}">
+                                ${roiValue > 10 ? 'Excellent' : roiValue > 5 ? 'Good' : 'Moderate'}
+                            </span>
+                        </div>
+                    </td>`;
+                tbody.appendChild(row);
+            });
     }
 
     renderBacktestTopSegments(tbody, tierFilter = 1) {
-        // Top performing segments from AUTOMATED REFINED AH Backtest
         const backtestSegments = [
             { tier: 1, line: -0.5, roi_pct: 28.4, n: 67 },
             { tier: 1, line: 0.5, roi_pct: 24.3, n: 31 },
@@ -1254,34 +1290,28 @@ class ParlayKing {
         backtestSegments
             .filter(s => s.tier === tierFilter)
             .sort((a, b) => b.roi_pct - a.roi_pct)
-            .slice(0, 10)
             .forEach(segment => {
-            const row = document.createElement('tr');
-            const roiValue = parseFloat(segment.roi_pct);
-            const lineValue = parseFloat(segment.line);
-            
-            row.innerHTML = `
-                <td>Tier ${segment.tier}</td>
-                <td>${lineValue > 0 ? '+' : ''}${lineValue.toFixed(2)}</td>
-                <td class="positive">${roiValue.toFixed(1)}%</td>
-                <td>${this.formatNumber(segment.n)}</td>
-                <td>
-                    <span class="performance-badge ${roiValue > 20 ? 'excellent' : roiValue > 15 ? 'good' : 'moderate'}">
-                        ${roiValue > 20 ? 'Excellent' : roiValue > 15 ? 'Good' : 'Moderate'}
-                    </span>
-                </td>
-            `;
-            tbody.appendChild(row);
-        });
-
-        // Add footer note
-        const footerRow = document.createElement('tr');
-        footerRow.innerHTML = `
-            <td colspan="5" style="text-align: center; color: var(--muted); padding: var(--space-lg); font-size: 0.9em; border-top: 1px solid var(--border);">
-                📊 Backtest Performance Data (493 total bets, 23.81% overall ROI)
-            </td>
-        `;
-        tbody.appendChild(footerRow);
+                const row = document.createElement('tr');
+                const roiValue = parseFloat(segment.roi_pct);
+                const lineValue = parseFloat(segment.line);
+                const perfCls = this.classForRoi(roiValue);
+                const spark = this.createSparklineFromRoi(roiValue, `bt-${segment.tier}-${lineValue}`);
+                row.innerHTML = `
+                    <td>Tier ${segment.tier}</td>
+                    <td>${lineValue > 0 ? '+' : ''}${lineValue.toFixed(2)}</td>
+                    <td class="roi-cell"><span class="roi-pill ${perfCls}">${roiValue.toFixed(1)}%</span></td>
+                    <td>${this.formatNumber(segment.n)}</td>
+                    <td>
+                        <div class="row-performance">
+                            ${spark}
+                            <span class="performance-badge ${roiValue > 20 ? 'excellent' : roiValue > 15 ? 'good' : 'moderate'}">
+                                ${roiValue > 20 ? 'Excellent' : roiValue > 15 ? 'Good' : 'Moderate'}
+                            </span>
+                        </div>
+                    </td>`;
+                tbody.appendChild(row);
+            });
+        // Footer note preserved? Optional: keep existing footer note if needed.
     }
 
     // New: Render card view
@@ -1356,6 +1386,21 @@ class ParlayKing {
             this.renderRecommendationsCards(); // New: Render card view
             this.initRecommendationsFilters();
             this.initViewToggle(); // New: Initialize view toggle
+            // Default to card view on small screens
+            if (window.innerWidth <= 768) {
+                const cardsBtn = document.querySelector('[data-view="cards"]');
+                if (cardsBtn) cardsBtn.click();
+            }
+            // More filters toggle
+            const moreBtn = document.getElementById('toggle-more-filters');
+            if (moreBtn) {
+                moreBtn.addEventListener('click', () => {
+                    const expanded = moreBtn.getAttribute('aria-expanded') === 'true';
+                    document.querySelectorAll('.optional-filter').forEach(el => el.style.display = expanded ? 'none' : '');
+                    moreBtn.setAttribute('aria-expanded', String(!expanded));
+                    moreBtn.textContent = expanded ? 'More filters' : 'Fewer filters';
+                });
+            }
             this.showLoading(false);
         }).catch(error => {
             console.error('Failed to load recommendations data:', error);
@@ -1434,6 +1479,20 @@ class ParlayKing {
         if (savedMinEV) document.getElementById('min-ev-recs').value = savedMinEV;
         const savedConfidence = localStorage.getItem('recConfidenceFilter');
         if (savedConfidence) document.getElementById('confidence-filter-recs').value = savedConfidence;
+    }
+
+    renderFilterSummary() {
+        const container = document.getElementById('filter-summary');
+        if (!container) return;
+        const parts = [];
+        const dateMap = { '7': 'Next 7 days', '30': 'Last 30 days', '90': 'Last 90 days', 'all': 'All time' };
+        parts.push(dateMap[this.filters.dateRange] || 'Selected');
+        parts.push(this.filters.league === 'all' ? 'All leagues' : this.filters.league);
+        parts.push(`EV ≥ ${this.filters.minEV || 0}`);
+        parts.push(this.filters.confidence === 'all' ? 'All' : this.filters.confidence);
+        container.innerHTML = `<span>${parts.join(' • ')}</span><button class="edit-btn" id="edit-filters">Edit</button>`;
+        const edit = document.getElementById('edit-filters');
+        if (edit) edit.onclick = () => document.getElementById('date-range-recs')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     // Share function

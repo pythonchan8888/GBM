@@ -1873,3 +1873,81 @@ body, .main-container, .chart-card, .recommendations-card {
 @media (max-width: 420px) {
   .kpi-grid { grid-template-columns: 1fr; }
 }
+
+/* Compact header spacing */
+.nav-container { padding: var(--space-md) 0; }
+.nav-content { gap: var(--space-lg); }
+.nav-tabs { padding: var(--space-xs); }
+#last-update { display:block; margin-top: var(--space-md); color: var(--text-tertiary); }
+
+/* Tighter KPI cards and badges */
+.kpi-card { padding: var(--space-xl); }
+.kpi-header { margin-bottom: var(--space-sm); min-height: 32px; }
+.kpi-trend { padding: 2px 6px; border-radius: var(--radius-sm); }
+.kpi-value { margin-bottom: var(--space-xs); }
+.kpi-subtitle { margin-top: 0; }
+
+/* Recommendation card – quick scan layout */
+.rec-card { padding: var(--space-md); }
+.rec-card .rec-head { display:flex; align-items:center; justify-content:space-between; gap: var(--space-sm); }
+.rec-card .rec-time { color: var(--text-tertiary); font-size: var(--font-size-sm); }
+.rec-card .rec-match { margin: var(--space-xs) 0; font-weight: 700; font-size: var(--font-size-lg); color: var(--text); }
+.rec-card .rec-foot { display:flex; flex-wrap:wrap; gap: var(--space-sm); color: var(--text-secondary); font-size: var(--font-size-sm); }
+.rec-dot::before { content: '•'; margin: 0 6px; opacity: 0.6; }
+
+/* Sticky filter summary bar */
+.filter-summary { position: sticky; top: 64px; z-index: 900; background: var(--panel); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 8px 12px; margin: var(--space-md) var(--space-xl) 0; color: var(--text-tertiary); font-size: var(--font-size-sm); display:flex; align-items:center; justify-content:space-between; gap: var(--space-sm);} 
+.filter-summary .edit-btn { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); padding: 4px 10px; border-radius: var(--radius-md); font-size: var(--font-size-sm); }
+
+/* Softer resting shadows on mobile; keep hover elevation */
+@media (max-width: 768px) {
+  .kpi-card, .chart-card, .recommendations-card { box-shadow: 0 8px 24px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.04); }
+  .kpi-card:hover, .chart-card:hover, .recommendations-card:hover { box-shadow: var(--shadow-card-hover); }
+  .nav-container { padding: 10px 0; }
+  #last-update { margin-top: 8px; }
+}
+
+/* ROI highlighting */
+.roi-cell { white-space: nowrap; }
+.roi-pill { display:inline-block; padding: 4px 8px; border-radius: 999px; font-weight: 600; font-size: var(--font-size-sm); }
+.roi-pill.excellent { background: rgba(46, 204, 113, 0.16); color: #2ECC71; border: 1px solid rgba(46,204,113,0.24); }
+.roi-pill.good { background: rgba(58, 123, 213, 0.16); color: #3A7BD5; border: 1px solid rgba(58,123,213,0.24); }
+.roi-pill.moderate { background: rgba(255, 149, 0, 0.14); color: #E67E22; border: 1px solid rgba(230,126,34,0.24); }
+
+.row-performance { display:flex; align-items:center; gap: 10px; }
+.spark-svg { display:block; }
+.spark-line { fill:none; stroke: var(--accent); stroke-width: 2; opacity: 0.9; }
+.spark-area { fill: var(--accent); opacity: 0.18; }
+
+/* Compact table cells on mobile */
+@media (max-width: 768px) {
+  .recommendations-table th, .recommendations-table td { padding: 8px 10px; }
+}
+
+/* Mobile refinement: smaller KPI numbers/boxes */
+@media (max-width: 768px) {
+  .kpi-grid { gap: var(--space-md); }
+  .kpi-card { padding: var(--space-md); min-height: 110px; border-radius: var(--radius-lg); }
+  .kpi-header { margin-bottom: 6px; min-height: auto; }
+  .kpi-header h3 { font-size: 0.8rem; letter-spacing: 0; }
+  .kpi-trend { font-size: 0.7rem; padding: 2px 6px; }
+  .kpi-value { font-size: clamp(1.6rem, 8vw, 2rem); line-height: 1; letter-spacing: -0.02em; }
+  .kpi-subtitle { font-size: 0.8rem; }
+}
+
+/* Optional filters hidden by default on mobile */
+@media (max-width: 768px) {
+  .optional-filter { display: none; }
+}
+
+/* View toggle redesigned */
+.view-toggle { display:flex; align-items:center; background: var(--panel); border:1px solid var(--border); border-radius: 999px; padding: 4px; width: fit-content; }
+.view-btn { padding: 8px 14px; border-radius: 999px; background: transparent; border: none; color: var(--text-tertiary); font-weight: 600; font-size: var(--font-size-sm); }
+.view-btn.active { background: var(--gradient-primary); color: var(--text); box-shadow: var(--shadow-card); }
+
+/* Recommendation card polish */
+.rec-card { background: var(--panel-elevated); border:1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow-card); }
+.rec-card .rec-time { font-weight: 600; letter-spacing: 0.2px; }
+.rec-card .rec-match { font-weight: 800; letter-spacing: -0.02em; }
+.rec-card .rec-foot span { opacity: 0.95; }
+.rec-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-elevated); }

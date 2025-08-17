@@ -22,9 +22,9 @@
     <!-- Open Graph Meta Tags for Social Media -->
     <meta property="og:title" content="Live Football Betting Recommendations - ParlayKing">
     <meta property="og:description" content="Get ML-powered football betting recommendations with EV calculations and confidence ratings. Make data-driven betting decisions.">
-    <meta property="og:image" content="https://www.parlayking.xyz/parlayking-social-preview.png?v=1">
+    <meta property="og:image" content="https://www.parlayking.xyz/parlayking-social-preview.png">
     <meta property="og:image:type" content="image/png">
-    <meta property="og:image:secure_url" content="https://www.parlayking.xyz/parlayking-social-preview.png?v=1">
+    <meta property="og:image:secure_url" content="https://www.parlayking.xyz/parlayking-social-preview.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:url" content="https://www.parlayking.xyz/recommendations.html">
@@ -74,9 +74,9 @@
     </nav>
 
     <!-- Filter Bar -->
-    <div class="filter-bar">
+    <div class="filter-bar" id="filter-bar">
         <div class="filter-content">
-            <div class="filter-group">
+            <div class="filter-group optional-filter">
                 <label for="date-range-recs">Date Range</label>
                 <select id="date-range-recs" class="filter-select">
                     <option value="1">Today</option>
@@ -85,20 +85,20 @@
                     <option value="all">All upcoming</option>
                 </select>
             </div>
-            
+
             <div class="filter-group">
                 <label for="league-filter-recs">League</label>
                 <select id="league-filter-recs" class="filter-select">
                     <option value="all">All leagues</option>
                 </select>
             </div>
-            
-            <div class="filter-group">
+
+            <div class="filter-group optional-filter">
                 <label for="min-ev-recs">Min EV</label>
                 <input type="number" id="min-ev-recs" class="filter-input" value="0" step="0.01" min="0">
             </div>
-            
-            <div class="filter-group">
+
+            <div class="filter-group optional-filter">
                 <label for="confidence-filter-recs">Confidence</label>
                 <select id="confidence-filter-recs" class="filter-select">
                     <option value="all">All</option>
@@ -107,10 +107,13 @@
                     <option value="Low">Low</option>
                 </select>
             </div>
-            
-            <button id="reset-filters-recs" class="filter-reset">Reset</button>
+
+            <button id="reset-filters-recs" class="filter-reset optional-filter">Reset</button>
+            <button id="toggle-more-filters" class="action-btn" aria-expanded="false">More filters</button>
         </div>
     </div>
+    <!-- Sticky summary -->
+    <div id="filter-summary" class="filter-summary"></div>
 
     <!-- Main Content -->
     <main class="main-container">
