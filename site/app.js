@@ -52,7 +52,7 @@ class ParlayKing {
                 ? { 'If-None-Match': localStorage.getItem(`etag_${filename}`) || '' }
                 : {};
 
-            let response = await fetch(filename, { headers });
+            let response = await fetch(`${filename}?t=${Date.now()}`, { headers });
 
             // If server returns 304 but we don't have an in-memory copy (cold load), refetch without ETag
             if (response.status === 304 && !haveInMemory) {
@@ -912,7 +912,11 @@ class ParlayKing {
 
     getFilteredRecommendations() {
         let filtered = [...this.data.recommendations];
-
+        
+        // NEW: Filter to upcoming only
+        const now = new Date();
+        filtered = filtered.filter(r => r.datetime > now);
+        
         // Apply filters
         if (this.filters.league !== 'all') {
             filtered = filtered.filter(r => r.league === this.filters.league);
