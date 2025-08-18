@@ -41,37 +41,72 @@ jobs:
             pip install numpy pandas requests lightgbm scikit-learn scipy seaborn matplotlib optuna psycopg2-binary shap
           fi
 
-      - name: Run weekly training pipeline
+      - name: Run weekly training pipeline with logging
         env:
           FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DEBUG_MODE: '1'  # Set to 1 to enable verbose logging in the script
         run: |
-          # Full run (no quick mode)
-          python gbm_dc_ev_model.py
+          python gbm_dc_ev_model.py > training.log 2>&1 || true
 
-      - name: Retry training if failed
+      - name: Upload training log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: training-log
+          path: training.log
+
+      - name: Retry training if failed (attempt 1)
         if: failure()
         env:
           FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DEBUG_MODE: '1'
         run: |
-          echo "⚠️ Retrying weekly training pipeline..."
-          python gbm_dc_ev_model.py || echo "Training retry failed"
+          echo "⚠️ Retrying weekly training pipeline (attempt 1)..."
+          python gbm_dc_ev_model.py > retry1.log 2>&1 || echo "Retry 1 failed"
+
+      - name: Retry training if still failed (attempt 2)
+        if: failure()
+        env:
+          FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DEBUG_MODE: '1'
+        run: |
+          echo "⚠️ Retrying weekly training pipeline (attempt 2)..."
+          python gbm_dc_ev_model.py > retry2.log 2>&1 || echo "Retry 2 failed"
+
+      - name: Upload retry logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: retry-logs
+          path: "*.log"
 
       - name: Commit artifacts
-        if: success()
+        if: success() && github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if [ -d artifacts ]; then
-            git add artifacts
-            git commit -m "chore(artifacts): update artifacts $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit"
-            git push || echo "Skip push"
+            echo "Contents of artifacts/:"
+            ls -la artifacts || true
+            FILE_COUNT=$(git ls-files --others --exclude-standard artifacts | wc -l)
+            if [ "$FILE_COUNT" -gt 0 ]; then
+              git add --force artifacts
+              git commit -m "chore(artifacts): update artifacts $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit"
+              git push || echo "Push failed - check branch protections or token"
+            else
+              echo "No unignored files in artifacts/ - skipping commit"
+            fi
+          else
+            echo "No artifacts directory - skipping commit"
           fi
 
       - name: Notify on failure
         if: failure()
         run: |
-          echo "🚨 Weekly training workflow failed! Check the logs above for details."
-          echo "This may affect model performance - manual intervention may be required."
+          echo "🚨 Weekly training workflow failed! Check the uploaded logs (training-log and retry-logs) for details."
+          echo "Possible causes: API key issues, data shortages, or dependency errors in gbm_dc_ev_model.py."
+          echo "Run ID: ${{ github.run_id }} | Repository: ${{ github.repository }}"
 
