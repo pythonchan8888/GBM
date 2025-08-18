@@ -632,18 +632,18 @@ class ParlayKing {
         const rf = document.getElementById('reset-filters');
         if (rf) rf.addEventListener('click', () => { this.resetFilters(); });
 
-        // Chart controls
-        document.querySelectorAll('.toggle-btn').forEach(btn => {
+        // Chart controls (bankroll page only)
+        document.querySelectorAll('.toggle-btn[data-mode]').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.toggle-btn[data-mode]').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 this.updateChart();
             });
         });
 
-        document.querySelectorAll('.range-btn').forEach(btn => {
+        document.querySelectorAll('.range-btn[data-range]').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.range-btn[data-range]').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 this.updateChart();
             });
@@ -1143,19 +1143,30 @@ class ParlayKing {
             // Wire analytics-specific controls
             const tierSel = document.getElementById('tier-select');
             if (tierSel) tierSel.addEventListener('change', () => this.renderROIHeatmap());
-            document.querySelectorAll('.range-btn').forEach(btn => {
+            document.querySelectorAll('.range-btn[data-min-bets]').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.range-btn[data-min-bets]').forEach(b => b.classList.remove('active'));
                     e.currentTarget.classList.add('active');
                     this.renderROIHeatmap();
                 });
             });
             const segTierSel = document.getElementById('segments-tier-select');
             if (segTierSel) segTierSel.addEventListener('change', () => this.renderTopSegments());
+            // P&L stacked vs separated
+            document.querySelectorAll('.toggle-btn[data-view]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const group = e.currentTarget.parentElement;
+                    if (!group) return;
+                    group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                    e.currentTarget.classList.add('active');
+                    this.renderPnLChart();
+                });
+            });
 
             this.renderROIHeatmap();
             this.renderPnLChart();
             this.renderTopSegments();
+            this.updateLastRunStatus();
             this.showLoading(false);
         }).catch(error => {
             console.error('Failed to load analytics data:', error);
@@ -1168,7 +1179,7 @@ class ParlayKing {
         const container = document.getElementById('roi-heatmap');
         if (!container) return;
 
-        const minBets = parseInt(document.querySelector('.range-btn.active')?.dataset.minBets || '30', 10);
+        const minBets = parseInt(document.querySelector('.range-btn.active[data-min-bets]')?.dataset.minBets || '30', 10);
         const tier = parseInt(document.getElementById('tier-select')?.value || '1', 10);
 
         // Normalize source data
@@ -1184,14 +1195,40 @@ class ParlayKing {
             return;
         }
 
-        // Build a simple responsive grid of cells
+        // If data is sparse, switch to compact segment pills with sparklines
+        if (lines.length < 4) {
+            let pills = '<div class="segments-pills">';
+            lines.forEach(l => {
+                const r = rows.find(x => x.line === l) || { roi_pct: 0, n: 0 };
+                const roi = r.roi_pct;
+                const perfCls = this.classForRoi(roi);
+                const spark = this.createSparklineFromRoi(roi, `hm-${tier}-${l}`);
+                pills += `
+                    <div class="segment-pill">
+                        <div class="pill-top">
+                            <span class="roi-pill ${perfCls}">${roi.toFixed(1)}%</span>
+                            <span class="line-text">${l >= 0 ? '+' : ''}${l.toFixed(2)}</span>
+                        </div>
+                        <div class="pill-bottom">${spark}<span class="bets-text">${this.formatNumber(r.n)} bets</span></div>
+                    </div>`;
+            });
+            pills += '</div>';
+            container.innerHTML = pills;
+            return;
+        }
+
+        // Build a responsive heatmap row of cells
         const maxCols = Math.max(lines.length, 1);
         let html = `<div class="heatmap-grid" style="grid-template-columns: repeat(${maxCols}, 1fr);">`;
         lines.forEach(l => {
             const r = rows.find(x => x.line === l) || { roi_pct: 0, n: 0 };
             const roi = r.roi_pct;
             const cls = roi >= 10 ? 'heat-pos' : (roi >= 3 ? 'heat-mid' : 'heat-neg');
-            html += `<div class="heatmap-cell ${cls}">${roi.toFixed(1)}%<br><small>${l >= 0 ? '+' : ''}${l.toFixed(2)} · ${r.n} bets</small></div>`;
+            html += `
+                <div class="heatmap-cell ${cls}">
+                    <div class="heatmap-value">${roi.toFixed(1)}%</div>
+                    <div class="heatmap-meta">${l >= 0 ? '+' : ''}${l.toFixed(2)} · ${this.formatNumber(r.n)} bets</div>
+                </div>`;
         });
         html += '</div>';
         container.innerHTML = html;
@@ -1222,31 +1259,160 @@ class ParlayKing {
         const rows = (Array.isArray(this.data.pnlByMonth) && this.data.pnlByMonth.length > 0)
             ? this.data.pnlByMonth
             : [
-                { month: '2024-03', league: 'England Premier League', pnl: 2138.77 },
-                { month: '2024-04', league: 'Mixed', pnl: 3336.79 },
-                { month: '2024-05', league: 'Mixed', pnl: 399.01 }
+                { month: '2024-03', league: 'England Premier League', pnl: 1247.32 },
+                { month: '2024-03', league: 'Spain La Liga', pnl: 891.45 },
+                { month: '2024-04', league: 'England Premier League', pnl: 1534.67 },
+                { month: '2024-04', league: 'Germany Bundesliga', pnl: 1123.89 },
+                { month: '2024-04', league: 'Italy Serie A', pnl: 678.23 },
+                { month: '2024-05', league: 'England Premier League', pnl: 1789.34 },
+                { month: '2024-05', league: 'Spain La Liga', pnl: 1345.78 },
+                { month: '2024-05', league: 'France Ligue 1', pnl: 867.89 }
             ];
 
-        // Aggregate by month
-        const totals = rows.reduce((acc, r) => {
-            const k = String(r.month);
-            const v = parseFloat(r.pnl) || 0;
-            acc[k] = (acc[k] || 0) + v;
-            return acc;
-        }, {});
+        // Prepare dimensions and data
+        const months = [...new Set(rows.map(r => String(r.month)))].sort();
+        const leagues = [...new Set(rows.map(r => String(r.league)))];
+        const leagueTotals = leagues.map(l => ({
+            league: l,
+            total: rows.filter(r => r.league === l).reduce((a, b) => a + (parseFloat(b.pnl) || 0), 0)
+        })).sort((a, b) => Math.abs(b.total) - Math.abs(a.total));
+        const topLeagues = leagueTotals.slice(0, 6).map(x => x.league);
 
-        // Build cumulative series
-        const series = Object.keys(totals)
-            .sort()
-            .map(m => ({ date: new Date(m + '-01'), value: totals[m] }))
-            .sort((a, b) => a.date - b.date);
-        let cum = 0;
-        const cumulative = series.map(d => ({ date: d.date, value: (cum += d.value) }));
+        const monthData = months.map(m => {
+            const byLeague = {};
+            topLeagues.forEach(l => byLeague[l] = 0);
+            rows.filter(r => String(r.month) === m && topLeagues.includes(String(r.league)))
+                .forEach(r => { byLeague[String(r.league)] += (parseFloat(r.pnl) || 0); });
+            return { month: m, byLeague };
+        });
 
-        container.innerHTML = '<div id="pnl-line" class="custom-chart" style="height:300px;"></div>';
-        setTimeout(() => {
-            this.createCustomChart('pnl-line', cumulative, { formatY: v => this.formatCurrency(v, true) });
-        }, 50);
+        // Compute y-domain including negatives
+        let yMin = 0, yMax = 0;
+        monthData.forEach(md => {
+            let pos = 0, neg = 0;
+            Object.values(md.byLeague).forEach(v => { if (v >= 0) pos += v; else neg += v; });
+            yMax = Math.max(yMax, pos);
+            yMin = Math.min(yMin, neg);
+        });
+        if (yMax === 0 && yMin === 0) { yMax = 1; }
+
+        // Build SVG
+        container.innerHTML = '';
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('class', 'chart-svg');
+        svg.setAttribute('viewBox', '0 0 800 400');
+        svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+        const margin = { top: 20, right: 24, bottom: 48, left: 64 };
+        const innerW = 800 - margin.left - margin.right;
+        const innerH = 400 - margin.top - margin.bottom;
+        const xBand = innerW / Math.max(months.length, 1);
+        const yScale = (val) => margin.top + innerH - ((val - yMin) / (yMax - yMin)) * innerH;
+
+        // Grid lines
+        const grid = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        for (let i = 0; i <= 5; i++) {
+            const y = margin.top + (i / 5) * innerH;
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', margin.left);
+            line.setAttribute('y1', y);
+            line.setAttribute('x2', margin.left + innerW);
+            line.setAttribute('y2', y);
+            line.setAttribute('class', 'chart-grid-line');
+            grid.appendChild(line);
+        }
+        svg.appendChild(grid);
+
+        // Colors
+        const palette = ['#FF7A45', '#3A7BD5', '#2ECC71', '#F39C12', '#9B59B6', '#00C2A8'];
+        const colorFor = (league) => palette[topLeagues.indexOf(league) % palette.length];
+
+        // Determine view
+        const view = document.querySelector('.toggle-btn.active[data-view]')?.dataset.view || 'stacked';
+
+        // Draw bars
+        const barsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const barPadding = 16;
+        monthData.forEach((md, mi) => {
+            const x = margin.left + mi * xBand;
+            if (view === 'separated') {
+                const perW = Math.max(6, (xBand - barPadding) / Math.max(topLeagues.length, 1));
+                topLeagues.forEach((l, li) => {
+                    const v = md.byLeague[l] || 0;
+                    const x0 = x + barPadding / 2 + li * perW;
+                    const y0 = Math.min(yScale(0), yScale(v));
+                    const h = Math.abs(yScale(v) - yScale(0));
+                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', x0.toFixed(1));
+                    rect.setAttribute('y', y0.toFixed(1));
+                    rect.setAttribute('width', Math.max(4, perW - 2).toFixed(1));
+                    rect.setAttribute('height', Math.max(0, h).toFixed(1));
+                    rect.setAttribute('fill', colorFor(l));
+                    rect.setAttribute('rx', '3');
+                    barsGroup.appendChild(rect);
+                });
+            } else {
+                // stacked
+                const barW = Math.max(10, xBand - barPadding);
+                let stackPos = 0; // positive stack
+                let stackNeg = 0; // negative stack
+                topLeagues.forEach(l => {
+                    const v = md.byLeague[l] || 0;
+                    if (v === 0) return;
+                    const prev = v >= 0 ? stackPos : stackNeg;
+                    const next = prev + v;
+                    const y1 = yScale(prev);
+                    const y2 = yScale(next);
+                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', (x + (xBand - barW) / 2).toFixed(1));
+                    rect.setAttribute('y', Math.min(y1, y2).toFixed(1));
+                    rect.setAttribute('width', barW.toFixed(1));
+                    rect.setAttribute('height', Math.abs(y2 - y1).toFixed(1));
+                    rect.setAttribute('fill', colorFor(l));
+                    rect.setAttribute('rx', '4');
+                    barsGroup.appendChild(rect);
+                    if (v >= 0) stackPos = next; else stackNeg = next;
+                });
+            }
+            // X-axis label
+            const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            label.setAttribute('x', (x + xBand / 2).toFixed(1));
+            label.setAttribute('y', (margin.top + innerH + 24).toFixed(1));
+            label.setAttribute('text-anchor', 'middle');
+            label.setAttribute('class', 'chart-axis-text');
+            const d = new Date(md.month + '-01');
+            label.textContent = d.toLocaleString('en-US', { month: 'short' });
+            svg.appendChild(label);
+        });
+        svg.appendChild(barsGroup);
+
+        // Y-axis labels
+        const axis = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        for (let i = 0; i <= 5; i++) {
+            const v = yMin + (yMax - yMin) * (i / 5);
+            const ty = margin.top + innerH - (i / 5) * innerH + 4;
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', (margin.left - 10));
+            text.setAttribute('y', ty);
+            text.setAttribute('text-anchor', 'end');
+            text.setAttribute('class', 'chart-axis-text');
+            text.textContent = this.formatCurrency(v, true);
+            axis.appendChild(text);
+        }
+        svg.appendChild(axis);
+
+        container.appendChild(svg);
+
+        // Legend
+        const legend = document.createElement('div');
+        legend.className = 'chart-legend';
+        topLeagues.forEach(l => {
+            const item = document.createElement('div');
+            item.className = 'legend-item';
+            item.innerHTML = `<span class="legend-swatch" style="background:${colorFor(l)}"></span><span class="legend-label">${l}</span>`;
+            legend.appendChild(item);
+        });
+        container.appendChild(legend);
     }
 
     createBacktestPnLChart(container) {
@@ -1499,6 +1665,7 @@ class ParlayKing {
                     moreBtn.textContent = expanded ? 'More filters' : 'Fewer filters';
                 });
             }
+            this.updateLastRunStatus();
             this.showLoading(false);
         }).catch(error => {
             console.error('Failed to load recommendations data:', error);

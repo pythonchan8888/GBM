@@ -125,6 +125,30 @@
             </div>
         </section>
 
+        <!-- Bankroll Performance -->
+        <section class="chart-section">
+            <div class="chart-card glass-panel">
+                <div class="chart-header">
+                    <h3>Bankroll Performance</h3>
+                    <div class="chart-controls">
+                        <div class="toggle-group">
+                            <button class="toggle-btn active" data-mode="bankroll">Bankroll</button>
+                            <button class="toggle-btn" data-mode="roi">ROI %</button>
+                        </div>
+                        <div class="range-controls">
+                            <button class="range-btn" data-range="7">7D</button>
+                            <button class="range-btn active" data-range="30">30D</button>
+                            <button class="range-btn" data-range="90">90D</button>
+                            <button class="range-btn" data-range="all">ALL</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container lazy-load">
+                    <div id="bankroll-chart" class="custom-chart"></div>
+                </div>
+            </div>
+        </section>
+
         <!-- P&L by Month -->
         <section class="chart-section">
             <div class="chart-card glass-panel">

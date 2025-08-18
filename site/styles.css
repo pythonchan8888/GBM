@@ -771,6 +771,43 @@ body {
   font-family: var(--font-system);
 }
 
+/* Legend for charts */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-top: var(--space-md);
+}
+.legend-item { display: inline-flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: var(--font-size-sm); }
+.legend-swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); }
+.legend-label { opacity: 0.9; }
+
+/* ROI Heatmap modern styles */
+.heatmap-grid {
+  display: grid;
+  gap: 10px;
+}
+.heatmap-cell {
+  background: var(--panel-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.heatmap-cell .heatmap-value { font-weight: 700; font-size: 1rem; color: var(--text); }
+.heatmap-cell .heatmap-meta { margin-top: 4px; color: var(--muted); font-size: 0.85rem; }
+.heatmap-cell.heat-pos { background: rgba(46, 204, 113, 0.08); border-color: rgba(46,204,113,0.25); }
+.heatmap-cell.heat-mid { background: rgba(58, 123, 213, 0.08); border-color: rgba(58,123,213,0.25); }
+.heatmap-cell.heat-neg { background: rgba(230, 126, 34, 0.06); border-color: rgba(230,126,34,0.25); }
+
+/* ROI segments pill fallback */
+.segments-pills { display:flex; flex-wrap:wrap; gap: 10px; }
+.segment-pill { background: var(--panel-elevated); border:1px solid var(--border); border-radius: var(--radius-lg); padding: 10px 12px; display:flex; flex-direction:column; gap: 6px; min-width: 160px; box-shadow: var(--shadow-sm); }
+.segment-pill .pill-top { display:flex; align-items:center; justify-content:space-between; gap: 8px; }
+.segment-pill .line-text { color: var(--text-secondary); font-weight: 600; font-size: 0.95rem; }
+.segment-pill .pill-bottom { display:flex; align-items:center; justify-content:space-between; gap: 10px; color: var(--muted); font-size: 0.85rem; }
+
 .chart-tooltip {
   position: absolute;
   background: rgba(26, 35, 50, 0.95);
