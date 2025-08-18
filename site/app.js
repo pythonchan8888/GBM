@@ -1611,8 +1611,22 @@ class ParlayKing {
                         EV: ${rec.ev >= 0 ? '+' : ''}${(parseFloat(rec.ev) * 100).toFixed(1)}%
                     </span>
                 </div>
+                <div class="card-actions">
+                    <button class="action-btn-sm" onclick="parlayKing.shareRec('${rec.home} vs ${rec.away}', '${rec.recommendation}')">Share</button>
+                    <button class="action-btn-sm expand-btn">Show King's Call</button>
+                </div>
+                <div class="kings-call hidden">${rec.kingsCall || 'No additional insights available.'}</div>
             `;
             grid.appendChild(card);
+        });
+        // Rebind expand handlers for newly created cards
+        grid.querySelectorAll('.expand-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const card = e.target.closest('.rec-card');
+                const callDiv = card.querySelector('.kings-call');
+                const hidden = callDiv.classList.toggle('hidden');
+                btn.textContent = hidden ? "Show King's Call" : "Hide King's Call";
+            });
         });
     }
 
@@ -1790,7 +1804,7 @@ class ParlayKing {
         parts.push(this.filters.league === 'all' ? 'All leagues' : this.filters.league);
         parts.push(`EV ≥ ${this.filters.minEV || 0}`);
         parts.push(this.filters.confidence === 'all' ? 'All' : this.filters.confidence);
-        container.innerHTML = `<span>${parts.join(' • ')}</span><button class="edit-btn" id="edit-filters">Edit</button>`;
+        container.innerHTML = parts.length ? `<span>${parts.join(' • ')}</span><button class="edit-btn" id="edit-filters">Edit</button>` : '';
         const edit = document.getElementById('edit-filters');
         if (edit) edit.onclick = () => document.getElementById('date-range-recs')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }

@@ -1934,7 +1934,7 @@ body, .main-container, .chart-card, .recommendations-card {
 .rec-dot::before { content: '•'; margin: 0 6px; opacity: 0.6; }
 
 /* Sticky filter summary bar */
-.filter-summary { position: sticky; top: 64px; z-index: 900; background: var(--panel); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 8px 12px; margin: var(--space-md) var(--space-xl) 0; color: var(--text-tertiary); font-size: var(--font-size-sm); display:flex; align-items:center; justify-content:space-between; gap: var(--space-sm);} 
+.filter-summary { position: sticky; top: 64px; z-index: 900; background: var(--panel); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 8px 12px; margin: 0 var(--space-lg) 0; color: var(--text-tertiary); font-size: var(--font-size-sm); display:flex; align-items:center; justify-content:space-between; gap: var(--space-sm);} 
 .filter-summary .edit-btn { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); padding: 4px 10px; border-radius: var(--radius-md); font-size: var(--font-size-sm); }
 
 /* Softer resting shadows on mobile; keep hover elevation */
@@ -2107,3 +2107,12 @@ body, .main-container, .chart-card, .recommendations-card {
     border-radius: var(--radius-md);
     cursor: pointer;
 }
+
+/* Analytics chart container spacing */
+.chart-section .chart-card .chart-container { margin-top: var(--space-md); }
+
+/* Remove unintended gap after recommendations filters */
+.filter-summary { margin: 0 var(--space-lg); padding: 0; min-height: 0; }
+
+/* Card actions row */
+.card-actions { display:flex; gap:8px; margin-top: var(--space-sm); }
