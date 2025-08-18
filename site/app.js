@@ -734,16 +734,16 @@ class ParlayKing {
             if (totalBetsEl) totalBetsEl.textContent = this.formatNumber(recommendationsCount);
             
             // Update labels to reflect this is model performance
-            const winRateLabel = document.querySelector('#win-rate').parentElement?.querySelector('.kpi-subtitle');
+            const winRateLabel = document.querySelector('#win-rate')?.parentElement?.querySelector('.kpi-subtitle');
             if (winRateLabel) winRateLabel.textContent = 'expected win rate';
             
-            const roiLabel = document.querySelector('#roi-performance').parentElement?.querySelector('.kpi-subtitle');
+            const roiLabel = document.querySelector('#roi-performance')?.parentElement?.querySelector('.kpi-subtitle');
             if (roiLabel) roiLabel.textContent = 'projected return';
             
-            const nonLosingLabel = document.querySelector('#non-losing-rate').parentElement?.querySelector('.kpi-subtitle');
+            const nonLosingLabel = document.querySelector('#non-losing-rate')?.parentElement?.querySelector('.kpi-subtitle');
             if (nonLosingLabel) nonLosingLabel.textContent = 'model accuracy';
             
-            const betsLabel = document.querySelector('#total-bets').parentElement?.querySelector('.kpi-subtitle');
+            const betsLabel = document.querySelector('#total-bets')?.parentElement?.querySelector('.kpi-subtitle');
             if (betsLabel) betsLabel.textContent = 'active recommendations';
         }
 
