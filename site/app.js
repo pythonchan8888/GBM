@@ -16,8 +16,48 @@ class ParlayKing {
         this.filters = this.getFiltersFromURL();
         // Version used for cache-busting CSV requests; prefer build-provided, else timestamp
         this.version = (window.__PK_VERSION || 'latest');
+        // UI state
+        this.parlayPage = 0;
         
         this.init();
+    }
+
+    // Parse server-provided parlay_wins.csv (optional dataset)
+    parseParlayWins(rows) {
+        if (!Array.isArray(rows) || rows.length === 0) return [];
+        return rows.map(r => {
+            const stake = parseFloat(r.stake || 100);
+            const totalOdds = parseFloat(r.total_odds || r.odds || 1);
+            const totalPayout = parseFloat(r.payout || (stake * totalOdds));
+            const profit = parseFloat(r.profit || (totalPayout - stake));
+            const legsStr = (r.legs || r.legs_str || '').toString();
+            const legs = legsStr.split(' || ').filter(Boolean).map(s => {
+                const [matchPart, right] = s.split(' | ');
+                const [home, away] = (matchPart || '').split(' vs ').map(x => (x || '').trim());
+                let recommendation = right || '';
+                let odds = 1.0;
+                const atIdx = recommendation.lastIndexOf('@');
+                if (atIdx !== -1) {
+                    odds = parseFloat(recommendation.slice(atIdx + 1)) || 1.0;
+                    recommendation = recommendation.slice(0, atIdx).trim();
+                }
+                return { home, away, recommendation, odds };
+            });
+            const start = this.parseDateTimeSafe(r.window_start || r.start_dt || r.start);
+            const end = this.parseDateTimeSafe(r.window_end || r.end_dt || r.end);
+            return {
+                legs,
+                legCount: parseInt(r.leg_count || legs.length || 0),
+                totalOdds,
+                stake,
+                totalPayout,
+                profit,
+                returnPercent: (profit / Math.max(stake, 1)) * 100,
+                dateRange: (start && end)
+                    ? (this.isSameDay(start, end) ? this.formatDate(start) : `${this.formatDate(start)} - ${this.formatDate(end)}`)
+                    : '--'
+            };
+        });
     }
 
     async init() {
@@ -87,14 +127,15 @@ class ParlayKing {
     async loadAllData() {
         try {
             // Load all CSV files in parallel
-            const [metrics, pnlByMonth, bankrollSeries, recommendations, roiHeatmap, topSegments, settledBets] = await Promise.all([
+            const [metrics, pnlByMonth, bankrollSeries, recommendations, roiHeatmap, topSegments, settledBets, parlayWinsCsv] = await Promise.all([
                 this.loadCSV('metrics.csv'),
                 this.loadCSV('pnl_by_month.csv'),
                 this.loadCSV('bankroll_series_90d.csv'),
                 this.loadCSV('latest_recommendations.csv'),
                 this.loadCSV('roi_heatmap.csv'),
                 this.loadCSV('top_segments.csv'),
-                this.loadCSV('settled_bets.csv') // For parlay calculation
+                this.loadCSV('settled_bets.csv'), // For parlay calculation
+                this.loadCSV('parlay_wins.csv').catch(() => [])
             ]);
 
             // Store data
@@ -108,8 +149,11 @@ class ParlayKing {
                 settledBets: this.parseSettledBets(settledBets)
             };
 
-            // Calculate parlay wins
-            this.data.parlayWins = this.calculateParlayWins();
+            // Calculate parlay wins (prefer server CSV if present)
+            const csvParlays = this.parseParlayWins(parlayWinsCsv || []);
+            this.data.parlayWins = (csvParlays && csvParlays.length > 0)
+                ? csvParlays
+                : this.calculateParlayWinsFromBets();
 
             // Populate filter options
             this.populateFilterOptions();
@@ -224,70 +268,97 @@ class ParlayKing {
         
         return rawBets
             .filter(row => row && row.home && row.away)
-            .map(row => ({
-                fixture_id: row.fixture_id,
-                league: row.league || '',
-                home: row.home,
-                away: row.away,
-                home_score: parseInt(row.home_score || 0),
-                away_score: parseInt(row.away_score || 0),
-                bet_type: row.bet_type_refined_ah || row.bet_type || '',
-                line: parseFloat(row.line_betted_on_refined || row.line || 0),
-                odds: parseFloat(row.odds_betted_on_refined || row.odds || 0),
-                stake: parseFloat(row.stake || 0),
-                pl: parseFloat(row.pl || 0),
-                status: row.status || '',
-                datetime: this.parseDateTimeSafe(row.dt_gmt8)
-            }))
+            .map(row => {
+                const betType = (row.bet_type_refined_ah || row.bet_type || '').toString();
+                const lineVal = parseFloat(row.line_betted_on_refined || row.line || 0);
+                const oddsVal = parseFloat(row.odds_betted_on_refined || row.odds || 0);
+                const plVal = parseFloat(row.pl || 0);
+                const statusTxt = (row.status || '').toString().toLowerCase();
+                const isWin = plVal > 0 || statusTxt === 'won' || statusTxt === 'win';
+                const isPush = plVal === 0;
+                const effOdds = isPush ? 1.0 : (oddsVal || 1.0);
+                // Build simple recommendation text when not provided
+                const side = betType.toLowerCase();
+                let recText;
+                if (side.includes('away')) {
+                    recText = `${row.away} ${(lineVal >= 0 ? '+' : '')}${(isFinite(lineVal) ? lineVal.toFixed(2) : '0.00')}`;
+                } else if (side.includes('home')) {
+                    recText = `${row.home} ${(lineVal >= 0 ? '+' : '')}${(isFinite(lineVal) ? lineVal.toFixed(2) : '0.00')}`;
+                } else if (betType) {
+                    recText = `${betType} ${(lineVal >= 0 ? '+' : '')}${(isFinite(lineVal) ? lineVal.toFixed(2) : '0.00')}`;
+                } else {
+                    recText = `AH ${(lineVal >= 0 ? '+' : '')}${(isFinite(lineVal) ? lineVal.toFixed(2) : '0.00')}`;
+                }
+                return ({
+                    fixture_id: row.fixture_id,
+                    league: row.league || '',
+                    home: row.home,
+                    away: row.away,
+                    home_score: parseInt(row.home_score || 0),
+                    away_score: parseInt(row.away_score || 0),
+                    bet_type: betType,
+                    line: lineVal,
+                    odds: oddsVal || 1.0,
+                    effectiveOdds: effOdds,
+                    stake: parseFloat(row.stake || 0),
+                    pl: plVal,
+                    isWin,
+                    isPush,
+                    recommendation: recText,
+                    status: row.status || '',
+                    // Interpret dt_gmt8 as GMT+8 using our parser for correct 05:00/17:00 bucketing
+                    datetime: this.parseGmt8(row.dt_gmt8) || this.parseDateTimeSafe(row.dt_gmt8)
+                });
+            })
             .sort((a, b) => (b.datetime || 0) - (a.datetime || 0));
     }
 
-    // Parlay Wins Calculation
-    calculateParlayWins() {
+    // Parlay Wins Calculation (JS fallback)
+    calculateParlayWinsFromBets() {
         const settledBets = this.data.settledBets || [];
+        const groups = this.groupBetsByWindow(settledBets, 12);
         const parlays = [];
-        
-        // Group bets by week to find potential parlays
-        const weeklyGroups = this.groupBetsByWeek(settledBets);
-        
-        weeklyGroups.forEach(weekBets => {
-            const winningBets = weekBets.filter(bet => bet.isWin);
-            
-            // Generate parlays of different lengths
-            for (let parlaySize = 3; parlaySize <= Math.min(6, winningBets.length); parlaySize++) {
-                const combinations = this.getCombinations(winningBets, parlaySize);
-                
-                // Take best combinations (highest total odds)
-                combinations
+        groups.forEach(group => {
+            const candidates = group.filter(b => b.isWin || b.isPush);
+            for (let size = 3; size <= Math.min(6, candidates.length); size++) {
+                const combos = this.getCombinations(candidates, size);
+                combos
                     .sort((a, b) => this.calculateParlayOdds(b) - this.calculateParlayOdds(a))
-                    .slice(0, 2) // Top 2 per size per week
-                    .forEach(combination => {
-                        parlays.push(this.createParlayItem(combination));
-                    });
+                    .slice(0, 2)
+                    .forEach(c => parlays.push(this.createParlayItem(c)));
             }
         });
-
-        // Sort by payout and return top parlays
-        return parlays
-            .sort((a, b) => b.totalPayout - a.totalPayout)
-            .slice(0, 6); // Show top 6 parlays
+        return parlays.sort((a, b) => b.totalPayout - a.totalPayout).slice(0, 6);
     }
 
-    groupBetsByWeek(bets) {
-        const groups = new Map();
-        
-        bets.forEach(bet => {
-            const weekStart = new Date(bet.datetime);
-            weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // Start of week
-            const weekKey = weekStart.toISOString().split('T')[0];
-            
-            if (!groups.has(weekKey)) {
-                groups.set(weekKey, []);
+    groupBetsByWindow(bets, windowHours = 12) {
+        // Anchor 12h windows to GMT+8 at 05:00 and 17:00
+        const buckets = new Map();
+        const toGmt8 = (d) => new Date(d.getTime() + 8 * 60 * 60 * 1000);
+        const fromGmt8 = (y, m, d, hh) => new Date(Date.UTC(y, m - 1, d, hh - 8, 0, 0));
+        const anchorFor = (dt) => {
+            const g8 = toGmt8(dt);
+            const y = g8.getUTCFullYear();
+            const m = g8.getUTCMonth() + 1;
+            const d = g8.getUTCDate();
+            const h = g8.getUTCHours();
+            if (h >= 5 && h < 17) {
+                return fromGmt8(y, m, d, 5);
+            } else if (h >= 17) {
+                return fromGmt8(y, m, d, 17);
+            } else {
+                // h < 5 → previous day 17:00
+                const prev = new Date(g8.getTime() - 24 * 60 * 60 * 1000);
+                return fromGmt8(prev.getUTCFullYear(), prev.getUTCMonth() + 1, prev.getUTCDate(), 17);
             }
-            groups.get(weekKey).push(bet);
+        };
+        bets.forEach(b => {
+            if (!b.datetime) return;
+            const anchor = anchorFor(b.datetime).getTime();
+            if (!buckets.has(anchor)) buckets.set(anchor, []);
+            buckets.get(anchor).push(b);
         });
-        
-        return Array.from(groups.values());
+        return Array.from(buckets.values());
     }
 
     getCombinations(arr, size) {
@@ -305,7 +376,7 @@ class ParlayKing {
     }
 
     calculateParlayOdds(bets) {
-        return bets.reduce((total, bet) => total * bet.odds, 1);
+        return bets.reduce((total, bet) => total * (bet.effectiveOdds || bet.odds || 1), 1);
     }
 
     createParlayItem(bets) {
@@ -550,33 +621,16 @@ class ParlayKing {
 
     setupEventListeners() {
         // Filter controls
-        document.getElementById('date-range').addEventListener('change', (e) => {
-            this.filters.dateRange = e.target.value;
-            this.updateURL();
-            this.updateUI();
-        });
-
-        document.getElementById('league-filter').addEventListener('change', (e) => {
-            this.filters.league = e.target.value;
-            this.updateURL();
-            this.updateUI();
-        });
-
-        document.getElementById('min-ev').addEventListener('input', (e) => {
-            this.filters.minEV = parseFloat(e.target.value) || 0;
-            this.updateURL();
-            this.updateUI();
-        });
-
-        document.getElementById('confidence-filter').addEventListener('change', (e) => {
-            this.filters.confidence = e.target.value;
-            this.updateURL();
-            this.updateUI();
-        });
-
-        document.getElementById('reset-filters').addEventListener('click', () => {
-            this.resetFilters();
-        });
+        const dr = document.getElementById('date-range');
+        if (dr) dr.addEventListener('change', (e) => { this.filters.dateRange = e.target.value; this.updateURL(); this.updateUI(); });
+        const lf = document.getElementById('league-filter');
+        if (lf) lf.addEventListener('change', (e) => { this.filters.league = e.target.value; this.updateURL(); this.updateUI(); });
+        const me = document.getElementById('min-ev');
+        if (me) me.addEventListener('input', (e) => { this.filters.minEV = parseFloat(e.target.value) || 0; this.updateURL(); this.updateUI(); });
+        const cf = document.getElementById('confidence-filter');
+        if (cf) cf.addEventListener('change', (e) => { this.filters.confidence = e.target.value; this.updateURL(); this.updateUI(); });
+        const rf = document.getElementById('reset-filters');
+        if (rf) rf.addEventListener('click', () => { this.resetFilters(); });
 
         // Chart controls
         document.querySelectorAll('.toggle-btn').forEach(btn => {
@@ -602,10 +656,10 @@ class ParlayKing {
     }
 
     setFilterValues() {
-        document.getElementById('date-range').value = this.filters.dateRange;
-        document.getElementById('league-filter').value = this.filters.league;
-        document.getElementById('min-ev').value = this.filters.minEV;
-        document.getElementById('confidence-filter').value = this.filters.confidence;
+        const dr = document.getElementById('date-range'); if (dr) dr.value = this.filters.dateRange;
+        const lf = document.getElementById('league-filter'); if (lf) lf.value = this.filters.league;
+        const me = document.getElementById('min-ev'); if (me) me.value = this.filters.minEV;
+        const cf = document.getElementById('confidence-filter'); if (cf) cf.value = this.filters.confidence;
     }
 
     resetFilters() {
@@ -757,21 +811,40 @@ class ParlayKing {
     updateParlayWins() {
         const parlays = this.data.parlayWins || [];
         
+        // Keep UI scoped to recent wins (last 7 days), while backend may retain longer history
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        const recentParlays = parlays.filter(p => {
+            // try to infer date from dateRange text; if unknown, include
+            const parts = (p.dateRange || '').split(' - ');
+            const parse = (s) => {
+                const d = this.parseDateTimeSafe(s);
+                return d && !isNaN(d) ? d : null;
+            };
+            const start = parse(parts[0]) || sevenDaysAgo;
+            const end = parse(parts[parts.length-1]) || new Date();
+            return end >= sevenDaysAgo;
+        });
+
         // Update stats
-        document.getElementById('total-parlays').textContent = parlays.length;
-        const maxPayout = parlays.length > 0 ? Math.max(...parlays.map(p => p.returnPercent)) : 0;
+        document.getElementById('total-parlays').textContent = recentParlays.length;
+        const maxPayout = recentParlays.length > 0 ? Math.max(...recentParlays.map(p => p.returnPercent)) : 0;
         document.getElementById('max-payout').textContent = `${maxPayout.toFixed(0)}%`;
         
-        // Update parlay grid
+        // Update parlay grid with pagination (mobile-friendly)
         const grid = document.getElementById('parlay-grid');
         grid.innerHTML = '';
-        
-        if (parlays.length === 0) {
+
+        if (recentParlays.length === 0) {
             grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--muted); padding: var(--space-2xl);">No winning parlays found in recent data</div>';
             return;
         }
-        
-        parlays.forEach(parlay => {
+
+        const PAGE_SIZE = window.innerWidth <= 768 ? 4 : 6;
+        const startIdx = this.parlayPage * PAGE_SIZE;
+        const pageItems = recentParlays.slice(startIdx, startIdx + PAGE_SIZE);
+
+        pageItems.forEach(parlay => {
             const parlayItem = document.createElement('div');
             parlayItem.className = 'parlay-item';
             
@@ -800,6 +873,31 @@ class ParlayKing {
             
             grid.appendChild(parlayItem);
         });
+
+        // Pagination controls
+        const totalPages = Math.ceil(recentParlays.length / PAGE_SIZE);
+        const controls = document.createElement('div');
+        controls.style.gridColumn = '1 / -1';
+        controls.style.display = 'flex';
+        controls.style.justifyContent = 'center';
+        controls.style.gap = '12px';
+        controls.style.marginTop = '12px';
+
+        if (this.parlayPage > 0) {
+            const prev = document.createElement('button');
+            prev.className = 'action-btn';
+            prev.textContent = 'Previous';
+            prev.onclick = () => { this.parlayPage -= 1; this.updateParlayWins(); };
+            controls.appendChild(prev);
+        }
+        if (this.parlayPage < totalPages - 1) {
+            const next = document.createElement('button');
+            next.className = 'action-btn primary';
+            next.textContent = 'Load more';
+            next.onclick = () => { this.parlayPage += 1; this.updateParlayWins(); };
+            controls.appendChild(next);
+        }
+        if (totalPages > 1) grid.appendChild(controls);
     }
 
     // Chart Management

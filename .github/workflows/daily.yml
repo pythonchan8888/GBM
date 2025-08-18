@@ -16,6 +16,7 @@ jobs:
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       GBM_QUICK: ${{ vars.GBM_QUICK || '0' }}
+      PARLAY_RETENTION_DAYS: ${{ vars.PARLAY_RETENTION_DAYS || '180' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -229,6 +230,7 @@ jobs:
           from datetime import datetime
           
           db = os.environ.get('DATABASE_URL')
+          retention_days = int(os.environ.get('PARLAY_RETENTION_DAYS','180'))
           if not db:
               raise SystemExit(0)
           
@@ -318,11 +320,11 @@ jobs:
               with open('site/latest_recommendations.csv','w', newline='', encoding='utf-8') as f:
                   w = csv.writer(f); w.writerow(["dt_gmt8","league","home","away","rec_text","line","odds","ev","confidence"]); w.writerows(rows)
               # Settled bets for parlay calculation (30 days)
-              cur.execute("""
+              cur.execute(f"""
               select fixture_id, league, home, away, home_score, away_score,
                      line_betted_on_refined, bet_type_refined_ah, odds_betted_on_refined, 
                      stake, pl, status, dt_gmt8
-              from bets where status = 'settled' and dt_gmt8 >= now() - interval '30 days' order by dt_gmt8 desc
+              from bets where status = 'settled' and dt_gmt8 >= now() - interval '{retention_days} days' order by dt_gmt8 desc
               """)
               rows = cur.fetchall()
               with open('site/settled_bets.csv','w', newline='', encoding='utf-8') as f:
@@ -421,6 +423,113 @@ jobs:
               for row in items[:50]:
                   w.writerow([row[0], row[1], round(row[2],2), row[3]])
           print("Built roi_heatmap.csv and top_segments.csv")
+          PY
+
+      - name: Build parlay wins CSV
+        run: |
+          python - <<'PY'
+          import csv
+          from datetime import datetime, timedelta, timezone
+          from collections import defaultdict
+          import itertools, os
+          os.makedirs('site', exist_ok=True)
+          retention_days = int(os.environ.get('PARLAY_RETENTION_DAYS','180'))
+          bets = []
+          try:
+              with open('site/settled_bets.csv', newline='', encoding='utf-8') as f:
+                  reader = csv.DictReader(f)
+                  for row in reader:
+                      dt = row.get('dt_gmt8') or ''
+                      try:
+                          dt_obj = datetime.fromisoformat(dt.replace(' ', 'T'))
+                      except Exception:
+                          try:
+                              dt_obj = datetime.strptime(dt, '%Y-%m-%d %H:%M:%S')
+                          except Exception:
+                              continue
+                      # restrict to retention window
+                      try:
+                          if dt_obj < datetime.now() - timedelta(days=retention_days):
+                              continue
+                      except Exception:
+                          pass
+                      pl = float(row.get('pl') or 0)
+                      if pl < 0:
+                          continue
+                      odds = float(row.get('odds_betted_on_refined') or row.get('odds') or 1.0)
+                      if abs(pl) < 1e-9:
+                          odds = 1.0  # push
+                      home = row.get('home','')
+                      away = row.get('away','')
+                      line = row.get('line_betted_on_refined') or row.get('line') or '0'
+                      try:
+                          line = float(line)
+                      except Exception:
+                          line = 0.0
+                      bet_type = (row.get('bet_type_refined_ah') or row.get('bet_type') or '').lower()
+                      if 'away' in bet_type:
+                          rec = f"{away} {'+' if line>=0 else ''}{line:.2f}"
+                      elif 'home' in bet_type:
+                          rec = f"{home} {'+' if line>=0 else ''}{line:.2f}"
+                      else:
+                          rec = f"AH {'+' if line>=0 else ''}{line:.2f}"
+                      bets.append({'dt': dt_obj, 'home': home, 'away': away, 'odds': max(1.0, odds), 'rec': rec})
+          except FileNotFoundError:
+              pass
+
+          # Group by 12-hour windows anchored at 05:00 and 17:00 GMT+8
+          buckets = defaultdict(list)
+          def to_gmt8(dt):
+              return dt + timedelta(hours=8)
+          def from_gmt8(y, m, d, hh):
+              # return naive datetime in local (same representation as inputs)
+              return datetime(y, m, d, hh) - timedelta(hours=8)
+          def anchor_for(dt):
+              g8 = to_gmt8(dt)
+              y, m, d, h = g8.year, g8.month, g8.day, g8.hour
+              if 5 <= h < 17:
+                  return from_gmt8(y, m, d, 5)
+              elif h >= 17:
+                  return from_gmt8(y, m, d, 17)
+              else:
+                  prev = g8 - timedelta(days=1)
+                  return from_gmt8(prev.year, prev.month, prev.day, 17)
+          for b in bets:
+              key = anchor_for(b['dt'])
+              buckets[key].append(b)
+
+          def legs_str(legs):
+              return ' || '.join([f"{l['home']} vs {l['away']} | {l['rec']}@{float(l['odds']):.2f}" for l in legs])
+
+          results = []
+          for key, legs in buckets.items():
+              legs = sorted(legs, key=lambda x: x['dt'])[:10]
+              for size in range(3, min(6, len(legs)) + 1):
+                  scored = []
+                  for combo in itertools.combinations(legs, size):
+                      prod = 1.0
+                      for lg in combo:
+                          prod *= float(lg['odds'] or 1.0)
+                      scored.append((prod, combo))
+                  scored.sort(key=lambda x: x[0], reverse=True)
+                  for prod, combo in scored[:2]:
+                      stake = 100.0
+                      payout = stake * prod
+                      profit = payout - stake
+                      start = min(l['dt'] for l in combo)
+                      end = max(l['dt'] for l in combo)
+                      results.append([
+                          start.isoformat(sep=' '), end.isoformat(sep=' '), len(combo),
+                          round(prod, 4), stake, round(payout, 2), round(profit, 2),
+                          legs_str(combo)
+                      ])
+
+          with open('site/parlay_wins.csv','w', newline='', encoding='utf-8') as f:
+              w = csv.writer(f)
+              w.writerow(['window_start','window_end','leg_count','total_odds','stake','payout','profit','legs'])
+              for row in sorted(results, key=lambda r: r[6], reverse=True)[:20]:
+                  w.writerow(row)
+          print('Built parlay_wins.csv')
           PY
 
       - name: Build artifacts index
