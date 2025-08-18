@@ -1702,12 +1702,10 @@ if 'pred_away_goals' not in df_model_input.columns:
 else:
     df_model_input['pred_away_goals'] = pd.to_numeric(df_model_input['pred_away_goals'], errors='coerce') # Coerce to float
     df_model_input.loc[~df_model_input.index.isin(test_indices), 'pred_away_goals'] = np.nan
-
 # Now assign the test set predictions (which are already float arrays)
 df_model_input.loc[test_indices, 'pred_home_goals'] = pred_home_goals_test
 df_model_input.loc[test_indices, 'pred_away_goals'] = pred_away_goals_test
 print("Predictions stored in df_model_input for the test set.")
-
 # --- 4. Feature Importance ---
 def plot_feature_importance(model, feature_names, model_name="Model"):
     if hasattr(model, 'feature_importances_') and feature_names is not None and not feature_names.empty:
@@ -2263,24 +2261,19 @@ y_a_train_np = y_train_away_goals.to_numpy() if isinstance(y_train_away_goals, p
 
 train_mask = (~np.isnan(y_h_train_np)) & (~np.isnan(y_a_train_np)) & \
              (~np.isnan(pred_home_goals_train)) & (~np.isnan(pred_away_goals_train))
-
 y_h_train_clean = y_h_train_np[train_mask].astype(int) # Ensure integer goals
 y_a_train_clean = y_a_train_np[train_mask].astype(int)
 l_h_train_clean = pred_home_goals_train[train_mask]
 l_a_train_clean = pred_away_goals_train[train_mask]
 print(f"Number of clean training samples for phi optimization after initial NaN filter: {len(y_h_train_clean)}")
-
 # Further filter for matches where lambdas are reasonably positive (BVP constraint)
 min_lambda_for_phi_fit = 0.05 # Avoid issues with very small lambdas for phi constraint
 valid_lambda_mask = (l_h_train_clean >= min_lambda_for_phi_fit) & (l_a_train_clean >= min_lambda_for_phi_fit)
-
 y_h_train_final = y_h_train_clean[valid_lambda_mask]
 y_a_train_final = y_a_train_clean[valid_lambda_mask]
 l_h_train_final = l_h_train_clean[valid_lambda_mask]
 l_a_train_final = l_a_train_clean[valid_lambda_mask]
 print(f"Number of training samples for phi optimization after lambda filter: {len(y_h_train_final)}")
-
-
 optimal_phi = 0.01  # Default/fallback phi
 phi_model = None
 
@@ -2893,7 +2886,6 @@ else:
 print("\n--- End of Section 6.8 (Revised): Synthetic AH Odds/Lines from Market 1X2 Odds ---")
 # Next: Section 7: Backtesting for Asian Handicaps, using these market-based synthetic lines/odds
 #       and the AH probabilities from Section 6.5 (which were derived from our model's scoreline matrices)
-
 """Section 7: Betting Strategy and Backtesting for Asian Handicaps"""
 
 import pandas as pd
@@ -3550,14 +3542,23 @@ else:
             line_for_policy_lookup = bet_option['line'] # This is the line OF THE TEAM BEING BET ON
 
             # Rule lookup with precedence
-            rule = policy.get((current_tier, current_comp_type, line_for_policy_lookup),
-                   policy.get((current_tier, None, line_for_policy_lookup),
-                   policy.get((None, current_comp_type, line_for_policy_lookup),
-                   policy.get((current_tier, current_comp_type, None),
-                   policy.get((current_tier, None, None),
-                   policy.get((None, current_comp_type, None),
-                   policy.get((None, None, line_for_policy_lookup), # Rule just for this line type
-                   policy['default'])))))))
+            rule = None
+            policy_keys = [
+                (current_tier, current_comp_type, line_for_policy_lookup),
+                (current_tier, None, line_for_policy_lookup),
+                (None, current_comp_type, line_for_policy_lookup),
+                (current_tier, current_comp_type, None),
+                (current_tier, None, None),
+                (None, current_comp_type, None),
+                (None, None, line_for_policy_lookup),
+                'default'
+            ]
+            for key in policy_keys:
+                if key in policy:
+                    rule = policy[key]
+                    break
+            if rule is None:
+                rule = {}  # Default empty
 
             min_ev_for_segment = rule['min_ev']
             allow_bet_for_segment = rule.get('allow_bet', True)
@@ -3854,14 +3855,24 @@ def get_refined_ah_bet_decision(row, policy):
     allowed_value_bets = []
     for bet in potential_bets:
         policy_line_key = bet['line']
-        rule = policy.get((current_tier, current_comp_type, policy_line_key),
-               policy.get((current_tier, None, policy_line_key),
-               policy.get((None, current_comp_type, policy_line_key),
-               policy.get((current_tier, current_comp_type, None),
-               policy.get((current_tier, None, None),
-               policy.get((None, current_comp_type, None),
-               policy.get((None, None, policy_line_key),
-               policy.get('default'))))))))
+        rule = None
+        policy_keys = [
+            (current_tier, current_comp_type, policy_line_key),
+            (current_tier, None, policy_line_key),
+            (None, current_comp_type, policy_line_key),
+            (current_tier, current_comp_type, None),
+            (current_tier, None, None),
+            (None, current_comp_type, None),
+            (None, None, policy_line_key),
+            'default'
+        ]
+        for key in policy_keys:
+            if key in policy:
+                rule = policy[key]
+                break
+        if rule is None:
+            rule = {}  # Default empty
+
         if rule.get('allow_bet', True) and bet['ev'] > rule.get('min_ev', 0.20):
             allowed_value_bets.append(bet)
     if not allowed_value_bets: return 'no_bet', np.nan, np.nan, np.nan
@@ -3973,7 +3984,6 @@ def _normalize_team_name(name: str) -> str:
         return str(name or "").strip().lower()
     except Exception:
         return ""
-
 def settle_open_bets(footystats_api_key: str, db_url: str, hours_buffer: int = 2) -> None:
     """Settle open bets in the Postgres `bets` table using FootyStats final scores.
 
@@ -4428,6 +4438,37 @@ else:
                 return ""
             final_recommendations_df['Recommendation'] = final_recommendations_df.apply(create_recommendation_text, axis=1)
 
+            # New: Generate King's Call
+            import requests
+            import json
+            import os
+
+            xai_api_key = os.environ.get('XAI_API_KEY')
+            if xai_api_key:
+                def get_grok_response(prompt):
+                    url = "https://api.x.ai/v1/chat/completions"
+                    headers = {"Authorization": f"Bearer {xai_api_key}", "Content-Type": "application/json"}
+                    data = {
+                        "model": "grok-4-0709",
+                        "messages": [{"role": "user", "content": f"{prompt} Respond in JSON: {{ 'tweet': 'your short response' }}"}],
+                        "max_tokens": 80,
+                        "temperature": 0.7,
+                        "response_format": {"type": "json_object"}
+                    }
+                    try:
+                        response = requests.post(url, headers=headers, json=data)
+                        response.raise_for_status()
+                        content = json.loads(response.json()['choices'][0]['message']['content'])
+                        return content.get('tweet', "Unable to parse response.")
+                    except Exception as e:
+                        print(f"Grok API error: {e}")
+                        return "Unable to fetch insight—rely on EV!"
+
+                final_recommendations_df['kings_call'] = ''
+                for idx, row in final_recommendations_df.iterrows():
+                    prompt = f"Short tweet: Agree or context on betting {row['Recommendation']} at {row['odds_betted_on_refined']:.2f} odds, EV {row['ev_for_bet_refined']:.2f}. Match: {row['home_name']} vs {row['away_name']}."
+                    final_recommendations_df.at[idx, 'kings_call'] = get_grok_response(prompt)
+
             if 'df_for_training_and_testing' in globals():
                 historical_team_ids = set(df_for_training_and_testing['homeID'].unique()) | set(df_for_training_and_testing['awayID'].unique())
                 def get_confidence_level(row):
@@ -4446,7 +4487,8 @@ else:
                 'datetime_gmt8', 'league', 'home_name', 'away_name', 'Recommendation', 'confidence_level',
                 'line_betted_on_refined', 'odds_betted_on_refined', 'ev_for_bet_refined',
                 'pred_home_goals', 'pred_away_goals', 'synth_ah_line_home_market_based',
-                'competition_type', 'league_tier', 'shap_home_explanation', 'shap_away_explanation'
+                'competition_type', 'league_tier', 'shap_home_explanation', 'shap_away_explanation',
+                'kings_call'
             ]
             cols_to_output_existing = [col for col in cols_to_output if col in final_recommendations_df.columns]
             df_to_write = final_recommendations_df[cols_to_output_existing].copy()

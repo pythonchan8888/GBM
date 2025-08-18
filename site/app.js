@@ -55,7 +55,9 @@ class ParlayKing {
                 returnPercent: (profit / Math.max(stake, 1)) * 100,
                 dateRange: (start && end)
                     ? (this.isSameDay(start, end) ? this.formatDate(start) : `${this.formatDate(start)} - ${this.formatDate(end)}`)
-                    : '--'
+                    : '--',
+                startDate: start || null,
+                endDate: end || null
             };
         });
     }
@@ -251,7 +253,8 @@ class ParlayKing {
                     line: parseFloat(row.line) || 0,
                     odds: parseFloat(row.odds) || 0,
                     ev: parseFloat(row.ev) || 0,
-                    confidence: row.confidence || 'Medium'
+                    confidence: row.confidence || 'Medium',
+                    kingsCall: row.kings_call || 'No additional insights available.'
                 };
             })
             .filter(Boolean) // Remove null entries
@@ -290,22 +293,22 @@ class ParlayKing {
                     recText = `AH ${(lineVal >= 0 ? '+' : '')}${(isFinite(lineVal) ? lineVal.toFixed(2) : '0.00')}`;
                 }
                 return ({
-                    fixture_id: row.fixture_id,
-                    league: row.league || '',
-                    home: row.home,
-                    away: row.away,
-                    home_score: parseInt(row.home_score || 0),
-                    away_score: parseInt(row.away_score || 0),
+                fixture_id: row.fixture_id,
+                league: row.league || '',
+                home: row.home,
+                away: row.away,
+                home_score: parseInt(row.home_score || 0),
+                away_score: parseInt(row.away_score || 0),
                     bet_type: betType,
                     line: lineVal,
                     odds: oddsVal || 1.0,
                     effectiveOdds: effOdds,
-                    stake: parseFloat(row.stake || 0),
+                stake: parseFloat(row.stake || 0),
                     pl: plVal,
                     isWin,
                     isPush,
                     recommendation: recText,
-                    status: row.status || '',
+                status: row.status || '',
                     // Interpret dt_gmt8 as GMT+8 using our parser for correct 05:00/17:00 bucketing
                     datetime: this.parseGmt8(row.dt_gmt8) || this.parseDateTimeSafe(row.dt_gmt8)
                 });
@@ -815,17 +818,15 @@ class ParlayKing {
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
         const recentParlays = parlays.filter(p => {
-            // try to infer date from dateRange text; if unknown, include
-            const parts = (p.dateRange || '').split(' - ');
-            const parse = (s) => {
-                const d = this.parseDateTimeSafe(s);
-                return d && !isNaN(d) ? d : null;
-            };
-            const start = parse(parts[0]) || sevenDaysAgo;
-            const end = parse(parts[parts.length-1]) || new Date();
-            return end >= sevenDaysAgo;
+            // Prefer structured dates if provided
+            const end = p.endDate instanceof Date && !isNaN(p.endDate) ? p.endDate : (() => {
+                const parts = (p.dateRange || '').split(' - ');
+                const parsed = this.parseDateTimeSafe(parts[parts.length - 1]);
+                return parsed && !isNaN(parsed) ? parsed : null;
+            })();
+            return (end || new Date()) >= sevenDaysAgo;
         });
-
+        
         // Update stats
         document.getElementById('total-parlays').textContent = recentParlays.length;
         const maxPayout = recentParlays.length > 0 ? Math.max(...recentParlays.map(p => p.returnPercent)) : 0;
@@ -834,12 +835,12 @@ class ParlayKing {
         // Update parlay grid with pagination (mobile-friendly)
         const grid = document.getElementById('parlay-grid');
         grid.innerHTML = '';
-
+        
         if (recentParlays.length === 0) {
             grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--muted); padding: var(--space-2xl);">No winning parlays found in recent data</div>';
             return;
         }
-
+        
         const PAGE_SIZE = window.innerWidth <= 768 ? 4 : 6;
         const startIdx = this.parlayPage * PAGE_SIZE;
         const pageItems = recentParlays.slice(startIdx, startIdx + PAGE_SIZE);
@@ -1672,6 +1673,40 @@ class ParlayKing {
             this.showError('Failed to load recommendations data');
             this.showLoading(false);
         });
+        
+        // Parlay Builder
+        this.selectedRecs = [];
+        document.querySelectorAll('.rec-select').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const recId = e.target.dataset.id;
+                if (e.target.checked) {
+                    this.selectedRecs.push(this.data.recommendations.find(r => r.id === recId));
+                } else {
+                    this.selectedRecs = this.selectedRecs.filter(r => r.id !== recId);
+                }
+                this.updateParlayCalculator();
+            });
+        });
+        
+        // Social Sharing
+        document.querySelectorAll('.share-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const rec = this.data.recommendations.find(r => r.id === e.target.dataset.id);
+                const shareText = `Check out this betting recommendation: ${rec.home} vs ${rec.away} - ${rec.rec_text} @ ${rec.odds}`;
+                navigator.share({ text: shareText });
+            });
+        });
+        
+        // Lazy load charts
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    this.renderCharts(); // Assuming a renderCharts method
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+        document.querySelectorAll('.chart-container').forEach(el => observer.observe(el));
     }
 
     renderRecommendationsTable() {
@@ -1770,6 +1805,14 @@ class ParlayKing {
             alert('Link copied!');
         }
     }
+
+    updateParlayCalculator() {
+        const totalOdds = this.selectedRecs.reduce((acc, rec) => acc * parseFloat(rec.odds), 1);
+        const stake = 100; // Example stake
+        const payout = totalOdds * stake;
+        document.getElementById('parlay-odds').textContent = totalOdds.toFixed(2);
+        document.getElementById('parlay-payout').textContent = payout.toFixed(2);
+    }
 }
 
 // Suppress external script errors (browser extensions)
@@ -1810,4 +1853,22 @@ document.addEventListener('visibilitychange', () => {
             window.parlayKing.loadAllData();
         }, 1000);
     }
+});
+
+// Add event listener for expand-btn
+document.querySelectorAll('.expand-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const card = e.target.closest('.rec-card');
+        const callDiv = card.querySelector('.kings-call');
+        callDiv.classList.toggle('hidden');
+        if (!callDiv.classList.contains('hidden') && !callDiv.textContent) {
+            callDiv.classList.add('loading');
+            callDiv.textContent = '';  // Clear for loading
+            // Simulate async if needed, but since it's from data:
+            const rec = this.data.recommendations.find(r => r.id === card.dataset.id);
+            callDiv.textContent = rec ? rec.kingsCall : 'No insights';
+            callDiv.classList.remove('loading');
+        }
+        btn.textContent = callDiv.classList.contains('hidden') ? 'Show King\'s Call' : 'Hide King\'s Call';
+    });
 });

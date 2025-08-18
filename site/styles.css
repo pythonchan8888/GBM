@@ -1989,3 +1989,121 @@ body, .main-container, .chart-card, .recommendations-card {
 .rec-card .rec-match { font-weight: 800; letter-spacing: -0.02em; }
 .rec-card .rec-foot span { opacity: 0.95; }
 .rec-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-elevated); }
+
+/* Hero Card Styles */
+.hero-card.full-width {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    text-align: center;
+    padding: var(--space-xl);
+    border-radius: var(--radius-xl);
+}
+
+.hero-content h2 {
+    font-size: 1.8rem;
+    margin-bottom: var(--space-md);
+}
+
+.hero-content p {
+    font-size: 1rem;
+    margin-bottom: var(--space-lg);
+}
+
+.cta-button {
+    background: white;
+    color: var(--primary);
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.cta-button:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive KPI Grid */
+@media (max-width: 768px) {
+    .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .hero-card {
+        padding: var(--space-md);
+    }
+    
+    .cta-button {
+        width: 100%;
+        font-size: 1rem;
+        padding: var(--space-lg);
+    }
+}
+
+@media (min-width: 769px) {
+    .kpi-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #121212;
+        color: #e0e0e0;
+    }
+    
+    .nav-container {
+        background: #1e1e1e;
+    }
+    
+    /* Add more dark mode styles as needed */
+}
+
+/* Animations for stickiness */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.lazy-load {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.kings-call {
+    margin-top: var(--space-md);
+    padding: var(--space-md);
+    background: var(--panel-elevated);
+    border-radius: var(--radius-lg);
+    font-style: italic;
+    color: var(--primary);
+    display: none; /* Initially hidden */
+}
+
+.kings-call::before {
+    content: "👑 King's Call: ";
+    font-weight: bold;
+    color: var(--text);
+}
+
+.kings-call.loading::before {
+    content: "👑 Loading King's Call...";
+    font-style: normal;
+    color: var(--muted);
+}
+
+.hidden {
+    display: none;
+}
+
+.expand-btn {
+    margin-top: var(--space-sm);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+}
