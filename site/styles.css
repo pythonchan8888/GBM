@@ -266,16 +266,16 @@ body {
 .main-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--space-4xl) var(--space-xl);
+  padding: var(--space-3xl) var(--space-xl);
   display: flex;
   flex-direction: column;
-  gap: var(--space-4xl);
+  gap: var(--space-3xl);
 }
 
 @media (max-width: 768px) {
   .main-container {
-    padding: var(--space-2xl) var(--space-lg);
-    gap: var(--space-3xl);
+    padding: var(--space-xl) var(--space-lg);
+    gap: var(--space-2xl);
   }
 }
 
@@ -632,10 +632,10 @@ body {
   background: var(--gradient-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-2xl);
-  padding: var(--space-2xl);
+  padding: var(--space-xl);
   box-shadow: var(--shadow-card);
   backdrop-filter: blur(20px);
-  margin: var(--space-2xl) 0;
+  margin: var(--space-xl) 0;
   transition: var(--transition);
 }
 
@@ -648,7 +648,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-lg);
   flex-wrap: wrap;
   gap: var(--space-lg);
 }
@@ -730,8 +730,8 @@ body {
 
 .chart-container {
   position: relative;
-  height: 400px;
-  margin-top: var(--space-lg);
+  height: 360px;
+  margin-top: var(--space-md);
 }
 
 .custom-chart {
@@ -776,7 +776,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 10px 16px;
-  margin-top: var(--space-md);
+  margin-top: var(--space-sm);
 }
 .legend-item { display: inline-flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: var(--font-size-sm); }
 .legend-swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); }
@@ -785,8 +785,9 @@ body {
 /* ROI Heatmap modern styles */
 .heatmap-grid {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
+.heatmap-chart { width: 100%; }
 .heatmap-cell {
   background: var(--panel-elevated);
   border: 1px solid var(--border);
@@ -1226,7 +1227,7 @@ body {
   .chart-container {
     overflow-x: auto; /* Allow horizontal scroll if needed */
     max-width: 100%;
-    height: 300px; /* Smaller on mobile */
+    height: 280px; /* Smaller on mobile */
   }
   
   .toggle-group {

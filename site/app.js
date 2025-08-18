@@ -1585,8 +1585,8 @@ class ParlayKing {
         
         grid.innerHTML = '';
         
-        // Sort recommendations the same way as table (closest first, then highest EV)
-        const sortedRecs = [...this.data.recommendations].sort((a, b) => {
+        // Use same filtering as table (upcoming first)
+        const sortedRecs = this.getFilteredRecommendations().sort((a, b) => {
             if (a.datetime.getTime() !== b.datetime.getTime()) {
                 return a.datetime - b.datetime;
             }
@@ -1680,8 +1680,8 @@ class ParlayKing {
         
         tbody.innerHTML = '';
         
-        // Sort recommendations by datetime (closest first), then by EV (highest first)
-        const sortedRecommendations = [...this.data.recommendations].sort((a, b) => {
+        // Upcoming only by default: sort by time ascending, then EV desc
+        const sortedRecommendations = this.getFilteredRecommendations().sort((a, b) => {
             // First sort by date (closest/upcoming first)
             if (a.datetime.getTime() !== b.datetime.getTime()) {
                 return a.datetime - b.datetime;
