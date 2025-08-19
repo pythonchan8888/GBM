@@ -17,6 +17,7 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       GBM_QUICK: ${{ vars.GBM_QUICK || '0' }}
       PARLAY_RETENTION_DAYS: ${{ vars.PARLAY_RETENTION_DAYS || '180' }}
+      XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -572,6 +573,33 @@ jobs:
             </body>
           </html>
           HTML
+
+      - name: Validate King's Call (non-blocking)
+        shell: bash
+        run: |
+          echo "🔎 Validating King's Call tweets in latest_recommendations.csv (non-blocking)"
+          python - <<'PY'
+          import csv, os
+          path = 'site/latest_recommendations.csv'
+          if not os.path.isfile(path):
+              print('ℹ️  latest_recommendations.csv not found; skipping validation')
+              raise SystemExit(0)
+          with open(path, newline='', encoding='utf-8') as f:
+              r = csv.DictReader(f)
+              rows = list(r)
+          total = len(rows)
+          placeholder = "King's insight: Solid bet based on ML analysis—watch this space!"
+          missing = sum(1 for row in rows if not (row.get('kings_call') or '').strip() or (row.get('kings_call') or '') == placeholder)
+          if total == 0:
+              print('ℹ️  No recommendation rows to validate.')
+          else:
+              pct = (missing / total) * 100.0
+              print(f"King's Call missing: {missing}/{total} ({pct:.1f}%)")
+              if missing == total:
+                  print("⚠️  All King's Call entries are missing. Check XAI_API_KEY or API limits.")
+              elif missing > 0:
+                  print("ℹ️  Some King's Call entries are missing. This is informational only.")
+          PY
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

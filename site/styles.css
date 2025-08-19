@@ -2076,27 +2076,20 @@ body, .main-container, .chart-card, .recommendations-card {
     margin-top: var(--space-md);
     padding: var(--space-md);
     background: var(--panel-elevated);
+    border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     font-style: italic;
     color: var(--primary);
-    display: none; /* Initially hidden */
 }
 
 .kings-call::before {
     content: "👑 King's Call: ";
-    font-weight: bold;
+    font-weight: 700;
     color: var(--text);
+    margin-right: 6px;
 }
 
-.kings-call.loading::before {
-    content: "👑 Loading King's Call...";
-    font-style: normal;
-    color: var(--muted);
-}
-
-.hidden {
-    display: none;
-}
+.hidden { display: none; }
 
 .expand-btn {
     margin-top: var(--space-sm);
@@ -2115,4 +2108,4 @@ body, .main-container, .chart-card, .recommendations-card {
 .filter-summary { margin: 0 var(--space-lg); padding: 0; min-height: 0; }
 
 /* Card actions row */
-.card-actions { display:flex; gap:8px; margin-top: var(--space-sm); }
+.card-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top: var(--space-sm); }

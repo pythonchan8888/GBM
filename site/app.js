@@ -815,8 +815,8 @@ class ParlayKing {
         const parlays = this.data.parlayWins || [];
         
         // Keep UI scoped to recent wins (last 7 days), while backend may retain longer history
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - 14); // widen window to 14 days
         const recentParlays = parlays.filter(p => {
             // Prefer structured dates if provided
             const end = p.endDate instanceof Date && !isNaN(p.endDate) ? p.endDate : (() => {
@@ -824,7 +824,7 @@ class ParlayKing {
                 const parsed = this.parseDateTimeSafe(parts[parts.length - 1]);
                 return parsed && !isNaN(parsed) ? parsed : null;
             })();
-            return (end || new Date()) >= sevenDaysAgo;
+            return (end || new Date()) >= cutoff;
         });
         
         // Update stats
