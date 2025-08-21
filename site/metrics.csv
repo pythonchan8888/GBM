@@ -1,15 +1,15 @@
 metric,value
-run_id,manual_run_20250815
-started_at,2025-08-15 16:00:00
-finished_at,2025-08-15 16:15:00
-train_rows,15420
-test_rows,3855
-poisson_home_loss,0.7894
-poisson_away_loss,0.8123
-pnl_30d,2847.50
-stake_30d,12500.00
-bets_30d,127
-roi_30d_pct,22.78
-win_rate_30d_pct,58.3
-non_losing_rate_30d_pct,68.5
-avg_win_return_30d_pct,39.2
+run_id,20250815_131107
+started_at,2025-08-15 13:19:26.968001+00:00
+finished_at,2025-08-15 13:19:26.968001+00:00
+train_rows,4561
+test_rows,913
+poisson_home_loss,
+poisson_away_loss,
+pnl_30d,1328532905.239466222453342
+stake_30d,7300737279.622108852801545
+bets_30d,916
+roi_30d_pct,18.197243022943457
+win_rate_30d_pct,57.96943231441048
+non_losing_rate_30d_pct,62.66375545851528
+avg_win_return_30d_pct,86.9256120527307

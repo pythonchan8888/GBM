@@ -1,8 +1,18 @@
 dt_gmt8,league,home,away,rec_text,line,odds,ev,confidence
-2025-08-15 20:00:00,England Premier League,Manchester City,Arsenal,AH -0.5,-0.5,1.92,0.089,High
-2025-08-15 19:45:00,Spain La Liga,Real Madrid,Barcelona,AH +0.25,0.25,1.87,0.076,High
-2025-08-15 18:30:00,Germany Bundesliga,Bayern Munich,Borussia Dortmund,AH -0.75,-0.75,2.15,0.112,Medium
-2025-08-15 17:15:00,Italy Serie A,Juventus,AC Milan,AH +0.5,0.5,1.95,0.058,Medium
-2025-08-15 16:00:00,France Ligue 1,PSG,Lyon,AH -1.0,-1.0,2.05,0.095,High
-2025-08-14 21:30:00,England Premier League,Liverpool,Chelsea,AH +0.25,0.25,1.83,0.067,Medium
-2025-08-14 20:15:00,Spain La Liga,Atletico Madrid,Valencia,AH -0.5,-0.5,1.98,0.082,High
+2025-08-16 01:00:00+00:00,Spain La Liga,Girona FC,Rayo Vallecano,Rayo Vallecano +0.25,0.25,1.93,0.3589,High
+2025-08-16 03:00:00+00:00,England Premier League,Liverpool,AFC Bournemouth,AFC Bournemouth +1.5,1.50,1.93,0.4172,High
+2025-08-16 03:30:00+00:00,Spain La Liga,Villarreal,Real Oviedo,Real Oviedo +1.5,1.50,1.93,0.6251,Medium
+2025-08-16 19:30:00+00:00,England Premier League,Aston Villa,Newcastle United,Newcastle United +0.25,0.25,1.93,0.4348,High
+2025-08-16 22:00:00+00:00,England Premier League,Tottenham Hotspur,Burnley,Burnley +1.5,1.50,1.93,0.5828,High
+2025-08-16 22:00:00+00:00,England Premier League,Sunderland,West Ham United,Sunderland +0.25,0.25,1.93,0.3646,Medium
+2025-08-16 22:00:00+00:00,England Premier League,Brighton & Hove Albion,Fulham,Brighton & Hove Albion -0.5,-0.50,1.93,0.1964,High
+2025-08-17 00:30:00+00:00,England Premier League,Wolverhampton Wanderers,Manchester City,Wolverhampton Wanderers +1.25,1.25,1.93,0.4728,High
+2025-08-17 01:30:00+00:00,Spain La Liga,RCD Mallorca,FC Barcelona,RCD Mallorca +1.25,1.25,1.93,0.5053,High
+2025-08-17 03:30:00+00:00,Spain La Liga,Deportivo Alavés,Levante UD,Levante UD +0.25,0.25,1.93,0.2108,High
+2025-08-17 21:00:00+00:00,England Premier League,Chelsea,Crystal Palace,Crystal Palace +1.0,1.00,1.93,0.2192,High
+2025-08-17 21:00:00+00:00,England Premier League,Nottingham Forest,Brentford,Nottingham Forest -0.25,-0.25,1.93,0.2161,High
+2025-08-17 23:00:00+00:00,Spain La Liga,Celta de Vigo,Getafe CF,Getafe CF +0.75,0.75,1.93,0.4104,High
+2025-08-17 23:30:00+00:00,England Premier League,Manchester United,Arsenal,Arsenal -0.25,-0.25,1.93,0.4242,High
+2025-08-18 01:30:00+00:00,Spain La Liga,Athletic Club Bilbao,Sevilla FC,Sevilla FC +1.0,1.00,1.93,0.4709,High
+2025-08-18 03:30:00+00:00,Spain La Liga,RCD Espanyol,Atlético Madrid,RCD Espanyol +1.0,1.00,1.93,0.2948,High
+2025-08-19 03:00:00+00:00,Spain La Liga,Elche CF,Real Betis,Real Betis -0.25,-0.25,1.93,0.3763,High
