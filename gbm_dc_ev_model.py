@@ -14,6 +14,16 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta # Ensure timedelta is imported
 import os
+import logging
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=PerformanceWarning)
+
+api_key = os.environ.get('FOOTYSTATS_API_KEY')
+if not api_key:
+    raise ValueError("FOOTYSTATS_API_KEY environment variable not set. Please set it before running.")
+
+logging.basicConfig(level=logging.INFO, filename='recommendations_log.txt', filemode='w', format='%(asctime)s - %(message)s')
 
 print("\n--- Section 1 (Revised): Unified Data Fetching & Flagging ---")
 
@@ -950,7 +960,6 @@ if 'goals_scored' in team_game_stats_for_synthetics.columns and 'xg_for' in team
     # For xG=0, Goals=0, ratio could be 1 (met expectation) or NaN. Current logic gives NaN.
 else:
     print("Warning: Cannot calculate xG-related synthetic features; 'goals_scored' or 'xg_for' missing or not numeric.")
-
 # b) Shooting Efficiency / Accuracy
 if 'goals_scored' in team_game_stats_for_synthetics.columns and \
    'shots_for' in team_game_stats_for_synthetics.columns and \
@@ -2361,7 +2370,6 @@ if len(y_h_train_final) > 50:
     
     optimal_phi = phi_mean  # Update global fallback
     print("Phi regression model training complete.")
-
 else:
     print("Insufficient data for phi model training, using simple optimization...")
     # Fallback to simple segmented approach
@@ -3628,7 +3636,6 @@ else:
         current_bankroll += profit
 
     refined_bets_placed_df = refined_backtest_df[refined_backtest_df['stake_ah'] > 0].copy()
-
     if not refined_bets_placed_df.empty:
         num_bets_refined = len(refined_bets_placed_df)
         total_profit_loss_refined = refined_bets_placed_df['profit_loss_refined_ah'].sum()
@@ -3729,8 +3736,10 @@ else:
                     )
                 conn.commit(); cur.close(); conn.close()
                 print("Bet records inserted to Postgres.")
+                logging.info("Bet records inserted to Postgres successfully.")
             except Exception as e:
                 print(f"Postgres bets insert skipped/failed: {e}")
+                logging.error(f"Postgres insert failed: {e}")
     else:
         print("No bets were placed with the automated refined segmented policy.")
 
@@ -3913,6 +3922,7 @@ def write_to_google_sheet(dataframe, base_sheet_name, worksheet_name_to_write, u
         return True, worksheet.spreadsheet.url
     except Exception as e:
         print(f"Error writing to Google Sheet: {e}")
+        logging.error(f"Google Sheet write failed: {e}")
         return False, None
 
 def format_google_sheet(spreadsheet_name, worksheet_name, use_service_account=False, service_account_file=None, cols_for_3dp=None):
@@ -4424,7 +4434,10 @@ else:
             decisions_df = pd.DataFrame(refined_future_decisions.to_list(), columns=['bet_type_refined_ah', 'line_betted_on_refined', 'odds_betted_on_refined', 'ev_for_bet_refined'], index=recommendations_df_in_progress.index)
             for col in decisions_df.columns: recommendations_df_in_progress[col] = decisions_df[col]
             final_recommendations_df = recommendations_df_in_progress[recommendations_df_in_progress['bet_type_refined_ah'] != 'no_bet'].copy()
-        else: final_recommendations_df = pd.DataFrame() # Empty if policy missing
+            logging.info(f"Policy applied. Bets before filter: {len(recommendations_df_in_progress)}, after: {len(final_recommendations_df)}")  # NEW: Log counts
+        else: 
+            final_recommendations_df = pd.DataFrame() 
+            logging.warning("AUTOMATED_BETTING_POLICY missing - no recommendations generated")
         print(f"Generated {len(final_recommendations_df)} betting recommendations.")
         # Step 8: Output Recommendations
         if not final_recommendations_df.empty:
@@ -4455,7 +4468,7 @@ else:
                                 f"Short insight (<50 words): Agree/Disagree on betting {row['Recommendation']} @ {row['odds_betted_on_refined']:.2f}, EV {row['ev_for_bet_refined']:.2f}. "
                                 f"Focus on: injuries/suspensions, team motivation (e.g., relegation/cup), manager-player bust-ups. "
                                 f"Match: {row['home_name']} vs {row['away_name']} ({row['league']})."
-                                "Constraints: return JSON only { 'tweet': '<140 chars, no emojis>' }."
+                                "Constraints: Respond with VALID JSON ONLY in this exact format: { \"tweet\": \"<your insight here, <140 chars, no emojis>\" }. Do not add extra text."
                             )
                         }],
                         "max_tokens": 80,
@@ -4466,14 +4479,25 @@ else:
                         response = requests.post(url, headers=headers, json=data, timeout=20)
                         response.raise_for_status()
                         raw = response.json()['choices'][0]['message']['content']
+                        logging.info(f"Grok raw response: {raw}")  # NEW: Log full response for debug
                         try:
                             content = json.loads(raw)
                             tweet = (content.get('tweet') or '').strip()
                             return tweet if tweet else "Unable to parse response."
-                        except Exception:
+                        except json.JSONDecodeError:  # NEW: More robust parsing
+                            import re
+                            match = re.search(r'\{.*"tweet":\s*"([^"]+)"\}', raw, re.DOTALL)
+                            if match:
+                                return match.group(1).strip()
+                            # NEW: Ultimate fallback - extract any text between quotes
+                            match_fallback = re.search(r'"([^"]+)"', raw)
+                            if match_fallback:
+                                tweet = match_fallback.group(1).strip()
+                                logging.info("Used fallback text extraction for Grok response.")
+                                return tweet
                             return "Unable to parse response."
                     except Exception as e:
-                        print(f"Grok API error: {e}")
+                        logging.error(f"Grok API error: {e}")
                         return "Unable to fetch insight—rely on EV!"
 
                 final_recommendations_df['kings_call'] = ''
@@ -4515,6 +4539,7 @@ else:
                                 w.writerow(r)
                 except Exception as _e:
                     print(f"Debug write failed: {_e}")
+                    logging.error(f"Debug write failed: {_e}")
 
             if 'kings_call' not in final_recommendations_df.columns:
                 final_recommendations_df['kings_call'] = "King's insight: Solid bet based on ML analysis—watch this space!"
@@ -4592,7 +4617,6 @@ else:
                         poisson_away_loss numeric
                     );
                     CREATE TABLE IF NOT EXISTS recommendations(
-                        rec_id bigserial PRIMARY KEY,
                         run_id text,
                         dt_gmt8 timestamptz,
                         league text,
@@ -4602,7 +4626,8 @@ else:
                         line numeric,
                         odds numeric,
                         ev numeric,
-                        confidence text
+                        confidence text,
+                        UNIQUE (run_id, dt_gmt8, home, away, line)
                     );
                     """)
                     # Insert run row (basic timing only here)
@@ -4638,8 +4663,10 @@ else:
                         )
                     conn.commit(); cur.close(); conn.close()
                     print("Recommendations inserted to Postgres.")
+                    logging.info("Recommendations inserted to Postgres successfully.")
                 except Exception as e:
                     print(f"Postgres insert skipped/failed: {e}")
+                    logging.error(f"Postgres insert failed: {e}")
 
             # Additional exports (CSV and HTML)
             try:
@@ -4668,6 +4695,19 @@ else:
                 if write_success:
                     format_google_sheet(GOOGLE_SHEET_NAME, current_worksheet_name, use_service_account=USE_SERVICE_ACCOUNT_AUTH, service_account_file=SERVICE_ACCOUNT_FILE if USE_SERVICE_ACCOUNT_AUTH else None, cols_for_3dp=['ev_for_bet_refined', 'pred_home_goals', 'pred_away_goals'])
                     if spreadsheet_url: print(f"Access the formatted sheet at: {spreadsheet_url}")
+
+            # NEW: Copy to site/latest_recommendations.csv for the website and handle empty DF
+            import shutil
+            site_csv = 'site/latest_recommendations.csv'
+            os.makedirs('site', exist_ok=True)
+            if not df_to_write.empty:
+                shutil.copy(csv_path, site_csv)
+                logging.info(f"Copied recommendations to {site_csv} (rows: {len(df_to_write)})")
+            else:
+                logging.warning("No recommendations to copy - DF is empty")
+                with open(site_csv, 'w') as f:
+                    f.write('')  # Write empty file to avoid site errors
+            print(f"Copied to site CSV: {site_csv}")
         else:
             print("No betting recommendations generated based on the policy for the upcoming period.")
 
