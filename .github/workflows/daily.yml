@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write  # Changed to write for commit/push
   pages: write
   id-token: write
 
@@ -18,9 +18,13 @@ jobs:
       GBM_QUICK: ${{ vars.GBM_QUICK || '0' }}
       PARLAY_RETENTION_DAYS: ${{ vars.PARLAY_RETENTION_DAYS || '180' }}
       XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+      FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}  # If needed for daily runs
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true  # For commit/push later
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -38,13 +42,13 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: |
+          python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then
-            python -m pip install --upgrade pip
             pip install -r requirements.txt
           else
-            python -m pip install --upgrade pip
             pip install numpy pandas requests lightgbm scikit-learn scipy seaborn matplotlib psycopg2-binary shap
           fi
+          pip install gspread oauth2client  # Added for Google Sheets support
 
       - name: Apply database safeguards
         if: ${{ env.DATABASE_URL != '' }}
@@ -89,16 +93,16 @@ jobs:
 
       - name: Run daily prediction pipeline
         env:
-            FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
-            DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           python gbm_dc_ev_model.py
 
       - name: Retry prediction if failed
         if: failure()
         env:
-            FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
-            DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           echo "⚠️ Retrying prediction pipeline..."
           python gbm_dc_ev_model.py || echo "Retry also failed, continuing with deployment"
@@ -320,7 +324,7 @@ jobs:
               rows = cur.fetchall()
               with open('site/latest_recommendations.csv','w', newline='', encoding='utf-8') as f:
                   w = csv.writer(f); w.writerow(["dt_gmt8","league","home","away","rec_text","line","odds","ev","confidence"]); w.writerows(rows)
-              # Settled bets for parlay calculation (30 days)
+              # Settled bets for parlay calculation (retention days)
               cur.execute(f"""
               select fixture_id, league, home, away, home_score, away_score,
                      line_betted_on_refined, bet_type_refined_ah, odds_betted_on_refined, 
@@ -533,47 +537,6 @@ jobs:
           print('Built parlay_wins.csv')
           PY
 
-      - name: Build artifacts index
-        shell: bash
-        run: |
-          cat > site/artifacts.html <<'HTML'
-          <!doctype html>
-          <html lang="en">
-          <head>
-            <meta charset="utf-8"/>
-            <meta name="viewport" content="width=device-width, initial-scale=1"/>
-            <title>Football Model Artifacts</title>
-            <style>
-              body { background:#1D262D; color:#E8E4D9; font-family: system-ui, sans-serif; padding:24px; }
-              a { color:#2CB191; }
-              h1 { color:#DCE667; margin-bottom: 8px; }
-              .card { background:#202a31; padding:16px; border-radius:10px; margin:12px 0; }
-              .grid { display:grid; gap:12px; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); }
-            </style>
-            </head>
-            <body>
-              <h1>Football Model – Latest Artifacts</h1>
-              <div class="grid">
-                <div class="card"><h3>Report</h3>
-                  <p><a href="report.html">Open report.html</a></p>
-                </div>
-                <div class="card"><h3>Metrics</h3>
-                  <p><a href="metrics.csv">metrics.csv</a></p>
-                </div>
-                <div class="card"><h3>Recommendations</h3>
-                  <p><a href="recommendations.csv">recommendations.csv</a></p>
-                  <p><a href="latest_recommendations.csv">latest_recommendations.csv</a></p>
-                </div>
-                <div class="card"><h3>Datasets</h3>
-                  <p><a href="pnl_by_month.csv">pnl_by_month.csv</a></p>
-                  <p><a href="bankroll_series_90d.csv">bankroll_series_90d.csv</a></p>
-                </div>
-              </div>
-              <p style="opacity:.7;margin-top:24px;">Updated: ${GITHUB_RUN_NUMBER}</p>
-            </body>
-          </html>
-          HTML
-
       - name: Validate King's Call (non-blocking)
         shell: bash
         run: |
@@ -601,6 +564,16 @@ jobs:
                   print("ℹ️  Some King's Call entries are missing. This is informational only.")
           PY
 
+      - name: Commit and push generated files
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add site/* artifacts/latest/* || true
+          git commit -m "Update recommendations and artifacts from daily run" || echo "No changes to commit"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
         continue-on-error: true
@@ -620,5 +593,3 @@ jobs:
         if: failure()
         run: |
           echo "🚨 Daily workflow failed! Check the logs above for details."
-          echo "Common issues: API rate limits, database connection, or CSV parsing errors."
-
