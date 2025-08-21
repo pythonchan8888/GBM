@@ -2666,6 +2666,9 @@ else:
     ah_lines_to_calculate = [-1.5, -1.25, -1.0, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5]
     # You mentioned you're not keen on >2 goals, so this range is reasonable.
 
+    # Collect all new columns in a dict to concat at once (avoids fragmentation)
+    new_cols = {}
+    
     for line in ah_lines_to_calculate:
         col_name_p_home_covers = f'p_home_covers_ah_{str(line).replace(".", "p")}' # e.g., p_home_covers_ah_-0p5
         # Store probabilities of different outcomes for this line
@@ -2682,28 +2685,31 @@ else:
 
         temp_outcomes_df = pd.DataFrame(outcomes_list, index=test_matches_df.index)
 
-        test_matches_df[col_win] = temp_outcomes_df['win']
-        test_matches_df[col_loss] = temp_outcomes_df['loss']
-        test_matches_df[col_push] = temp_outcomes_df['push']
-        test_matches_df[col_half_win] = temp_outcomes_df['half_win']
-        test_matches_df[col_half_loss] = temp_outcomes_df['half_loss']
+        new_cols[col_win] = temp_outcomes_df['win']
+        new_cols[col_loss] = temp_outcomes_df['loss']
+        new_cols[col_push] = temp_outcomes_df['push']
+        new_cols[col_half_win] = temp_outcomes_df['half_win']
+        new_cols[col_half_loss] = temp_outcomes_df['half_loss']
 
         # For EV calculation, P(Home Covers) often means P(Win) + 0.5 * P(Half-Win) - 0.5 * P(Half-Loss)
         # Or more simply, if odds are for winning the bet: P(Win) + P(Half-Win)
         # If odds are for "not losing the bet": P(Win) + P(Half-Win) + P(Push)
         # Let's define P(Home Covers) as the probability of a positive return on a "Home AH line" bet
-        test_matches_df[col_name_p_home_covers] = temp_outcomes_df['win'] + \
-                                                  0.5 * temp_outcomes_df['half_win'] - \
-                                                  0.5 * temp_outcomes_df['half_loss']
-                                                  # Note: P(Push) means stake returned, EV contribution is 0 for that part.
+        new_cols[col_name_p_home_covers] = temp_outcomes_df['win'] + \
+                                           0.5 * temp_outcomes_df['half_win'] - \
+                                           0.5 * temp_outcomes_df['half_loss']
+                                           # Note: P(Push) means stake returned, EV contribution is 0 for that part.
 
         # Also calculate P(Away Covers AH -Line)
         # If Home is -0.75, Away is +0.75.
         # P(Away Covers +0.75) = P(Home Loses on -0.75) + 0.5 * P(Home Half-Loses on -0.75)
         col_name_p_away_covers = f'p_away_covers_ah_{str(-line).replace(".", "p")}' # e.g., p_away_covers_ah_0p75
-        test_matches_df[col_name_p_away_covers] = temp_outcomes_df['loss'] + \
-                                                  0.5 * temp_outcomes_df['half_loss'] - \
-                                                  0.5 * temp_outcomes_df['half_win']
+        new_cols[col_name_p_away_covers] = temp_outcomes_df['loss'] + \
+                                           0.5 * temp_outcomes_df['half_loss'] - \
+                                           0.5 * temp_outcomes_df['half_win']
+
+    # Concat all new columns at once (fixes PerformanceWarning)
+    test_matches_df = pd.concat([test_matches_df, pd.DataFrame(new_cols, index=test_matches_df.index)], axis=1)
 
 
     print("Asian Handicap outcome probabilities calculated for various lines.")
@@ -2835,8 +2841,12 @@ else:
             market_implied_lambda_h_list.append(np.nan)
             market_implied_lambda_a_list.append(np.nan)
 
-    test_matches_df['market_lambda_h'] = market_implied_lambda_h_list
-    test_matches_df['market_lambda_a'] = market_implied_lambda_a_list
+    # Collect market lambdas and derived columns in a dict to avoid fragmentation
+    market_cols = {
+        'market_lambda_h': market_implied_lambda_h_list,
+        'market_lambda_a': market_implied_lambda_a_list
+    }
+    test_matches_df = pd.concat([test_matches_df, pd.DataFrame(market_cols, index=test_matches_df.index)], axis=1)
     print("Market-implied lambdas calculated.")
 
     # Calculate market-implied goal difference
@@ -2869,10 +2879,14 @@ else:
     SYNTHETIC_AH_ODDS_HOME = 1.925
     SYNTHETIC_AH_ODDS_AWAY = 1.925
 
-    test_matches_df['synth_ah_odds_home_market_based'] = np.where(pd.notna(test_matches_df['synth_ah_line_home_market_based']),
-                                                                  SYNTHETIC_AH_ODDS_HOME, np.nan)
-    test_matches_df['synth_ah_odds_away_market_based'] = np.where(pd.notna(test_matches_df['synth_ah_line_home_market_based']),
-                                                                  SYNTHETIC_AH_ODDS_AWAY, np.nan)
+    # Collect odds columns to avoid more fragmentation
+    odds_cols = {
+        'synth_ah_odds_home_market_based': np.where(pd.notna(test_matches_df['synth_ah_line_home_market_based']),
+                                                    SYNTHETIC_AH_ODDS_HOME, np.nan),
+        'synth_ah_odds_away_market_based': np.where(pd.notna(test_matches_df['synth_ah_line_home_market_based']),
+                                                    SYNTHETIC_AH_ODDS_AWAY, np.nan)
+    }
+    test_matches_df = pd.concat([test_matches_df, pd.DataFrame(odds_cols, index=test_matches_df.index)], axis=1)
 
     print("Synthetic Asian Handicap lines and odds (market-based) generated.")
 
