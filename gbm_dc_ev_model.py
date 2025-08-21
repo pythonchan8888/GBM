@@ -17,7 +17,8 @@ import os
 import logging
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
-warnings.filterwarnings("ignore", category=PerformanceWarning)
+# PerformanceWarning is pandas-specific, so filter after pandas import
+warnings.filterwarnings("ignore", category=pd.errors.PerformanceWarning)
 
 api_key = os.environ.get('FOOTYSTATS_API_KEY')
 if not api_key:
