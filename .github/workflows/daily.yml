@@ -62,16 +62,53 @@ jobs:
               try:
                   conn = psycopg2.connect(db_url)
                   cur = conn.cursor()
-                  # Add unique constraint if it doesn't exist (graceful failure)
-                  try:
+                  
+                  # First ensure tables exist with proper constraints
+                  print("Creating/ensuring tables exist...")
+                  cur.execute("""
+                  CREATE TABLE IF NOT EXISTS runs(
+                      run_id text PRIMARY KEY,
+                      started_at timestamptz,
+                      finished_at timestamptz,
+                      train_rows int,
+                      test_rows int,
+                      poisson_home_loss numeric,
+                      poisson_away_loss numeric
+                  );
+                  """)
+                  
+                  cur.execute("""
+                  CREATE TABLE IF NOT EXISTS recommendations(
+                      run_id text,
+                      dt_gmt8 timestamptz,
+                      league text,
+                      home text,
+                      away text,
+                      rec_text text,
+                      line numeric,
+                      odds numeric,
+                      ev numeric,
+                      confidence text
+                  );
+                  """)
+                  
+                  # Check if unique constraint exists
+                  cur.execute("""
+                  SELECT COUNT(*) FROM pg_constraint 
+                  WHERE conname = 'unique_recommendation_per_match_per_run' 
+                  AND conrelid = 'recommendations'::regclass
+                  """)
+                  constraint_exists = cur.fetchone()[0] > 0
+                  
+                  if not constraint_exists:
                       cur.execute("""
                       ALTER TABLE recommendations 
                       ADD CONSTRAINT unique_recommendation_per_match_per_run 
                       UNIQUE (run_id, dt_gmt8, home, away, line)
                       """)
                       print("✅ Added unique constraint for recommendations")
-                  except psycopg2.Error:
-                      print("ℹ️  Unique constraint already exists or table not ready")
+                  else:
+                      print("ℹ️  Unique constraint already exists")
                   
                   # Add performance indexes (safe to run multiple times)
                   cur.execute("""
@@ -83,12 +120,14 @@ jobs:
                   ON recommendations (dt_gmt8) 
                   WHERE dt_gmt8 >= now() - interval '7 days'
                   """)
+                  
                   conn.commit()
                   cur.close()
                   conn.close()
                   print("✅ Database safeguards applied successfully")
               except Exception as e:
-                  print(f"Database safeguards failed: {e}")
+                  print(f"❌ Database safeguards failed: {e}")
+                  raise  # Fail the workflow if safeguards fail
           PY
 
       - name: Run daily prediction pipeline

@@ -4465,13 +4465,190 @@ else:
             final_recommendations_df['Recommendation'] = final_recommendations_df.apply(create_recommendation_text, axis=1)
 
             # New: Generate King's Call
-            import requests
-            import json
             import os
+            import requests
+            import time
+            import json
+            import re
+            from pathlib import Path
+            import logging
 
             xai_api_key = os.environ.get('XAI_API_KEY')
             # --- King's Call: Grok integration with debug trail ---
             if xai_api_key:
+                # System prompt for betting analysis
+                SYSTEM_PROMPT = """
+                You are 'The King', a cynical, sharp-tongued betting analyst known for brutal honesty and sarcastic puns. Your insights are called the "King's Call".
+
+                Your task is to critically analyze a betting recommendation using live search for real-time data (injuries, form, motivation, etc.) and respond ONLY with a JSON object with the following structure:
+                {
+                "agreement": "Agree", "Disagree", or "Neutral",
+                "insight": "Your King's Call. A single, punchy sentence, 80-140 chars. Start with 'Agree:' or 'Disagree:'. Infuse with sarcasm/puns, but absolutely NO royal/king-themed references or words (e.g., king, crown, royal, throne).",
+                "reasoning": "Your detailed analysis (30-50 words) explaining why you agree/disagree. Be critical, use sarcasm and puns, but absolutely NO royal/king-themed references or words (e.g., king, crown, royal, throne).",
+                "sources": ["A list of 1-3 key sources used."]
+                }
+
+                Do NOT add any text outside of this JSON structure.
+                """
+
+                # Validation function for insights (helper for get_grok_response)
+                def validate_insight(response: dict) -> bool:
+                    insight = response.get('insight', '')
+                    reasoning = response.get('reasoning', '')
+                    agreement = response.get('agreement', '')
+                    if not insight or len(insight) < 80 or len(insight) > 140:
+                        logging.warning(f"Validation failed: Invalid insight length ({len(insight)} chars).")
+                        return False
+                    if not (30 <= len(reasoning.split()) <= 50):
+                        logging.warning(f"Validation failed: Invalid reasoning length ({len(reasoning.split())} words).")
+                        return False
+                    if agreement not in ['Agree', 'Disagree', 'Neutral']:
+                        logging.warning(f"Validation failed: Invalid agreement value ({agreement}).")
+                        return False
+                    if not insight.startswith(f"{agreement}:"):
+                        logging.warning(f"Validation failed: Insight does not start with '{agreement}:'.")
+                        return False
+                    # Check for sarcasm/pun (basic keyword check)
+                    sarcasm_keywords = ['joke', 'laughable', 'crown', 'royal', 'fool', 'clown', 'mess', 'flop']
+                    if not any(keyword in insight.lower() or keyword in reasoning.lower() for keyword in sarcasm_keywords):
+                        logging.warning("Validation failed: No sarcastic tone or pun detected.")
+                        return False
+                    return True
+
+                # Function to get Grok response with live search and structured output
+                def get_grok_response(prompt: str, model="grok-4-0709", enable_retry=False):
+                    url = "https://api.x.ai/v1/chat/completions"
+                    headers = {"Authorization": f"Bearer {XAI_API_KEY}", "Content-Type": "application/json"}
+                    messages = [
+                        {"role": "system", "content": SYSTEM_PROMPT},
+                        {"role": "user", "content": prompt}
+                    ]
+                    data = {
+                        "model": model,
+                        "messages": messages,
+                        "max_tokens": 2000,  # For reasoning + output
+                        "temperature": 0.8,  # For sarcastic personality
+                        "search_parameters": {"mode": "on"}  # Enable live search
+                    }
+                    max_retries = 3
+                    for attempt in range(max_retries):
+                        try:
+                            response = requests.post(url, headers=headers, json=data, timeout=60)  # Increased timeout
+                            if response.status_code != 200:
+                                logging.error(f"API response code: {response.status_code}, text: {response.text}")
+                                return {
+                                    "agreement": "Neutral",
+                                    "insight": "API error—check log.",
+                                    "reasoning": f"API call failed with status {response.status_code}.",
+                                    "sources": [],
+                                    "raw_response": response.json() if response.content else {}
+                                }
+                            raw_response = response.json()
+                            logging.info(f"Full raw response: {json.dumps(raw_response, indent=2)}")
+                            raw_content = raw_response['choices'][0]['message']['content'].strip()
+                            # Save raw response to file for diagnostics
+                            Path('artifacts/raw_responses').mkdir(parents=True, exist_ok=True)
+                            with open(f'artifacts/raw_responses/response_{int(time.time())}_{model}.json', 'w', encoding='utf-8') as f:
+                                json.dump(raw_response, f, indent=2)
+                            if not raw_content:
+                                logging.warning("Empty content from Grok—using default.")
+                                return {
+                                    "agreement": "Neutral",
+                                    "insight": "Unable to fetch insight—rely on EV!",
+                                    "reasoning": "Empty response from Grok.",
+                                    "sources": [],
+                                    "raw_response": raw_response
+                                }
+                            try:
+                                content = json.loads(raw_content)
+                                agreement = content.get('agreement', 'Neutral')
+                                insight = content.get('insight', 'Unable to parse insight.')
+                                reasoning = content.get('reasoning', 'No reasoning provided.')
+                                sources = content.get('sources', [])
+                                if len(insight) > 140:
+                                    logging.warning(f"Insight too long ({len(insight)} chars)—truncating.")
+                                    insight = insight[:140]
+                                if validate_insight({"insight": insight, "reasoning": reasoning, "agreement": agreement}):
+                                    logging.info("Insight validated successfully.")
+                                    return {
+                                        "agreement": agreement,
+                                        "insight": insight,
+                                        "reasoning": reasoning,
+                                        "sources": sources,
+                                        "raw_response": raw_response
+                                    }
+                                if enable_retry:
+                                    logging.warning("Response failed validation—retrying with stricter constraints.")
+                                    messages.append({"role": "assistant", "content": raw_content})
+                                    messages.append({"role": "user", "content": "Shorten insight to 80-140 chars starting with 'Agree:' or 'Disagree:'. Keep reasoning to 30-50 words. Ensure valid JSON."})
+                                    data["messages"] = messages
+                                    data["max_tokens"] = 1500
+                                    data["search_parameters"] = {"mode": "off"}  # Disable search on retry
+                                    continue
+                                return {
+                                    "agreement": agreement,
+                                    "insight": insight,
+                                    "reasoning": reasoning,
+                                    "sources": sources,
+                                    "raw_response": raw_response
+                                }
+                            except json.JSONDecodeError:
+                                logging.warning("JSON parse failed—using fallback.")
+                                match = re.search(r'\{.*"insight":\s*"([^"]+)"', raw_content, re.DOTALL)
+                                if match:
+                                    return {
+                                        "agreement": "Neutral",
+                                        "insight": match.group(1).strip()[:140],
+                                        "reasoning": "Fallback: JSON parsing failed.",
+                                        "sources": [],
+                                        "raw_response": raw_response
+                                    }
+                                return {
+                                    "agreement": "Neutral",
+                                    "insight": "Unable to parse response.",
+                                    "reasoning": "Fallback: JSON parsing failed.",
+                                    "sources": [],
+                                    "raw_response": raw_response
+                                }
+                        except requests.exceptions.ReadTimeout as e:
+                            logging.warning("Timeout hit—retrying without search.")
+                            data["search_parameters"] = {"mode": "off"}
+                            continue
+                        except requests.exceptions.HTTPError as e:
+                            logging.error(f"HTTP error: {e} - Status: {e.response.status_code if e.response else 'Unknown'}")
+                            raw_response = e.response.json() if e.response and e.response.content else {}
+                            if e.response and e.response.status_code == 429:
+                                logging.warning("Rate limit hit—sleeping 60s.")
+                                time.sleep(60)
+                                continue
+                            elif e.response and e.response.status_code == 404:
+                                logging.error("Model not found—trying grok-3.")
+                                data["model"] = "grok-3"
+                                continue
+                            return {
+                                "agreement": "Neutral",
+                                "insight": "API error—check log.",
+                                "reasoning": f"HTTP error: {e}",
+                                "sources": [],
+                                "raw_response": raw_response
+                            }
+                        except Exception as e:
+                            logging.error(f"Grok API error: {e}")
+                            return {
+                                "agreement": "Neutral",
+                                "insight": "Unable to fetch insight—rely on EV!",
+                                "reasoning": f"API call failed: {e}",
+                                "sources": [],
+                                "raw_response": {}
+                            }
+                        logging.info(f"Retry {attempt+1}/{max_retries}.")
+                    return {
+                        "agreement": "Neutral",
+                        "insight": "Unable to fetch insight—rely on EV!",
+                        "reasoning": "API call failed after retries.",
+                        "sources": [],
+                        "raw_response": {}
+                    }
                 def get_grok_response(prompt: str):
                     url = "https://api.x.ai/v1/chat/completions"
                     headers = {"Authorization": f"Bearer {xai_api_key}", "Content-Type": "application/json"}
@@ -4523,8 +4700,8 @@ else:
                         f"Focus on: injuries/suspensions, team motivation (e.g., relegation/cup), manager-player bust-ups. "
                         f"Match: {row['home_name']} vs {row['away_name']} ({row['league']})."
                     )
-                    tweet = get_grok_response(prompt)
-                    final_recommendations_df.at[idx, 'kings_call'] = tweet
+                    result = get_grok_response(prompt)
+                    final_recommendations_df.at[idx, 'kings_call'] = result['insight']
                     debug_rows.append({
                         'datetime_gmt8': row.get('datetime_gmt8'),
                         'league': row.get('league'),
@@ -4535,7 +4712,7 @@ else:
                         'ev': row.get('ev_for_bet_refined'),
                         'prompt_used': prompt,
                         'model': 'grok-4-0709',
-                        'parsed_tweet': tweet
+                        'parsed_tweet': result['insight']
                     })
 
                 # Write debug CSV for inspection (artifacts and site)
@@ -4610,7 +4787,17 @@ else:
             df_to_write = final_recommendations_df[cols_to_output_existing].copy()
 
             print("\n--- Recommended Bets for Upcoming Period (Sorted) ---")
-            print(df_to_write)
+            try:
+                # Handle Unicode characters in team names safely
+                pd.set_option('display.unicode.east_asian_width', True)
+                pd.set_option('display.unicode.ambiguous_as_wide', True)
+                print(df_to_write.to_string(index=False))
+            except UnicodeEncodeError:
+                print("Recommendations generated successfully (Unicode display suppressed for compatibility)")
+                print(f"Total recommendations: {len(df_to_write)}")
+                for col in ['home_name', 'away_name', 'league', 'Recommendation']:
+                    if col in df_to_write.columns:
+                        print(f"{col} samples: {df_to_write[col].head(3).tolist()}")
 
             # Optional: write to Postgres/Supabase if DATABASE_URL is provided
             import os
