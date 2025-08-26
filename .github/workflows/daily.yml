@@ -88,7 +88,11 @@ jobs:
                       line numeric,
                       odds numeric,
                       ev numeric,
-                      confidence text
+                      confidence text,
+                      kings_call_insight text,
+                      kings_call_agreement text,
+                      kings_call_reasoning text,
+                      kings_call_sources text
                   );
                   """)
                   
@@ -109,6 +113,16 @@ jobs:
                       print("✅ Added unique constraint for recommendations")
                   else:
                       print("ℹ️  Unique constraint already exists")
+                  
+                  # Add King's Call columns if they don't exist (migration)
+                  try:
+                      cur.execute("ALTER TABLE recommendations ADD COLUMN IF NOT EXISTS kings_call_insight text")
+                      cur.execute("ALTER TABLE recommendations ADD COLUMN IF NOT EXISTS kings_call_agreement text")
+                      cur.execute("ALTER TABLE recommendations ADD COLUMN IF NOT EXISTS kings_call_reasoning text")
+                      cur.execute("ALTER TABLE recommendations ADD COLUMN IF NOT EXISTS kings_call_sources text")
+                      print("✅ King's Call columns added/verified")
+                  except Exception as e:
+                      print(f"⚠️  King's Call column migration: {e}")
                   
                   # Add performance indexes (safe to run multiple times)
                   cur.execute("""
@@ -350,9 +364,14 @@ jobs:
                      ROUND(CAST(line AS NUMERIC), 2) as line,
                      ROUND(CAST(odds AS NUMERIC), 2) as odds, 
                      ROUND(CAST(ev AS NUMERIC), 4) as ev, 
-                     confidence
+                     confidence,
+                     kings_call_insight,
+                     kings_call_agreement,
+                     kings_call_reasoning,
+                     kings_call_sources
               FROM (
                   SELECT dt_gmt8, league, home, away, rec_text, line, odds, ev, confidence,
+                         kings_call_insight, kings_call_agreement, kings_call_reasoning, kings_call_sources,
                          ROW_NUMBER() OVER (PARTITION BY dt_gmt8, home, away ORDER BY ev DESC) as rn
                   FROM recommendations 
                   WHERE dt_gmt8 >= now() - interval '7 days'
@@ -362,7 +381,7 @@ jobs:
               """)
               rows = cur.fetchall()
               with open('site/latest_recommendations.csv','w', newline='', encoding='utf-8') as f:
-                  w = csv.writer(f); w.writerow(["dt_gmt8","league","home","away","rec_text","line","odds","ev","confidence"]); w.writerows(rows)
+                  w = csv.writer(f); w.writerow(["dt_gmt8","league","home","away","rec_text","line","odds","ev","confidence","kings_call_insight","kings_call_agreement","kings_call_reasoning","kings_call_sources"]); w.writerows(rows)
               # Settled bets for parlay calculation (retention days)
               cur.execute(f"""
               select fixture_id, league, home, away, home_score, away_score,
@@ -412,7 +431,7 @@ jobs:
               with open('site/bankroll_series_90d.csv','w', newline='', encoding='utf-8') as f:
                   w = csv.writer(f); w.writerow(["dt_gmt8","cum_bankroll"])
               with open('site/latest_recommendations.csv','w', newline='', encoding='utf-8') as f:
-                  w = csv.writer(f); w.writerow(["dt_gmt8","league","home","away","rec_text","line","odds","ev","confidence"])
+                  w = csv.writer(f); w.writerow(["dt_gmt8","league","home","away","rec_text","line","odds","ev","confidence","kings_call_insight","kings_call_agreement","kings_call_reasoning","kings_call_sources"])
               with open('site/settled_bets.csv','w', newline='', encoding='utf-8') as f:
                   w = csv.writer(f); w.writerow(["fixture_id","league","home","away","home_score","away_score","line_betted_on_refined","bet_type_refined_ah","odds_betted_on_refined","stake","pl","status","dt_gmt8"])
               bets = []  # Empty list for heatmap processing

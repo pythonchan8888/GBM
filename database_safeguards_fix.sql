@@ -31,6 +31,12 @@ ADD CONSTRAINT check_ev_reasonable CHECK (ev BETWEEN -1.0 AND 1.0);
 ALTER TABLE recommendations 
 ADD CONSTRAINT check_odds_reasonable CHECK (odds >= 1.0);
 
+-- 6b. Add King's Call columns if they don't exist (migration for existing tables)
+ALTER TABLE recommendations ADD COLUMN IF NOT EXISTS kings_call_insight text;
+ALTER TABLE recommendations ADD COLUMN IF NOT EXISTS kings_call_agreement text;
+ALTER TABLE recommendations ADD COLUMN IF NOT EXISTS kings_call_reasoning text;
+ALTER TABLE recommendations ADD COLUMN IF NOT EXISTS kings_call_sources text;
+
 -- 7. Automatic cleanup trigger (optional) - removes old recommendations
 CREATE OR REPLACE FUNCTION cleanup_old_recommendations()
 RETURNS TRIGGER AS $$

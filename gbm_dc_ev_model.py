@@ -4518,7 +4518,7 @@ else:
                 # Function to get Grok response with live search and structured output
                 def get_grok_response(prompt: str, model="grok-4-0709", enable_retry=False):
                     url = "https://api.x.ai/v1/chat/completions"
-                    headers = {"Authorization": f"Bearer {XAI_API_KEY}", "Content-Type": "application/json"}
+                    headers = {"Authorization": f"Bearer {xai_api_key}", "Content-Type": "application/json"}
                     messages = [
                         {"role": "system", "content": SYSTEM_PROMPT},
                         {"role": "user", "content": prompt}
@@ -4649,59 +4649,32 @@ else:
                         "sources": [],
                         "raw_response": {}
                     }
-                def get_grok_response(prompt: str):
-                    url = "https://api.x.ai/v1/chat/completions"
-                    headers = {"Authorization": f"Bearer {xai_api_key}", "Content-Type": "application/json"}
-                    data = {
-                        "model": "grok-4-0709",
-                        "messages": [{
-                            "role": "user",
-                            "content": (
-                                f"Short insight (<50 words): Agree/Disagree on betting {row['Recommendation']} @ {row['odds_betted_on_refined']:.2f}, EV {row['ev_for_bet_refined']:.2f}. "
-                                f"Focus on: injuries/suspensions, team motivation (e.g., relegation/cup), manager-player bust-ups. "
-                                f"Match: {row['home_name']} vs {row['away_name']} ({row['league']})."
-                                "Constraints: Respond with VALID JSON ONLY in this exact format: { \"tweet\": \"<your insight here, <140 chars, no emojis>\" }. Do not add extra text."
-                            )
-                        }],
-                        "max_tokens": 80,
-                        "temperature": 0.7,
-                        "response_format": {"type": "json_object"}
-                    }
-                    try:
-                        response = requests.post(url, headers=headers, json=data, timeout=20)
-                        response.raise_for_status()
-                        raw = response.json()['choices'][0]['message']['content']
-                        logging.info(f"Grok raw response: {raw}")  # NEW: Log full response for debug
-                        try:
-                            content = json.loads(raw)
-                            tweet = (content.get('tweet') or '').strip()
-                            return tweet if tweet else "Unable to parse response."
-                        except json.JSONDecodeError:  # NEW: More robust parsing
-                            import re
-                            match = re.search(r'\{.*"tweet":\s*"([^"]+)"\}', raw, re.DOTALL)
-                            if match:
-                                return match.group(1).strip()
-                            # NEW: Ultimate fallback - extract any text between quotes
-                            match_fallback = re.search(r'"([^"]+)"', raw)
-                            if match_fallback:
-                                tweet = match_fallback.group(1).strip()
-                                logging.info("Used fallback text extraction for Grok response.")
-                                return tweet
-                            return "Unable to parse response."
-                    except Exception as e:
-                        logging.error(f"Grok API error: {e}")
-                        return "Unable to fetch insight—rely on EV!"
 
+
+                # Initialize King's Call columns  
                 final_recommendations_df['kings_call'] = ''
+                final_recommendations_df['kings_call_agreement'] = ''
+                final_recommendations_df['kings_call_reasoning'] = ''
+                final_recommendations_df['kings_call_sources'] = ''
+                
                 debug_rows = []
                 for idx, row in final_recommendations_df.iterrows():
                     prompt = (
-                        f"Short insight (<50 words): Agree/Disagree on betting {row['Recommendation']} @ {row['odds_betted_on_refined']:.2f}, EV {row['ev_for_bet_refined']:.2f}. "
-                        f"Focus on: injuries/suspensions, team motivation (e.g., relegation/cup), manager-player bust-ups. "
-                        f"Match: {row['home_name']} vs {row['away_name']} ({row['league']})."
+                        f"Analyze betting recommendation: {row['Recommendation']} @ {row['odds_betted_on_refined']:.2f} odds, EV {row['ev_for_bet_refined']:.2f}. "
+                        f"Match: {row['home_name']} vs {row['away_name']} ({row['league']}) on {row['datetime_gmt8']}. "
+                        f"Consider: recent form, injuries, team motivation, manager situations. "
+                        f"Provide structured analysis with agreement/disagreement."
                     )
-                    result = get_grok_response(prompt)
-                    final_recommendations_df.at[idx, 'kings_call'] = result['insight']
+                    
+                    # Use the advanced get_grok_response function
+                    result = get_grok_response(prompt, model="grok-4-0709", enable_retry=True)
+                    
+                    # Store all King's Call data
+                    final_recommendations_df.at[idx, 'kings_call'] = result.get('insight', 'Unable to fetch insight—rely on EV!')
+                    final_recommendations_df.at[idx, 'kings_call_agreement'] = result.get('agreement', 'Neutral')
+                    final_recommendations_df.at[idx, 'kings_call_reasoning'] = result.get('reasoning', 'No reasoning available')
+                    final_recommendations_df.at[idx, 'kings_call_sources'] = ', '.join(result.get('sources', []))
+                    
                     debug_rows.append({
                         'datetime_gmt8': row.get('datetime_gmt8'),
                         'league': row.get('league'),
@@ -4712,7 +4685,11 @@ else:
                         'ev': row.get('ev_for_bet_refined'),
                         'prompt_used': prompt,
                         'model': 'grok-4-0709',
-                        'parsed_tweet': result['insight']
+                        'agreement': result.get('agreement', 'Neutral'),
+                        'insight': result.get('insight', 'Unable to fetch insight'),
+                        'reasoning': result.get('reasoning', 'No reasoning available'),
+                        'sources': ', '.join(result.get('sources', [])),
+                        'parsed_tweet': result.get('insight', 'Unable to fetch insight')
                     })
 
                 # Write debug CSV for inspection (artifacts and site)
@@ -4724,7 +4701,7 @@ else:
                     for out_path in ['artifacts/latest/kings_call_debug.csv', 'site/kings_call_debug.csv']:
                         with open(out_path, 'w', newline='', encoding='utf-8') as f:
                             w = _csv.DictWriter(f, fieldnames=[
-                                'datetime_gmt8','league','home','away','recommendation','odds','ev','prompt_used','model','parsed_tweet'
+                                'datetime_gmt8','league','home','away','recommendation','odds','ev','prompt_used','model','agreement','insight','reasoning','sources','parsed_tweet'
                             ])
                             w.writeheader()
                             for r in debug_rows:
@@ -4829,6 +4806,10 @@ else:
                         odds numeric,
                         ev numeric,
                         confidence text,
+                        kings_call_insight text,
+                        kings_call_agreement text,
+                        kings_call_reasoning text,
+                        kings_call_sources text,
                         UNIQUE (run_id, dt_gmt8, home, away, line)
                     );
                     """)
@@ -4840,14 +4821,18 @@ else:
                     )
                     # Insert recommendations with deduplication safeguard
                     insert_sql = """
-                    INSERT INTO recommendations(run_id, dt_gmt8, league, home, away, rec_text, line, odds, ev, confidence)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    INSERT INTO recommendations(run_id, dt_gmt8, league, home, away, rec_text, line, odds, ev, confidence, kings_call_insight, kings_call_agreement, kings_call_reasoning, kings_call_sources)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (run_id, dt_gmt8, home, away, line) 
                     DO UPDATE SET 
                         rec_text = EXCLUDED.rec_text,
                         odds = EXCLUDED.odds,
                         ev = EXCLUDED.ev,
-                        confidence = EXCLUDED.confidence
+                        confidence = EXCLUDED.confidence,
+                        kings_call_insight = EXCLUDED.kings_call_insight,
+                        kings_call_agreement = EXCLUDED.kings_call_agreement,
+                        kings_call_reasoning = EXCLUDED.kings_call_reasoning,
+                        kings_call_sources = EXCLUDED.kings_call_sources
                     """
                     
                     # First, clean up old recommendations for this run to avoid stale data
@@ -4860,7 +4845,9 @@ else:
                                 RUN_ID,
                                 r.get('datetime_gmt8'), r.get('league'), r.get('home_name'), r.get('away_name'),
                                 r.get('Recommendation'), r.get('line_betted_on_refined'), r.get('odds_betted_on_refined'),
-                                r.get('ev_for_bet_refined'), r.get('confidence_level')
+                                r.get('ev_for_bet_refined'), r.get('confidence_level'),
+                                r.get('kings_call', ''), r.get('kings_call_agreement', ''), 
+                                r.get('kings_call_reasoning', ''), r.get('kings_call_sources', '')
                             )
                         )
                     conn.commit(); cur.close(); conn.close()
