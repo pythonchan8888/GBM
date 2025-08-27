@@ -11,10 +11,9 @@ UNIQUE (run_id, dt_gmt8, home, away, line);
 CREATE INDEX IF NOT EXISTS idx_recommendations_datetime_ev 
 ON recommendations (dt_gmt8 DESC, ev DESC);
 
--- 3. Add index for CSV export queries
+-- 3. Add index for CSV export queries (simplified to avoid IMMUTABLE function requirement)
 CREATE INDEX IF NOT EXISTS idx_recommendations_recent 
-ON recommendations (dt_gmt8) 
-WHERE dt_gmt8 >= now() - interval '7 days';
+ON recommendations (dt_gmt8 DESC);
 
 -- 4. Better runs table with proper constraints
 ALTER TABLE runs ADD CONSTRAINT unique_run_id UNIQUE (run_id);
