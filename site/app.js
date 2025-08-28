@@ -254,7 +254,7 @@ class ParlayKing {
                     odds: parseFloat(row.odds) || 0,
                     ev: parseFloat(row.ev) || 0,
                     confidence: row.confidence || 'Medium',
-                    kingsCall: row.kings_call || 'No additional insights available.'
+                    kingsCall: row.kings_call_insight || 'No additional insights available.'
                 };
             })
             .filter(Boolean) // Remove null entries

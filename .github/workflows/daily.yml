@@ -148,6 +148,7 @@ jobs:
         env:
           FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
         run: |
           python gbm_dc_ev_model.py
 
@@ -156,6 +157,7 @@ jobs:
         env:
           FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
         run: |
           echo "⚠️ Retrying prediction pipeline..."
           python gbm_dc_ev_model.py || echo "Retry also failed, continuing with deployment"
@@ -610,7 +612,7 @@ jobs:
               rows = list(r)
           total = len(rows)
           placeholder = "King's insight: Solid bet based on ML analysis—watch this space!"
-          missing = sum(1 for row in rows if not (row.get('kings_call') or '').strip() or (row.get('kings_call') or '') == placeholder)
+          missing = sum(1 for row in rows if not (row.get('kings_call_insight') or '').strip() or (row.get('kings_call_insight') or '') == placeholder)
           if total == 0:
               print('ℹ️  No recommendation rows to validate.')
           else:
