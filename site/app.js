@@ -703,10 +703,13 @@ class ParlayKing {
             });
         });
 
-        // Export functionality
-        document.getElementById('export-recommendations').addEventListener('click', () => {
-            this.exportFilteredRecommendations();
-        });
+        // Export functionality (only if element exists)
+        const exportBtn = document.getElementById('export-recommendations');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', () => {
+                this.exportFilteredRecommendations();
+            });
+        }
 
         // Schedule filter functionality
         this.initScheduleFilters();
