@@ -1812,7 +1812,7 @@ class ParlayKing {
                     </div>
                     ${rec.kingsCall ? `
                         <div class="expanded-row kings-call-row">
-                            <strong>King's Call:</strong> 
+                            <strong>Analysis:</strong> 
                             <span class="kings-call-text">${rec.kingsCall}</span>
                         </div>
                     ` : ''}
@@ -2036,7 +2036,7 @@ class ParlayKing {
 
     getSignalTitle(signalType) {
         const titles = {
-            'kings-call': "King's Call Available",
+            'kings-call': "Analysis Available",
             'high-ev': 'High Expected Value',
             'hot-pick': 'Hot Pick - High Confidence',
             'value-bet': 'Value Bet Opportunity'
@@ -2078,7 +2078,7 @@ class ParlayKing {
                     <div class="expanded-row kings-call-row">
                         <div class="kings-call-header">
                             <span class="kings-call-icon">👑</span>
-                            <strong>King's Call</strong>
+                            <strong>Analysis</strong>
                         </div>
                         <div class="kings-call-content">
                             <span class="kings-call-text">${game.kingsCall}</span>
@@ -2197,7 +2197,7 @@ class ParlayKing {
         if (!game || !game.hasRecommendation) return;
 
         const csvData = [
-            ['Date/Time', 'League', 'Match', 'Recommendation', 'Odds', 'EV (%)', 'Confidence', 'King\'s Call'],
+            ['Date/Time', 'League', 'Match', 'Recommendation', 'Odds', 'EV (%)', 'Confidence', 'Analysis'],
             [
                 this.formatDateTime(game.datetime),
                 game.league,
@@ -2752,7 +2752,7 @@ class ParlayKing {
                 </div>
                 <div class="card-actions">
                     <button class="action-btn-sm" onclick="parlayKing.shareRec('${rec.home} vs ${rec.away}', '${rec.recommendation}')">Share</button>
-                    <button class="action-btn-sm expand-btn">Show King's Call</button>
+                    <button class="action-btn-sm expand-btn">Show Analysis</button>
                 </div>
                 <div class="kings-call hidden">${rec.kingsCall || 'No additional insights available.'}</div>
             `;
@@ -2764,7 +2764,7 @@ class ParlayKing {
                 const card = e.target.closest('.rec-card');
                 const callDiv = card.querySelector('.kings-call');
                 const hidden = callDiv.classList.toggle('hidden');
-                btn.textContent = hidden ? "Show King's Call" : "Hide King's Call";
+                btn.textContent = hidden ? "Show Analysis" : "Hide Analysis";
             });
         });
     }
@@ -3029,6 +3029,6 @@ document.querySelectorAll('.expand-btn').forEach(btn => {
             callDiv.textContent = rec ? rec.kingsCall : 'No insights';
             callDiv.classList.remove('loading');
         }
-        btn.textContent = callDiv.classList.contains('hidden') ? 'Show King\'s Call' : 'Hide King\'s Call';
+        btn.textContent = callDiv.classList.contains('hidden') ? 'Show Analysis' : 'Hide Analysis';
     });
 });

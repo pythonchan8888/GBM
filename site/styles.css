@@ -1581,7 +1581,14 @@ body {
   }
   
   .team-name {
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.1;
+    flex: 1;
+    min-width: 0; /* Allow text to shrink */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   
   .ah-chip {
@@ -2001,9 +2008,13 @@ body {
     display: flex;
   }
   
-  /* Hide original filter controls on mobile */
-  .filters-panel {
-    display: none;
+  /* Hide ALL filter panels completely on mobile - games first! */
+  .filters-panel,
+  .date-range-section,
+  .league-filter-section,
+  .ev-filter-section,
+  .confidence-filter-section {
+    display: none !important;
   }
   
   /* Improve sticky filters on mobile */
@@ -2016,13 +2027,15 @@ body {
   
   /* Mobile game card v2 specific adjustments */
   .game-card--v2 {
-    margin-bottom: var(--space-xs);
-    border-radius: var(--radius-sm);
+    margin-bottom: 4px; /* Ultra-tight for max density */
+    border-radius: 6px;
+    padding: 4px; /* Added card-level padding */
   }
   
   .game-row--v2 {
-    padding: 8px; /* Tighter mobile padding for density */
-    min-height: 48px; /* Reduced from 56px for more games per fold */
+    padding: 6px; /* Even tighter mobile padding */
+    min-height: 40px; /* Aggressive reduction for 4 games in first fold */
+    gap: 6px; /* Tighter gap between elements */
   }
   
   .game-meta {
@@ -2051,9 +2064,11 @@ body {
   }
   
   .expand-btn {
-    min-height: 36px !important;
-    min-width: 36px !important;
-    font-size: 12px;
+    min-height: 28px !important;
+    min-width: 28px !important;
+    font-size: 11px;
+    padding: 4px !important;
+    flex-shrink: 0;
   }
   
   /* Timezone badge adjustments */
@@ -2472,9 +2487,19 @@ body {
 @media (max-width: 768px) {
   .nav-content {
     flex-direction: column;
-    gap: var(--space-lg);
-    padding: var(--space-lg);
+    gap: var(--space-sm);
+    padding: var(--space-md);
     text-align: center;
+  }
+  
+  .nav-brand .brand-title {
+    font-size: 20px;
+    margin-bottom: 2px;
+  }
+  
+  .nav-brand .brand-subtitle {
+    font-size: 11px;
+    opacity: 0.7;
   }
   
   .nav-tabs {
