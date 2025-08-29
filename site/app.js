@@ -19,6 +19,18 @@ class ParlayKing {
         // UI state
         this.parlayPage = 0;
         
+        // Feature flags
+        this.featureFlags = {
+            mobile_card_v2: localStorage.getItem('mobile_card_v2') === 'true'
+        };
+        
+        // Mobile UI state
+        this.mobileState = {
+            filtersDrawerOpen: false,
+            renderedGames: 20,
+            isInfiniteScrollEnabled: this.featureFlags.mobile_card_v2
+        };
+        
         this.init();
     }
 
@@ -364,7 +376,91 @@ class ParlayKing {
                 primarySignal: game.primary_signal || '',
                 secondarySignal: game.secondary_signal || ''
             };
-        }).filter(Boolean).sort((a, b) => a.datetime - b.datetime);
+        }).filter(Boolean).map(game => {
+            // Enhanced AH logic parsing
+            const ahData = this.parseAsianHandicapData(game);
+            return { ...game, ...ahData };
+        }).sort((a, b) => a.datetime - b.datetime);
+    }
+
+    // Parse Asian Handicap data from game information
+    parseAsianHandicapData(game) {
+        let recommendedTeam = null;
+        let parsedLine = 0;
+        let homeLine = null;
+        let awayLine = null;
+        let isPk = false;
+        
+        // Priority 1: Parse from rec_text if available
+        if (game.hasRecommendation && game.recText) {
+            const recMatch = game.recText.match(/^(.+?)\s+([-+]?\d*\.?\d+)$/);
+            if (recMatch) {
+                recommendedTeam = recMatch[1].trim();
+                parsedLine = parseFloat(recMatch[2]);
+                
+                // Determine home/away lines based on recommended team
+                if (recommendedTeam === game.home) {
+                    homeLine = parsedLine;
+                    awayLine = -parsedLine;
+                } else if (recommendedTeam === game.away) {
+                    awayLine = parsedLine;
+                    homeLine = -parsedLine;
+                } else {
+                    // Fallback: try to match partial names
+                    if (game.home.includes(recommendedTeam) || recommendedTeam.includes(game.home)) {
+                        homeLine = parsedLine;
+                        awayLine = -parsedLine;
+                        recommendedTeam = game.home;
+                    } else if (game.away.includes(recommendedTeam) || recommendedTeam.includes(game.away)) {
+                        awayLine = parsedLine;
+                        homeLine = -parsedLine;
+                        recommendedTeam = game.away;
+                    }
+                }
+            }
+        }
+        
+        // Priority 2: For non-recommendation games, infer from 1X2 odds
+        if (!game.hasRecommendation && game.odds1 > 0 && game.oddsX > 0 && game.odds2 > 0) {
+            // Convert odds to implied probabilities
+            const prob1 = 1 / game.odds1;
+            const probX = 1 / game.oddsX;
+            const prob2 = 1 / game.odds2;
+            const totalProb = prob1 + probX + prob2;
+            
+            // Normalize probabilities
+            const normProb1 = prob1 / totalProb;
+            const normProb2 = prob2 / totalProb;
+            
+            // Estimate goal difference (simplified model)
+            const goalDiff = (normProb1 - normProb2) * 2.5; // Scale factor for typical goal differences
+            
+            // Map to closest quarter line
+            const quarterLines = [-2, -1.75, -1.5, -1.25, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+            const closestLine = quarterLines.reduce((prev, curr) => 
+                Math.abs(curr - goalDiff) < Math.abs(prev - goalDiff) ? curr : prev
+            );
+            
+            homeLine = closestLine;
+            awayLine = -closestLine;
+        }
+        
+        // Handle edge cases and formatting
+        if (homeLine !== null && awayLine !== null) {
+            isPk = (homeLine === 0 && awayLine === 0);
+            
+            // Round to nearest 0.25
+            homeLine = Math.round(homeLine * 4) / 4;
+            awayLine = Math.round(awayLine * 4) / 4;
+        }
+        
+        return {
+            recommendedTeam,
+            homeLine,
+            awayLine,
+            isPk,
+            hasAhData: homeLine !== null && awayLine !== null
+        };
     }
 
     // Parlay Wins Calculation (JS fallback)
@@ -713,6 +809,9 @@ class ParlayKing {
 
         // Schedule filter functionality
         this.initScheduleFilters();
+        
+        // Initialize mobile card v2 controls
+        this.initMobileCardV2Controls();
     }
 
     initScheduleFilters() {
@@ -738,14 +837,322 @@ class ParlayKing {
                 this.filters.gameTimeFilter = filterValue;
                 this.renderUnifiedSchedule();
                 
-                // Track analytics
-                if (this.trackEvent) {
-                    this.trackEvent('schedule_filter_changed', {
-                        filter: filterValue
-                    });
+                // Analytics (if mobile card v2)
+                if (this.featureFlags.mobile_card_v2) {
+                    this.trackEvent('schedule_filter_changed', { filter: filterValue });
                 }
             });
         });
+        
+        // Initialize filters drawer (mobile card v2 only)
+        if (this.featureFlags.mobile_card_v2) {
+            this.initFiltersDrawer();
+        }
+    }
+
+    initFiltersDrawer() {
+        const drawerBtn = document.getElementById('filters-drawer-btn');
+        const drawer = document.getElementById('filters-drawer');
+        const overlay = document.getElementById('filters-drawer-overlay');
+        const closeBtn = document.getElementById('filters-drawer-close');
+        
+        if (!drawerBtn || !drawer) return;
+        
+        // Open drawer
+        drawerBtn.addEventListener('click', () => {
+            this.openFiltersDrawer();
+        });
+        
+        // Close drawer
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                this.closeFiltersDrawer();
+            });
+        }
+        
+        if (overlay) {
+            overlay.addEventListener('click', () => {
+                this.closeFiltersDrawer();
+            });
+        }
+        
+        // ESC key to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.mobileState.filtersDrawerOpen) {
+                this.closeFiltersDrawer();
+            }
+        });
+        
+        // Sync drawer controls with main filters
+        this.syncDrawerFilters();
+    }
+
+    openFiltersDrawer() {
+        const drawer = document.getElementById('filters-drawer');
+        if (drawer) {
+            drawer.classList.add('open');
+            this.mobileState.filtersDrawerOpen = true;
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+    }
+
+    closeFiltersDrawer() {
+        const drawer = document.getElementById('filters-drawer');
+        if (drawer) {
+            drawer.classList.remove('open');
+            this.mobileState.filtersDrawerOpen = false;
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+    }
+
+    syncDrawerFilters() {
+        // Sync current filter values to drawer controls
+        const drawerDateRange = document.getElementById('drawer-date-range');
+        const drawerLeague = document.getElementById('drawer-league');
+        const drawerMinEv = document.getElementById('drawer-min-ev');
+        const drawerConfidence = document.getElementById('drawer-confidence');
+        
+        if (drawerDateRange) drawerDateRange.value = this.filters.dateRange;
+        if (drawerLeague) drawerLeague.value = this.filters.league;
+        if (drawerMinEv) drawerMinEv.value = this.filters.minEV;
+        if (drawerConfidence) drawerConfidence.value = this.filters.confidence;
+        
+        // Update range display
+        this.updateRangeValue();
+        
+        // Add event listeners for drawer controls
+        if (drawerMinEv) {
+            drawerMinEv.addEventListener('input', () => this.updateRangeValue());
+        }
+        
+        const applyBtn = document.getElementById('drawer-apply-filters');
+        if (applyBtn) {
+            applyBtn.addEventListener('click', () => {
+                this.applyDrawerFilters();
+            });
+        }
+        
+        const resetBtn = document.getElementById('drawer-reset-filters');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                this.resetDrawerFilters();
+            });
+        }
+    }
+
+    updateRangeValue() {
+        const rangeInput = document.getElementById('drawer-min-ev');
+        const valueDisplay = document.getElementById('drawer-min-ev-value');
+        if (rangeInput && valueDisplay) {
+            valueDisplay.textContent = `${rangeInput.value}%`;
+        }
+    }
+
+    applyDrawerFilters() {
+        const drawerDateRange = document.getElementById('drawer-date-range');
+        const drawerLeague = document.getElementById('drawer-league');
+        const drawerMinEv = document.getElementById('drawer-min-ev');
+        const drawerConfidence = document.getElementById('drawer-confidence');
+        
+        // Update main filters
+        if (drawerDateRange) this.filters.dateRange = drawerDateRange.value;
+        if (drawerLeague) this.filters.league = drawerLeague.value;
+        if (drawerMinEv) this.filters.minEV = parseInt(drawerMinEv.value);
+        if (drawerConfidence) this.filters.confidence = drawerConfidence.value;
+        
+        // Update UI and close drawer
+        this.updateUI();
+        this.closeFiltersDrawer();
+        
+        // Analytics
+        this.trackEvent('filters_applied_from_drawer', {
+            dateRange: this.filters.dateRange,
+            league: this.filters.league,
+            minEV: this.filters.minEV,
+            confidence: this.filters.confidence
+        });
+    }
+
+    resetDrawerFilters() {
+        // Reset to defaults
+        this.filters = {
+            ...this.filters,
+            dateRange: 'last30',
+            league: 'all',
+            minEV: 0,
+            confidence: 'all'
+        };
+        
+        // Update drawer controls
+        this.syncDrawerFilters();
+        
+        // Update UI
+        this.updateUI();
+        
+        // Analytics
+        this.trackEvent('filters_reset_from_drawer');
+    }
+
+    // Simple analytics tracking (placeholder for future implementation)
+    trackEvent(eventName, properties = {}) {
+        console.log(`Analytics: ${eventName}`, properties);
+        // TODO: Integrate with analytics service later
+    }
+
+    initMobileCardV2Controls() {
+        // Add a dev toggle for mobile card v2 (hidden by default)
+        if (window.location.search.includes('debug=true')) {
+            this.addMobileCardV2Toggle();
+        }
+    }
+
+    addMobileCardV2Toggle() {
+        const toggleHtml = `
+            <div style="position: fixed; top: 10px; right: 10px; z-index: 9999; background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 8px; font-size: 12px;">
+                <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                    <input type="checkbox" id="mobile-card-v2-toggle" ${this.featureFlags.mobile_card_v2 ? 'checked' : ''}>
+                    Mobile Card V2
+                </label>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', toggleHtml);
+        
+        const toggle = document.getElementById('mobile-card-v2-toggle');
+        if (toggle) {
+            toggle.addEventListener('change', (e) => {
+                this.featureFlags.mobile_card_v2 = e.target.checked;
+                localStorage.setItem('mobile_card_v2', e.target.checked);
+                
+                // Update mobile state
+                this.mobileState.isInfiniteScrollEnabled = e.target.checked;
+                
+                // Re-render
+                this.renderUnifiedSchedule();
+                
+                console.log(`Mobile Card V2: ${e.target.checked ? 'Enabled' : 'Disabled'}`);
+            });
+        }
+    }
+
+    renderGamesProgressively(container, allGames) {
+        // Reset rendered count
+        this.mobileState.renderedGames = 20;
+        
+        // Group games but only render initial batch
+        const groupedGames = this.groupGamesByImportance(allGames);
+        const initialGames = this.getInitialGamesBatch(groupedGames, this.mobileState.renderedGames);
+        
+        // Render initial batch with loading sentinel
+        container.innerHTML = `
+            ${Object.entries(initialGames)
+                .map(([tierGroup, gamesList]) => this.renderTierGroup(tierGroup, gamesList))
+                .join('')}
+            ${allGames.length > this.mobileState.renderedGames ? 
+                '<div class="loading-sentinel" id="loading-sentinel">Loading more games...</div>' : 
+                ''
+            }
+        `;
+        
+        // Set up infinite scroll observer
+        this.setupInfiniteScrollObserver(container, groupedGames, allGames);
+    }
+
+    getInitialGamesBatch(groupedGames, limit) {
+        const initialGroups = {};
+        let count = 0;
+        
+        for (const [tierGroup, gamesList] of Object.entries(groupedGames)) {
+            const remainingSlots = limit - count;
+            if (remainingSlots <= 0) break;
+            
+            initialGroups[tierGroup] = gamesList.slice(0, remainingSlots);
+            count += initialGroups[tierGroup].length;
+        }
+        
+        return initialGroups;
+    }
+
+    setupInfiniteScrollObserver(container, allGroupedGames, allGames) {
+        // Remove existing observer
+        if (this.infiniteScrollObserver) {
+            this.infiniteScrollObserver.disconnect();
+        }
+        
+        const sentinel = document.getElementById('loading-sentinel');
+        if (!sentinel || allGames.length <= this.mobileState.renderedGames) return;
+        
+        this.infiniteScrollObserver = new IntersectionObserver((entries) => {
+            const [entry] = entries;
+            if (entry.isIntersecting) {
+                this.loadMoreGames(container, allGroupedGames, allGames);
+            }
+        }, {
+            rootMargin: '100px' // Load before user reaches the bottom
+        });
+        
+        this.infiniteScrollObserver.observe(sentinel);
+    }
+
+    loadMoreGames(container, allGroupedGames, allGames) {
+        const batchSize = 10;
+        const previousCount = this.mobileState.renderedGames;
+        this.mobileState.renderedGames = Math.min(allGames.length, previousCount + batchSize);
+        
+        // Get the next batch of games
+        const nextBatch = this.getGamesBatch(allGroupedGames, previousCount, this.mobileState.renderedGames);
+        
+        // Remove old sentinel
+        const oldSentinel = document.getElementById('loading-sentinel');
+        if (oldSentinel) oldSentinel.remove();
+        
+        // Append new games
+        const newGamesHtml = Object.entries(nextBatch)
+            .map(([tierGroup, gamesList]) => {
+                if (gamesList.length === 0) return '';
+                return `
+                    <div class="games-list">
+                        ${gamesList.map((game, index) => this.renderGameCard(game, previousCount + index)).join('')}
+                    </div>
+                `;
+            })
+            .join('');
+        
+        container.insertAdjacentHTML('beforeend', newGamesHtml);
+        
+        // Add new sentinel if there are more games
+        if (this.mobileState.renderedGames < allGames.length) {
+            container.insertAdjacentHTML('beforeend', '<div class="loading-sentinel" id="loading-sentinel">Loading more games...</div>');
+            
+            // Re-observe new sentinel
+            const newSentinel = document.getElementById('loading-sentinel');
+            if (newSentinel && this.infiniteScrollObserver) {
+                this.infiniteScrollObserver.observe(newSentinel);
+            }
+        }
+        
+        // Re-initialize interactions for new cards
+        this.initGameCardInteractions();
+    }
+
+    getGamesBatch(allGroupedGames, startIndex, endIndex) {
+        const batchGroups = {};
+        let count = 0;
+        
+        for (const [tierGroup, gamesList] of Object.entries(allGroupedGames)) {
+            if (count >= endIndex) break;
+            
+            const groupStartIndex = Math.max(0, startIndex - count);
+            const groupEndIndex = Math.min(gamesList.length, endIndex - count);
+            
+            if (groupEndIndex > groupStartIndex) {
+                batchGroups[tierGroup] = gamesList.slice(groupStartIndex, groupEndIndex);
+            }
+            
+            count += gamesList.length;
+        }
+        
+        return batchGroups;
     }
 
     setFilterValues() {
@@ -1220,12 +1627,16 @@ class ParlayKing {
             return;
         }
 
-        // Group games by league tier for better organization
-        const groupedGames = this.groupGamesByImportance(games);
-        
-        container.innerHTML = Object.entries(groupedGames)
-            .map(([tierGroup, gamesList]) => this.renderTierGroup(tierGroup, gamesList))
-            .join('');
+        // Progressive rendering for mobile card v2
+        if (this.featureFlags.mobile_card_v2 && this.mobileState.isInfiniteScrollEnabled) {
+            this.renderGamesProgressively(container, games);
+        } else {
+            // Legacy rendering
+            const groupedGames = this.groupGamesByImportance(games);
+            container.innerHTML = Object.entries(groupedGames)
+                .map(([tierGroup, gamesList]) => this.renderTierGroup(tierGroup, gamesList))
+                .join('');
+        }
         
         // Initialize interactions
         this.initGameCardInteractions();
@@ -1336,6 +1747,12 @@ class ParlayKing {
     }
 
     renderGameCard(game, index) {
+        // Use mobile card v2 if feature flag is enabled
+        if (this.featureFlags.mobile_card_v2) {
+            return this.renderMobileGameCardV2(game, index);
+        }
+        
+        // Legacy card rendering
         const signalIcon = this.getSignalIcon(game.primarySignal);
         const isExpandable = game.hasRecommendation;
         const timeDisplay = this.formatGameTime(game.datetime);
@@ -1370,6 +1787,123 @@ class ParlayKing {
                 ${isExpandable ? this.renderExpandedContent(game) : ''}
             </div>
         `;
+    }
+
+    renderMobileGameCardV2(game, index) {
+        const isExpandable = game.hasRecommendation;
+        const timeDisplay = this.formatGameTime(game.datetime);
+        const { homeChip, awayChip } = this.renderAhChips(game);
+        const evPill = this.renderEvPill(game);
+        
+        return `
+            <div class="game-card game-card--v2" 
+                 data-game-index="${index}"
+                 data-signal="${game.primarySignal}"
+                 data-expandable="${isExpandable}"
+                 data-is-future="${game.isFuture}">
+                
+                <div class="game-row game-row--v2">
+                    <div class="game-meta">
+                        <div class="game-time">${timeDisplay}</div>
+                        <div class="game-league">
+                            <span class="league-flag">${game.leagueFlag}</span>
+                            <span class="league-short">${game.leagueShort}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="game-matchup">
+                        <div class="team-row">
+                            <span class="team-name home">${game.home}</span>
+                            ${homeChip}
+                        </div>
+                        <div class="vs-separator">vs</div>
+                        <div class="team-row">
+                            <span class="team-name away">${game.away}</span>
+                            ${awayChip}
+                        </div>
+                    </div>
+                    
+                    <div class="game-actions">
+                        ${evPill}
+                        <div class="expand-btn" ${isExpandable ? 'role="button" tabindex="0" aria-label="Expand game details"' : ''}>${isExpandable ? '▼' : ''}</div>
+                    </div>
+                </div>
+                
+                ${isExpandable ? this.renderExpandedContent(game) : ''}
+            </div>
+        `;
+    }
+
+    renderAhChips(game) {
+        if (!game.hasAhData) {
+            return {
+                homeChip: '<span class="ah-chip ah-chip--empty" aria-label="No Asian handicap data">AH —</span>',
+                awayChip: '<span class="ah-chip ah-chip--empty" aria-label="No Asian handicap data">AH —</span>'
+            };
+        }
+
+        const formatLine = (line) => {
+            if (line === 0) return 'PK';
+            return line > 0 ? `+${line}` : `${line}`.replace('-', '−'); // Use proper minus sign
+        };
+
+        const isHomeRecommended = game.hasRecommendation && game.recommendedTeam === game.home;
+        const isAwayRecommended = game.hasRecommendation && game.recommendedTeam === game.away;
+
+        const homeChipClass = [
+            'ah-chip',
+            game.homeLine < 0 ? 'ah-chip--neg' : game.homeLine > 0 ? 'ah-chip--pos' : 'ah-chip--pk',
+            isHomeRecommended ? 'ah-chip--selected' : ''
+        ].filter(Boolean).join(' ');
+
+        const awayChipClass = [
+            'ah-chip',
+            game.awayLine < 0 ? 'ah-chip--neg' : game.awayLine > 0 ? 'ah-chip--pos' : 'ah-chip--pk',
+            isAwayRecommended ? 'ah-chip--selected' : ''
+        ].filter(Boolean).join(' ');
+
+        const homeAriaLabel = `Home ${formatLine(game.homeLine)} Asian handicap${isHomeRecommended ? ', recommended' : ''}`;
+        const awayAriaLabel = `Away ${formatLine(game.awayLine)} Asian handicap${isAwayRecommended ? ', recommended' : ''}`;
+
+        const homeChip = `
+            <div class="ah-chip-container">
+                <span class="${homeChipClass}" aria-label="${homeAriaLabel}">
+                    ${formatLine(game.homeLine)}
+                    ${isHomeRecommended ? '<span class="signal-crown" title="Has pick" aria-label="Has pick">👑</span>' : ''}
+                </span>
+            </div>
+        `;
+
+        const awayChip = `
+            <div class="ah-chip-container">
+                <span class="${awayChipClass}" aria-label="${awayAriaLabel}">
+                    ${formatLine(game.awayLine)}
+                    ${isAwayRecommended ? '<span class="signal-crown" title="Has pick" aria-label="Has pick">👑</span>' : ''}
+                </span>
+            </div>
+        `;
+
+        return { homeChip, awayChip };
+    }
+
+    renderEvPill(game) {
+        if (!game.hasRecommendation || !game.ev) {
+            return '';
+        }
+
+        const evPercent = (game.ev * 100).toFixed(1);
+        const evValue = parseFloat(evPercent);
+        
+        let pillClass = 'ev-pill';
+        if (evValue >= 25) {
+            pillClass += ' ev-pill--strong';
+        } else if (evValue >= 10) {
+            pillClass += ' ev-pill--medium';
+        } else {
+            pillClass += ' ev-pill--neutral';
+        }
+
+        return `<span class="${pillClass}" title="Expected Value: ${evPercent}%" aria-label="Expected value ${evPercent} percent">EV ${evPercent}%</span>`;
     }
 
     getSignalIcon(signalType) {

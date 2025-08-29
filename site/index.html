@@ -120,8 +120,17 @@
         <section class="unified-schedule-section">
             <div class="schedule-card glass-panel">
                 <div class="schedule-header">
-                    <h3>Upcoming Matches</h3>
-                    <div class="schedule-filters">
+                    <div class="schedule-title-row">
+                        <h3>Upcoming Matches</h3>
+                        <div class="schedule-meta">
+                            <span class="timezone-badge">All times GMT+8</span>
+                            <button class="filters-drawer-btn" id="filters-drawer-btn" aria-label="Open filters">
+                                <span>Filters</span>
+                                <span class="filters-icon">⚙️</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="schedule-filters schedule-filters--sticky" id="schedule-filters-sticky">
                         <button class="filter-tab active" data-filter="all">All Leagues</button>
                         <button class="filter-tab" data-filter="tier1">Top Leagues</button>
                         <button class="filter-tab" data-filter="recommendations">Our Picks</button>
@@ -223,6 +232,59 @@
             </div>
         </section>
     </main>
+
+    <!-- Filters Drawer (Mobile) -->
+    <div class="filters-drawer" id="filters-drawer">
+        <div class="filters-drawer-overlay" id="filters-drawer-overlay"></div>
+        <div class="filters-drawer-content">
+            <div class="filters-drawer-header">
+                <h3>Filters</h3>
+                <button class="filters-drawer-close" id="filters-drawer-close" aria-label="Close filters">✕</button>
+            </div>
+            
+            <div class="filters-drawer-body">
+                <!-- Move existing filter controls here -->
+                <div class="filter-group">
+                    <label for="drawer-date-range">Date Range</label>
+                    <select id="drawer-date-range" class="filter-select">
+                        <option value="last7">Last 7 days</option>
+                        <option value="last30" selected>Last 30 days</option>
+                        <option value="last90">Last 90 days</option>
+                        <option value="all">All time</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="drawer-league">League</label>
+                    <select id="drawer-league" class="filter-select">
+                        <option value="all">All leagues</option>
+                        <!-- Populated by JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="drawer-min-ev">Min EV</label>
+                    <input type="range" id="drawer-min-ev" class="filter-range" min="0" max="50" step="1" value="0">
+                    <span class="range-value" id="drawer-min-ev-value">0%</span>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="drawer-confidence">Confidence</label>
+                    <select id="drawer-confidence" class="filter-select">
+                        <option value="all">All</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                
+                <div class="filter-actions">
+                    <button id="drawer-reset-filters" class="filter-reset-btn">Reset</button>
+                    <button id="drawer-apply-filters" class="filter-apply-btn">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">

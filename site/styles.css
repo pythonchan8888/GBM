@@ -1337,6 +1337,613 @@ body {
   font-size: var(--font-size-lg);
 }
 
+/* ===== MOBILE CARD V2 STYLES ===== */
+
+/* Semantic color tokens for AH chips */
+:root {
+  --ah-positive: #16a34a; /* Green for underdog (+) */
+  --ah-negative: var(--primary); /* Orange for favorite (-) */
+  --ah-selected-bg: var(--primary);
+  --ah-outline: var(--border);
+  --ah-pk: #6b7280; /* Gray for pick'em */
+  --ev-strong: #dc2626; /* Red for high EV ≥25% */
+  --ev-medium: #ea580c; /* Orange for medium EV 10-24% */
+  --ev-neutral: #6b7280; /* Gray for low EV <10% */
+}
+
+/* Mobile Game Card V2 */
+.game-card--v2 {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-sm);
+  overflow: hidden;
+  transition: var(--transition-fast);
+}
+
+.game-card--v2:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-card);
+}
+
+.game-row--v2 {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  align-items: center;
+  min-height: 64px; /* Ensure 44px+ tap target */
+}
+
+/* Game Meta (Time + League) */
+.game-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  min-width: 60px;
+}
+
+.game-time {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text);
+  font-family: var(--font-mono);
+}
+
+.game-league {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.league-flag {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.league-short {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Game Matchup (Teams + AH Chips) */
+.game-matchup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  flex: 1;
+}
+
+.team-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.team-name {
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  color: var(--text);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vs-separator {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Asian Handicap Chips */
+.ah-chip-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.ah-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  border: 1px solid var(--ah-outline);
+  background: transparent;
+  color: var(--text-secondary);
+  transition: var(--transition-fast);
+  min-height: 28px;
+  min-width: 44px; /* Accessibility: minimum tap target */
+  justify-content: center;
+}
+
+/* AH Chip States */
+.ah-chip--pos {
+  border-color: var(--ah-positive);
+  color: var(--ah-positive);
+}
+
+.ah-chip--neg {
+  border-color: var(--ah-negative);
+  color: var(--ah-negative);
+}
+
+.ah-chip--pk {
+  border-color: var(--ah-pk);
+  color: var(--ah-pk);
+}
+
+.ah-chip--selected {
+  background: var(--ah-selected-bg);
+  color: white;
+  border-color: var(--ah-selected-bg);
+}
+
+.ah-chip--empty {
+  border-color: var(--border);
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* Signal Crown */
+.signal-crown {
+  font-size: 12px;
+  margin-left: var(--space-xs);
+}
+
+/* Game Actions (EV Pill + Expand) */
+.game-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-xs);
+  min-width: 60px;
+}
+
+/* EV Pill */
+.ev-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: white;
+  white-space: nowrap;
+}
+
+.ev-pill--strong {
+  background: var(--ev-strong);
+}
+
+.ev-pill--medium {
+  background: var(--ev-medium);
+}
+
+.ev-pill--neutral {
+  background: var(--ev-neutral);
+}
+
+/* Expand Button for V2 */
+.game-card--v2 .expand-btn {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: var(--space-xs);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+  min-height: 44px; /* Accessibility */
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-card--v2 .expand-btn:hover {
+  background: var(--panel-elevated);
+  color: var(--text);
+}
+
+/* Expanded state for V2 cards */
+.game-card--v2[data-expanded="true"] .expand-btn {
+  transform: rotate(180deg);
+}
+
+/* Mobile Media Queries */
+@media (max-width: 768px) {
+  .game-row--v2 {
+    grid-template-columns: auto 1fr auto;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+  }
+  
+  .team-name {
+    font-size: 14px;
+  }
+  
+  .ah-chip {
+    padding: 4px 8px;
+    font-size: 12px;
+    min-width: 40px;
+  }
+  
+  .game-time {
+    font-size: 12px;
+  }
+  
+  .league-short {
+    font-size: 10px;
+  }
+}
+
+/* ===== LAYOUT RESTRUCTURING ===== */
+
+/* Schedule Header Improvements */
+.schedule-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.schedule-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.timezone-badge {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.filters-drawer-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--panel-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-size: var(--font-size-sm);
+}
+
+.filters-drawer-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.filters-icon {
+  font-size: 14px;
+}
+
+/* Sticky Schedule Filters */
+.schedule-filters--sticky {
+  position: sticky;
+  top: env(safe-area-inset-top, 0);
+  background: var(--bg);
+  z-index: 10;
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--border);
+  margin: 0 calc(-1 * var(--space-lg));
+  padding-left: var(--space-lg);
+  padding-right: var(--space-lg);
+}
+
+/* Filters Drawer */
+.filters-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  pointer-events: none;
+  transition: var(--transition-normal);
+}
+
+.filters-drawer.open {
+  pointer-events: auto;
+}
+
+.filters-drawer-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.filters-drawer.open .filters-drawer-overlay {
+  opacity: 1;
+}
+
+.filters-drawer-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 320px;
+  max-width: 80vw;
+  height: 100%;
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  transform: translateX(100%);
+  transition: transform var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+}
+
+.filters-drawer.open .filters-drawer-content {
+  transform: translateX(0);
+}
+
+.filters-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+.filters-drawer-header h3 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  color: var(--text);
+}
+
+.filters-drawer-close {
+  background: none;
+  border: none;
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: var(--space-xs);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filters-drawer-close:hover {
+  background: var(--panel-elevated);
+  color: var(--text);
+}
+
+.filters-drawer-body {
+  flex: 1;
+  padding: var(--space-lg);
+  overflow-y: auto;
+}
+
+.filter-group {
+  margin-bottom: var(--space-lg);
+}
+
+.filter-group label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--space-sm);
+}
+
+.filter-select {
+  width: 100%;
+  padding: var(--space-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--panel);
+  color: var(--text);
+  font-size: var(--font-size-sm);
+}
+
+.filter-range {
+  width: 100%;
+  margin-bottom: var(--space-sm);
+}
+
+.range-value {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.filter-actions {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.filter-reset-btn,
+.filter-apply-btn {
+  flex: 1;
+  padding: var(--space-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  border: 1px solid var(--border);
+}
+
+.filter-reset-btn {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.filter-reset-btn:hover {
+  background: var(--panel-elevated);
+  color: var(--text);
+}
+
+.filter-apply-btn {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.filter-apply-btn:hover {
+  background: var(--primary-light);
+}
+
+/* ===== INFINITE SCROLL & LOADING ===== */
+
+.loading-sentinel {
+  padding: var(--space-lg);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  margin: var(--space-md) 0;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+
+/* Focus states for interactive elements */
+.ah-chip:focus,
+.ev-pill:focus,
+.expand-btn:focus,
+.filter-tab:focus,
+.filters-drawer-btn:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .ah-chip {
+    border-width: 2px;
+  }
+  
+  .ah-chip--selected {
+    border-width: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .game-card--v2,
+  .ah-chip,
+  .expand-btn,
+  .filters-drawer-content {
+    transition: none;
+  }
+  
+  .loading-sentinel {
+    animation: none;
+  }
+}
+
+/* ===== MOBILE OPTIMIZATIONS ===== */
+
+/* Desktop: Hide filters drawer button */
+.filters-drawer-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* Show filters drawer button on mobile */
+  .filters-drawer-btn {
+    display: flex;
+  }
+  
+  /* Hide original filter controls on mobile */
+  .filters-panel {
+    display: none;
+  }
+  
+  /* Improve sticky filters on mobile */
+  .schedule-filters--sticky {
+    top: 0;
+    background: rgba(var(--bg-rgb), 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  /* Mobile game card v2 specific adjustments */
+  .game-card--v2 {
+    margin-bottom: var(--space-xs);
+    border-radius: var(--radius-sm);
+  }
+  
+  .game-row--v2 {
+    padding: var(--space-sm);
+    min-height: 56px;
+  }
+  
+  .game-meta {
+    min-width: 50px;
+  }
+  
+  .team-name {
+    font-size: 13px;
+    max-width: 120px;
+  }
+  
+  .ah-chip {
+    padding: 3px 6px;
+    font-size: 11px;
+    min-width: 36px;
+    min-height: 24px;
+  }
+  
+  .ev-pill {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+  
+  .game-actions {
+    min-width: 50px;
+  }
+  
+  .expand-btn {
+    min-height: 36px !important;
+    min-width: 36px !important;
+    font-size: 12px;
+  }
+  
+  /* Timezone badge adjustments */
+  .timezone-badge {
+    display: none; /* Hide on very small screens */
+  }
+  
+  @media (min-width: 480px) {
+    .timezone-badge {
+      display: inline-block;
+    }
+  }
+}
+
 .schedule-footer {
   display: flex;
   justify-content: space-between;
