@@ -386,17 +386,46 @@ class ParlayKing {
     // Parse Asian Handicap data from game information
     parseAsianHandicapData(game) {
         let recommendedTeam = null;
-        let parsedLine = 0;
         let homeLine = null;
         let awayLine = null;
         let isPk = false;
         
-        // Priority 1: Parse from rec_text if available
-        if (game.hasRecommendation && game.recText) {
+        // PRIORITY 1: Use authoritative CSV data (backend computed)
+        if (game.ah_line_home !== undefined && game.ah_line_away !== undefined) {
+            homeLine = parseFloat(game.ah_line_home);
+            awayLine = parseFloat(game.ah_line_away);
+            
+            // Determine recommended team from rec_text if available
+            if (game.hasRecommendation && game.recText) {
+                const recMatch = game.recText.match(/^(.+?)\s+([-+]?\d*\.?\d+)$/);
+                if (recMatch) {
+                    const parsedTeam = recMatch[1].trim();
+                    const parsedLine = parseFloat(recMatch[2]);
+                    
+                    // Match team and verify line consistency
+                    if (parsedTeam === game.home && Math.abs(parsedLine - homeLine) < 0.01) {
+                        recommendedTeam = game.home;
+                    } else if (parsedTeam === game.away && Math.abs(parsedLine - awayLine) < 0.01) {
+                        recommendedTeam = game.away;
+                    } else {
+                        // Try partial name matching
+                        if ((game.home.includes(parsedTeam) || parsedTeam.includes(game.home)) && 
+                            Math.abs(parsedLine - homeLine) < 0.01) {
+                            recommendedTeam = game.home;
+                        } else if ((game.away.includes(parsedTeam) || parsedTeam.includes(game.away)) && 
+                                   Math.abs(parsedLine - awayLine) < 0.01) {
+                            recommendedTeam = game.away;
+                        }
+                    }
+                }
+            }
+        }
+        // PRIORITY 2: Parse from rec_text if CSV data not available
+        else if (game.hasRecommendation && game.recText) {
             const recMatch = game.recText.match(/^(.+?)\s+([-+]?\d*\.?\d+)$/);
             if (recMatch) {
                 recommendedTeam = recMatch[1].trim();
-                parsedLine = parseFloat(recMatch[2]);
+                const parsedLine = parseFloat(recMatch[2]);
                 
                 // Determine home/away lines based on recommended team
                 if (recommendedTeam === game.home) {
@@ -419,9 +448,10 @@ class ParlayKing {
                 }
             }
         }
-        
-        // Priority 2: For non-recommendation games, infer from 1X2 odds
-        if (!game.hasRecommendation && game.odds1 > 0 && game.oddsX > 0 && game.odds2 > 0) {
+        // PRIORITY 3: Last resort - estimate from 1X2 odds (fallback only)
+        else if (game.odds1 > 0 && game.oddsX > 0 && game.odds2 > 0) {
+            console.warn('Using 1X2 estimation for AH lines - CSV data should be authoritative');
+            
             // Convert odds to implied probabilities
             const prob1 = 1 / game.odds1;
             const probX = 1 / game.oddsX;
@@ -433,16 +463,28 @@ class ParlayKing {
             const normProb2 = prob2 / totalProb;
             
             // Estimate goal difference (simplified model)
-            const goalDiff = (normProb1 - normProb2) * 2.5; // Scale factor for typical goal differences
+            const goalDiff = (normProb1 - normProb2) * 2.5;
             
-            // Map to closest quarter line
-            const quarterLines = [-2, -1.75, -1.5, -1.25, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
-            const closestLine = quarterLines.reduce((prev, curr) => 
-                Math.abs(curr - goalDiff) < Math.abs(prev - goalDiff) ? curr : prev
-            );
+            // Map to closest quarter line (same logic as backend)
+            if (goalDiff > 1.875) homeLine = -2.0;
+            else if (goalDiff > 1.625) homeLine = -1.75;
+            else if (goalDiff > 1.375) homeLine = -1.5;
+            else if (goalDiff > 1.125) homeLine = -1.25;
+            else if (goalDiff > 0.875) homeLine = -1.0;
+            else if (goalDiff > 0.625) homeLine = -0.75;
+            else if (goalDiff > 0.375) homeLine = -0.5;
+            else if (goalDiff > 0.125) homeLine = -0.25;
+            else if (goalDiff > -0.125) homeLine = 0.0;
+            else if (goalDiff > -0.375) homeLine = 0.25;
+            else if (goalDiff > -0.625) homeLine = 0.5;
+            else if (goalDiff > -0.875) homeLine = 0.75;
+            else if (goalDiff > -1.125) homeLine = 1.0;
+            else if (goalDiff > -1.375) homeLine = 1.25;
+            else if (goalDiff > -1.625) homeLine = 1.5;
+            else if (goalDiff > -1.875) homeLine = 1.75;
+            else homeLine = 2.0;
             
-            homeLine = closestLine;
-            awayLine = -closestLine;
+            awayLine = -homeLine;
         }
         
         // Handle edge cases and formatting
@@ -1106,19 +1148,29 @@ class ParlayKing {
         const oldSentinel = document.getElementById('loading-sentinel');
         if (oldSentinel) oldSentinel.remove();
         
-        // Append new games
-        const newGamesHtml = Object.entries(nextBatch)
-            .map(([tierGroup, gamesList]) => {
-                if (gamesList.length === 0) return '';
-                return `
-                    <div class="games-list">
-                        ${gamesList.map((game, index) => this.renderGameCard(game, previousCount + index)).join('')}
-                    </div>
-                `;
-            })
-            .join('');
-        
-        container.insertAdjacentHTML('beforeend', newGamesHtml);
+        // Group-aware append: add new games to existing tier group containers
+        Object.entries(nextBatch).forEach(([tierGroup, gamesList]) => {
+            if (gamesList.length === 0) return;
+            
+            // Find existing tier group container
+            const tierGroupElement = Array.from(container.querySelectorAll('.tier-group'))
+                .find(el => el.querySelector('.tier-group-header h4')?.textContent === tierGroup);
+            
+            if (tierGroupElement) {
+                // Append to existing group's games list
+                const existingGamesList = tierGroupElement.querySelector('.games-list');
+                if (existingGamesList) {
+                    const newGamesHtml = gamesList.map((game, index) => 
+                        this.renderGameCard(game, previousCount + index)
+                    ).join('');
+                    existingGamesList.insertAdjacentHTML('beforeend', newGamesHtml);
+                }
+            } else {
+                // Create new tier group if it doesn't exist (edge case)
+                const newTierGroupHtml = this.renderTierGroup(tierGroup, gamesList);
+                container.insertAdjacentHTML('beforeend', newTierGroupHtml);
+            }
+        });
         
         // Add new sentinel if there are more games
         if (this.mobileState.renderedGames < allGames.length) {
@@ -1153,6 +1205,66 @@ class ParlayKing {
         }
         
         return batchGroups;
+    }
+
+    renderSkeletonCards(container) {
+        const skeletonCount = 6; // Show 6 skeleton cards
+        const skeletonHtml = Array.from({ length: skeletonCount }, (_, index) => `
+            <div class="game-card game-card--skeleton" aria-hidden="true">
+                <div class="game-row ${this.featureFlags.mobile_card_v2 ? 'game-row--v2' : ''}">
+                    ${this.featureFlags.mobile_card_v2 ? this.renderSkeletonCardV2() : this.renderSkeletonCardLegacy()}
+                </div>
+            </div>
+        `).join('');
+        
+        container.innerHTML = `
+            <div class="tier-group">
+                <div class="tier-group-header skeleton-header">
+                    <div class="skeleton-text skeleton-text--title"></div>
+                    <div class="skeleton-text skeleton-text--count"></div>
+                </div>
+                <div class="games-list">
+                    ${skeletonHtml}
+                </div>
+            </div>
+        `;
+    }
+
+    renderSkeletonCardV2() {
+        return `
+            <div class="game-meta">
+                <div class="skeleton-text skeleton-text--time"></div>
+                <div class="skeleton-text skeleton-text--league"></div>
+            </div>
+            
+            <div class="game-matchup">
+                <div class="team-row">
+                    <div class="skeleton-text skeleton-text--team"></div>
+                    <div class="skeleton-chip"></div>
+                </div>
+                <div class="vs-separator">vs</div>
+                <div class="team-row">
+                    <div class="skeleton-text skeleton-text--team"></div>
+                    <div class="skeleton-chip"></div>
+                </div>
+            </div>
+            
+            <div class="game-actions">
+                <div class="skeleton-pill"></div>
+                <div class="skeleton-chevron"></div>
+            </div>
+        `;
+    }
+
+    renderSkeletonCardLegacy() {
+        return `
+            <div class="skeleton-text skeleton-text--time"></div>
+            <div class="skeleton-signal"></div>
+            <div class="skeleton-text skeleton-text--teams"></div>
+            <div class="skeleton-text skeleton-text--league"></div>
+            <div class="skeleton-text skeleton-text--odds"></div>
+            <div class="skeleton-chevron"></div>
+        `;
     }
 
     setFilterValues() {
@@ -1614,8 +1726,14 @@ class ParlayKing {
             return;
         }
 
+        // Show skeleton loading if data is loading
+        if (!this.data.unifiedGames) {
+            this.renderSkeletonCards(container);
+            return;
+        }
+        
         // Fallback to recommendations if unified games not available
-        if (!this.data.unifiedGames || this.data.unifiedGames.length === 0) {
+        if (this.data.unifiedGames.length === 0) {
             this.renderFallbackRecommendations(container);
             return;
         }
@@ -2015,23 +2133,41 @@ class ParlayKing {
         
         if (!expandedDetails || !expandBtn) return;
         
-        if (expandedDetails.classList.contains('hidden')) {
+        const isCurrentlyExpanded = !expandedDetails.classList.contains('hidden');
+        
+        if (!isCurrentlyExpanded) {
+            // Expand
             expandedDetails.classList.remove('hidden');
             expandBtn.textContent = '▲';
             card.classList.add('expanded');
+            card.setAttribute('data-expanded', 'true');
+            expandBtn.setAttribute('aria-expanded', 'true');
             
             // Analytics tracking
-            if (this.trackEvent) {
-                this.trackEvent('game_expanded', {
-                    signal: card.dataset.signal,
-                    league: card.querySelector('.game-league')?.textContent
-                });
-            }
+            this.trackEvent('card_expanded', {
+                signal: card.dataset.signal,
+                league: card.querySelector('.league-short')?.textContent || card.querySelector('.game-league')?.textContent,
+                tier: card.dataset.tier,
+                has_pick: card.dataset.signal !== '',
+                ev_band: this.getEvBand(card)
+            });
         } else {
+            // Collapse
             expandedDetails.classList.add('hidden');
             expandBtn.textContent = '▼';
             card.classList.remove('expanded');
+            card.setAttribute('data-expanded', 'false');
+            expandBtn.setAttribute('aria-expanded', 'false');
         }
+    }
+
+    getEvBand(card) {
+        const evPill = card.querySelector('.ev-pill');
+        if (!evPill) return 'none';
+        
+        if (evPill.classList.contains('ev-pill--strong')) return 'high';
+        if (evPill.classList.contains('ev-pill--medium')) return 'medium';
+        return 'low';
     }
 
     shareGame(gameTimestamp) {

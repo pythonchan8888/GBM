@@ -5015,6 +5015,67 @@ def export_unified_games_schedule():
             # Get league metadata
             league_meta = LEAGUE_METADATA.get(game['league'], {})
             
+            # Calculate authoritative AH lines for ALL games (not just recommendations)
+            ah_line_home = None
+            ah_line_away = None
+            ah_odds_home = 1.925  # Default synthetic odds
+            ah_odds_away = 1.925
+            
+            # Priority 1: Use synthetic AH from backend model if available
+            if rec_match and 'synth_ah_line_home_market_based' in rec_match:
+                ah_line_home = rec_match.get('synth_ah_line_home_market_based')
+                if pd.notna(ah_line_home):
+                    ah_line_away = -ah_line_home
+                    ah_odds_home = rec_match.get('synth_ah_odds_home_market_based', 1.925)
+                    ah_odds_away = rec_match.get('synth_ah_odds_away_market_based', 1.925)
+            
+            # Priority 2: Calculate from 1X2 odds if synthetic not available
+            if ah_line_home is None and all(pd.notna(game.get(col)) and game.get(col) > 0 
+                                          for col in ['odds_ft_1', 'odds_ft_x', 'odds_ft_2']):
+                try:
+                    # Convert to implied probabilities
+                    prob_h = 1 / game['odds_ft_1']
+                    prob_d = 1 / game['odds_ft_x'] 
+                    prob_a = 1 / game['odds_ft_2']
+                    total_prob = prob_h + prob_d + prob_a
+                    
+                    # Normalize
+                    norm_prob_h = prob_h / total_prob
+                    norm_prob_a = prob_a / total_prob
+                    
+                    # Estimate goal difference using same logic as backend
+                    goal_diff = (norm_prob_h - norm_prob_a) * 2.5
+                    
+                    # Map to closest quarter line (same as backend get_closest_ah_line)
+                    if goal_diff > 1.875: ah_line_home = -2.0
+                    elif goal_diff > 1.625: ah_line_home = -1.75
+                    elif goal_diff > 1.375: ah_line_home = -1.5
+                    elif goal_diff > 1.125: ah_line_home = -1.25
+                    elif goal_diff > 0.875: ah_line_home = -1.0
+                    elif goal_diff > 0.625: ah_line_home = -0.75
+                    elif goal_diff > 0.375: ah_line_home = -0.5
+                    elif goal_diff > 0.125: ah_line_home = -0.25
+                    elif goal_diff > -0.125: ah_line_home = 0.0
+                    elif goal_diff > -0.375: ah_line_home = 0.25
+                    elif goal_diff > -0.625: ah_line_home = 0.5
+                    elif goal_diff > -0.875: ah_line_home = 0.75
+                    elif goal_diff > -1.125: ah_line_home = 1.0
+                    elif goal_diff > -1.375: ah_line_home = 1.25
+                    elif goal_diff > -1.625: ah_line_home = 1.5
+                    elif goal_diff > -1.875: ah_line_home = 1.75
+                    else: ah_line_home = 2.0
+                    
+                    ah_line_away = -ah_line_home
+                except Exception as e:
+                    print(f"Warning: AH calculation failed for {game['home_name']} vs {game['away_name']}: {e}")
+                    ah_line_home = 0.0
+                    ah_line_away = 0.0
+            
+            # Priority 3: Fallback to neutral lines
+            if ah_line_home is None:
+                ah_line_home = 0.0
+                ah_line_away = 0.0
+            
             unified_schedule.append({
                 'datetime_gmt8': game['datetime_gmt8'],
                 'league': game['league'],
@@ -5030,6 +5091,12 @@ def export_unified_games_schedule():
                 'competition_type': game['competition_type'],
                 'is_future': game['is_future'],
                 'status': game.get('status', ''),
+                
+                # Authoritative Asian Handicap data
+                'ah_line_home': ah_line_home,
+                'ah_line_away': ah_line_away,
+                'ah_odds_home': ah_odds_home,
+                'ah_odds_away': ah_odds_away,
                 
                 # Recommendation data
                 'has_recommendation': rec_match is not None,

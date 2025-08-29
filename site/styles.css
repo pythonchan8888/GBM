@@ -1314,7 +1314,7 @@ body {
 
 /* Update tier group styles (same as time group) */
 .tier-group {
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-md); /* Reduced from lg for density */
 }
 
 .tier-group:last-child {
@@ -1325,11 +1325,26 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-md) var(--space-lg);
+  padding: var(--space-sm) var(--space-lg); /* Reduced vertical padding */
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
   font-weight: 600;
   color: var(--text);
+}
+
+/* Mobile tier group density optimization */
+@media (max-width: 768px) {
+  .tier-group {
+    margin-bottom: var(--space-sm);
+  }
+  
+  .tier-group-header {
+    padding: 6px var(--space-md); /* Even tighter on mobile */
+  }
+  
+  .tier-group-header h4 {
+    font-size: var(--font-size-sm);
+  }
 }
 
 .tier-group-header h4 {
@@ -1827,6 +1842,115 @@ body {
   50% { opacity: 1; }
 }
 
+/* ===== SKELETON LOADING STATES ===== */
+
+.game-card--skeleton {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-sm);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.skeleton-header {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.skeleton-text,
+.skeleton-chip,
+.skeleton-pill,
+.skeleton-chevron,
+.skeleton-signal {
+  background: linear-gradient(90deg, var(--border) 25%, var(--panel-elevated) 50%, var(--border) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-text--title {
+  width: 120px;
+  height: 18px;
+}
+
+.skeleton-text--count {
+  width: 60px;
+  height: 14px;
+}
+
+.skeleton-text--time {
+  width: 40px;
+  height: 14px;
+}
+
+.skeleton-text--league {
+  width: 50px;
+  height: 12px;
+}
+
+.skeleton-text--team {
+  width: 80px;
+  height: 16px;
+}
+
+.skeleton-text--teams {
+  width: 180px;
+  height: 16px;
+}
+
+.skeleton-text--odds {
+  width: 100px;
+  height: 14px;
+}
+
+.skeleton-chip {
+  width: 44px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-pill {
+  width: 60px;
+  height: 20px;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-chevron {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.skeleton-signal {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+/* Mobile skeleton adjustments */
+@media (max-width: 768px) {
+  .skeleton-text--team {
+    width: 70px;
+    height: 14px;
+  }
+  
+  .skeleton-chip {
+    width: 36px;
+    height: 24px;
+  }
+  
+  .skeleton-pill {
+    width: 50px;
+    height: 18px;
+  }
+}
+
 /* ===== ACCESSIBILITY IMPROVEMENTS ===== */
 
 /* Focus states for interactive elements */
@@ -1897,8 +2021,8 @@ body {
   }
   
   .game-row--v2 {
-    padding: var(--space-sm);
-    min-height: 56px;
+    padding: 8px; /* Tighter mobile padding for density */
+    min-height: 48px; /* Reduced from 56px for more games per fold */
   }
   
   .game-meta {
