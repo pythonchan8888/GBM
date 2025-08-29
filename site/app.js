@@ -138,7 +138,10 @@ class ParlayKing {
                 this.loadCSV('top_segments.csv'),
                 this.loadCSV('settled_bets.csv'), // For parlay calculation
                 this.loadCSV('parlay_wins.csv').catch(() => []),
-                this.loadCSV('unified_games.csv').catch(() => []) // New unified schedule
+                this.loadCSV('unified_games.csv').catch((error) => {
+                    console.warn('Unified games CSV not available:', error);
+                    return [];
+                }) // New unified schedule
             ]);
 
             // Store data
@@ -319,7 +322,10 @@ class ParlayKing {
     }
 
     parseUnifiedGames(rawGames) {
-        if (!Array.isArray(rawGames)) return [];
+        if (!Array.isArray(rawGames) || rawGames.length === 0) {
+            console.log('No unified games data available - will use fallback recommendations');
+            return [];
+        }
         
         return rawGames.filter(game => game && game.datetime_gmt8 && game.home_name && game.away_name).map(game => {
             const datetime = this.parseGmt8(game.datetime_gmt8) || this.parseDateTimeSafe(game.datetime_gmt8);
@@ -697,35 +703,32 @@ class ParlayKing {
             });
         });
 
-        // Export functionality (with safety check)
-        const exportBtn = document.getElementById('export-recommendations');
-        if (exportBtn) {
-            exportBtn.addEventListener('click', () => {
-                this.exportFilteredRecommendations();
-            });
-        }
+        // Export functionality
+        document.getElementById('export-recommendations').addEventListener('click', () => {
+            this.exportFilteredRecommendations();
+        });
 
         // Schedule filter functionality
         this.initScheduleFilters();
     }
 
     initScheduleFilters() {
-        // Only initialize if schedule filters exist (homepage only)
-        const scheduleFilters = document.querySelectorAll('.filter-tab');
-        if (scheduleFilters.length === 0) return;
-
+        // Only initialize if schedule elements exist (homepage only)
+        const scheduleContainer = document.getElementById('unified-games-container');
+        if (!scheduleContainer) return;
+        
         // Initialize game time filter
         if (!this.filters.gameTimeFilter) {
             this.filters.gameTimeFilter = 'today';
         }
 
         // Add event listeners for schedule filter tabs
-        scheduleFilters.forEach(tab => {
+        document.querySelectorAll('.filter-tab').forEach(tab => {
             tab.addEventListener('click', (e) => {
                 const filterValue = e.target.dataset.filter;
                 
                 // Update active state
-                scheduleFilters.forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
                 e.target.classList.add('active');
                 
                 // Update filter and re-render
@@ -1203,7 +1206,10 @@ class ParlayKing {
 
     renderUnifiedSchedule() {
         const container = document.getElementById('unified-games-container');
-        if (!container) return;
+        if (!container) {
+            console.log('Unified games container not found - skipping schedule render');
+            return;
+        }
 
         // Fallback to recommendations if unified games not available
         if (!this.data.unifiedGames || this.data.unifiedGames.length === 0) {
@@ -1448,14 +1454,17 @@ class ParlayKing {
     }
 
     initGameCardInteractions() {
-        // Click to expand/collapse
-        document.querySelectorAll('.game-card[data-expandable="true"]').forEach(card => {
-            card.addEventListener('click', (e) => {
-                // Don't toggle on button clicks
-                if (e.target.closest('.expanded-actions') || e.target.closest('.action-btn')) return;
-                this.toggleGameExpansion(card);
+        // Add a small delay to ensure DOM is ready
+        setTimeout(() => {
+            // Click to expand/collapse
+            document.querySelectorAll('.game-card[data-expandable="true"]').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    // Don't toggle on button clicks
+                    if (e.target.closest('.expanded-actions') || e.target.closest('.action-btn')) return;
+                    this.toggleGameExpansion(card);
+                });
             });
-        });
+        }, 100);
     }
 
     toggleGameExpansion(card) {
@@ -2307,9 +2316,13 @@ document.addEventListener('DOMContentLoaded', () => {
             window.parlayKing.initAnalyticsPage();
         } else if (currentPage.includes('recommendations.html') && typeof window.parlayKing.initRecommendationsPage === 'function') {
             window.parlayKing.initRecommendationsPage();
-        } else if (currentPage.includes('index.html') || currentPage === '/' || currentPage === '') {
+        } else if (currentPage.includes('index.html') || currentPage === '/' || currentPage === '' || currentPage.endsWith('/')) {
             // Initialize unified schedule on homepage
-            window.parlayKing.initScheduleFilters();
+            setTimeout(() => {
+                if (window.parlayKing && typeof window.parlayKing.initScheduleFilters === 'function') {
+                    window.parlayKing.initScheduleFilters();
+                }
+            }, 100);
         }
     }, 500); // Wait for initial data to load
 });
@@ -2324,5 +2337,20 @@ document.addEventListener('visibilitychange', () => {
     }
 });
 
-// Legacy expand button handler (will be replaced by unified schedule)
-// This code runs after DOM load, so it's safe to access parlayKing instance
+// Add event listener for expand-btn
+document.querySelectorAll('.expand-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const card = e.target.closest('.rec-card');
+        const callDiv = card.querySelector('.kings-call');
+        callDiv.classList.toggle('hidden');
+        if (!callDiv.classList.contains('hidden') && !callDiv.textContent) {
+            callDiv.classList.add('loading');
+            callDiv.textContent = '';  // Clear for loading
+            // Simulate async if needed, but since it's from data:
+            const rec = this.data.recommendations.find(r => r.id === card.dataset.id);
+            callDiv.textContent = rec ? rec.kingsCall : 'No insights';
+            callDiv.classList.remove('loading');
+        }
+        btn.textContent = callDiv.classList.contains('hidden') ? 'Show King\'s Call' : 'Hide King\'s Call';
+    });
+});
