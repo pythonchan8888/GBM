@@ -697,28 +697,35 @@ class ParlayKing {
             });
         });
 
-        // Export functionality
-        document.getElementById('export-recommendations').addEventListener('click', () => {
-            this.exportFilteredRecommendations();
-        });
+        // Export functionality (with safety check)
+        const exportBtn = document.getElementById('export-recommendations');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', () => {
+                this.exportFilteredRecommendations();
+            });
+        }
 
         // Schedule filter functionality
         this.initScheduleFilters();
     }
 
     initScheduleFilters() {
+        // Only initialize if schedule filters exist (homepage only)
+        const scheduleFilters = document.querySelectorAll('.filter-tab');
+        if (scheduleFilters.length === 0) return;
+
         // Initialize game time filter
         if (!this.filters.gameTimeFilter) {
             this.filters.gameTimeFilter = 'today';
         }
 
         // Add event listeners for schedule filter tabs
-        document.querySelectorAll('.filter-tab').forEach(tab => {
+        scheduleFilters.forEach(tab => {
             tab.addEventListener('click', (e) => {
                 const filterValue = e.target.dataset.filter;
                 
                 // Update active state
-                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                scheduleFilters.forEach(t => t.classList.remove('active'));
                 e.target.classList.add('active');
                 
                 // Update filter and re-render
@@ -2317,20 +2324,5 @@ document.addEventListener('visibilitychange', () => {
     }
 });
 
-// Add event listener for expand-btn
-document.querySelectorAll('.expand-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        const card = e.target.closest('.rec-card');
-        const callDiv = card.querySelector('.kings-call');
-        callDiv.classList.toggle('hidden');
-        if (!callDiv.classList.contains('hidden') && !callDiv.textContent) {
-            callDiv.classList.add('loading');
-            callDiv.textContent = '';  // Clear for loading
-            // Simulate async if needed, but since it's from data:
-            const rec = this.data.recommendations.find(r => r.id === card.dataset.id);
-            callDiv.textContent = rec ? rec.kingsCall : 'No insights';
-            callDiv.classList.remove('loading');
-        }
-        btn.textContent = callDiv.classList.contains('hidden') ? 'Show King\'s Call' : 'Hide King\'s Call';
-    });
-});
+// Legacy expand button handler (will be replaced by unified schedule)
+// This code runs after DOM load, so it's safe to access parlayKing instance
