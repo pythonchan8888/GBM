@@ -129,7 +129,7 @@ class ParlayKing {
     async loadAllData() {
         try {
             // Load all CSV files in parallel
-            const [metrics, pnlByMonth, bankrollSeries, recommendations, roiHeatmap, topSegments, settledBets, parlayWinsCsv] = await Promise.all([
+            const [metrics, pnlByMonth, bankrollSeries, recommendations, roiHeatmap, topSegments, settledBets, parlayWinsCsv, unifiedGames] = await Promise.all([
                 this.loadCSV('metrics.csv'),
                 this.loadCSV('pnl_by_month.csv'),
                 this.loadCSV('bankroll_series_90d.csv'),
@@ -137,7 +137,8 @@ class ParlayKing {
                 this.loadCSV('roi_heatmap.csv'),
                 this.loadCSV('top_segments.csv'),
                 this.loadCSV('settled_bets.csv'), // For parlay calculation
-                this.loadCSV('parlay_wins.csv').catch(() => [])
+                this.loadCSV('parlay_wins.csv').catch(() => []),
+                this.loadCSV('unified_games.csv').catch(() => []) // New unified schedule
             ]);
 
             // Store data
@@ -148,7 +149,8 @@ class ParlayKing {
                 recommendations: this.parseRecommendations(recommendations),
                 roiHeatmap,
                 topSegments,
-                settledBets: this.parseSettledBets(settledBets)
+                settledBets: this.parseSettledBets(settledBets),
+                unifiedGames: this.parseUnifiedGames(unifiedGames) // New unified schedule
             };
 
             // Calculate parlay wins (prefer server CSV if present)
@@ -314,6 +316,49 @@ class ParlayKing {
                 });
             })
             .sort((a, b) => (b.datetime || 0) - (a.datetime || 0));
+    }
+
+    parseUnifiedGames(rawGames) {
+        if (!Array.isArray(rawGames)) return [];
+        
+        return rawGames.filter(game => game && game.datetime_gmt8 && game.home_name && game.away_name).map(game => {
+            const datetime = this.parseGmt8(game.datetime_gmt8) || this.parseDateTimeSafe(game.datetime_gmt8);
+            if (!datetime) {
+                console.warn('Invalid date for game: ' + game.datetime_gmt8);
+                return null;
+            }
+            
+            return {
+                datetime: datetime,
+                league: game.league || '',
+                leagueShort: game.league_short || game.league || '',
+                leagueFlag: game.league_flag || '⚽',
+                leagueColor: game.league_color || '#666666',
+                home: game.home_name,
+                away: game.away_name,
+                odds1: parseFloat(game.odds_1) || 0,
+                oddsX: parseFloat(game.odds_x) || 0,
+                odds2: parseFloat(game.odds_2) || 0,
+                tier: parseInt(game.league_tier) || 3,
+                competitionType: game.competition_type || 'league',
+                isFuture: game.is_future === 'True' || game.is_future === true || game.is_future === 'true',
+                status: game.status || '',
+                
+                // Recommendation data
+                hasRecommendation: game.has_recommendation === 'True' || game.has_recommendation === true || game.has_recommendation === 'true',
+                recText: game.rec_text || '',
+                line: parseFloat(game.line) || 0,
+                recOdds: parseFloat(game.rec_odds) || 0,
+                ev: parseFloat(game.ev) || 0,
+                confidence: game.confidence || '',
+                kingsCall: game.kings_call || '',
+                kingsCallAgreement: game.kings_call_agreement || '',
+                
+                // Signal data
+                primarySignal: game.primary_signal || '',
+                secondarySignal: game.secondary_signal || ''
+            };
+        }).filter(Boolean).sort((a, b) => a.datetime - b.datetime);
     }
 
     // Parlay Wins Calculation (JS fallback)
@@ -656,6 +701,38 @@ class ParlayKing {
         document.getElementById('export-recommendations').addEventListener('click', () => {
             this.exportFilteredRecommendations();
         });
+
+        // Schedule filter functionality
+        this.initScheduleFilters();
+    }
+
+    initScheduleFilters() {
+        // Initialize game time filter
+        if (!this.filters.gameTimeFilter) {
+            this.filters.gameTimeFilter = 'today';
+        }
+
+        // Add event listeners for schedule filter tabs
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                const filterValue = e.target.dataset.filter;
+                
+                // Update active state
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                // Update filter and re-render
+                this.filters.gameTimeFilter = filterValue;
+                this.renderUnifiedSchedule();
+                
+                // Track analytics
+                if (this.trackEvent) {
+                    this.trackEvent('schedule_filter_changed', {
+                        filter: filterValue
+                    });
+                }
+            });
+        });
     }
 
     setFilterValues() {
@@ -683,6 +760,7 @@ class ParlayKing {
         this.updateParlayWins();
         this.updateChart();
         this.updateRecommendationsTable();
+        this.renderUnifiedSchedule(); // Add unified schedule rendering
         this.updateLastRunStatus();
     }
 
@@ -1073,6 +1151,373 @@ class ParlayKing {
         a.download = filename;
         a.click();
         window.URL.revokeObjectURL(url);
+    }
+
+    // Unified Games Filtering and Rendering
+    getFilteredGames() {
+        let filtered = [...(this.data.unifiedGames || [])];
+        
+        // Time-based filtering
+        const now = new Date();
+        if (this.filters.gameTimeFilter === 'today') {
+            const endOfDay = new Date(now);
+            endOfDay.setHours(23, 59, 59, 999);
+            filtered = filtered.filter(g => g.datetime >= now && g.datetime <= endOfDay);
+        } else if (this.filters.gameTimeFilter === 'tomorrow') {
+            const startOfTomorrow = new Date(now);
+            startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
+            startOfTomorrow.setHours(0, 0, 0, 0);
+            const endOfTomorrow = new Date(startOfTomorrow);
+            endOfTomorrow.setHours(23, 59, 59, 999);
+            filtered = filtered.filter(g => g.datetime >= startOfTomorrow && g.datetime <= endOfTomorrow);
+        } else if (this.filters.gameTimeFilter === 'weekend') {
+            const friday = new Date(now);
+            friday.setDate(now.getDate() + (5 - now.getDay() + 7) % 7);
+            friday.setHours(18, 0, 0, 0);
+            const sunday = new Date(friday);
+            sunday.setDate(friday.getDate() + 2);
+            sunday.setHours(23, 59, 59, 999);
+            filtered = filtered.filter(g => g.datetime >= friday && g.datetime <= sunday);
+        } else if (this.filters.gameTimeFilter === 'recommendations') {
+            filtered = filtered.filter(g => g.hasRecommendation);
+        }
+        
+        // League filtering (reuse existing logic)
+        if (this.filters.league !== 'all') {
+            filtered = filtered.filter(g => g.league === this.filters.league);
+        }
+
+        // Sort by tier priority, then by datetime
+        return filtered.sort((a, b) => {
+            if (a.tier !== b.tier) return a.tier - b.tier;
+            return a.datetime - b.datetime;
+        });
+    }
+
+    renderUnifiedSchedule() {
+        const container = document.getElementById('unified-games-container');
+        if (!container) return;
+
+        // Fallback to recommendations if unified games not available
+        if (!this.data.unifiedGames || this.data.unifiedGames.length === 0) {
+            this.renderFallbackRecommendations(container);
+            return;
+        }
+
+        const games = this.getFilteredGames();
+        
+        if (games.length === 0) {
+            container.innerHTML = '<div class="no-games">No games found for the selected filters.</div>';
+            return;
+        }
+
+        // Group games by time periods
+        const groupedGames = this.groupGamesByTime(games);
+        
+        container.innerHTML = Object.entries(groupedGames)
+            .map(([timeGroup, gamesList]) => this.renderTimeGroup(timeGroup, gamesList))
+            .join('');
+        
+        // Initialize interactions
+        this.initGameCardInteractions();
+    }
+
+    renderFallbackRecommendations(container) {
+        // Show recommendations in a simplified format if unified games not available
+        const recommendations = this.getFilteredRecommendations().slice(0, 10);
+        
+        if (recommendations.length === 0) {
+            container.innerHTML = '<div class="no-games">No upcoming recommendations available.</div>';
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="time-group">
+                <div class="time-group-header">
+                    <h4>Our Latest Recommendations</h4>
+                    <span class="game-count">${recommendations.length} picks</span>
+                </div>
+                <div class="games-list">
+                    ${recommendations.map((rec, index) => this.renderRecommendationAsGameCard(rec, index)).join('')}
+                </div>
+            </div>
+        `;
+        
+        this.initGameCardInteractions();
+    }
+
+    renderRecommendationAsGameCard(rec, index) {
+        return `
+            <div class="game-card" data-signal="kings-call" data-expandable="true">
+                <div class="game-row">
+                    <div class="game-time">${this.formatGameTime(rec.datetime)}</div>
+                    <div class="signal-container">
+                        <span class="signal-icon kings-call" title="King's Call Available">👑</span>
+                    </div>
+                    <div class="game-teams">
+                        <span class="league-flag">⚽</span>
+                        <div class="teams-text">
+                            <span class="home">${rec.home}</span>
+                            <span class="vs">vs</span>
+                            <span class="away">${rec.away}</span>
+                        </div>
+                    </div>
+                    <div class="game-league mobile-hidden">${rec.league}</div>
+                    <div class="game-odds mobile-hidden">${rec.odds.toFixed(2)}</div>
+                    <div class="expand-btn">▼</div>
+                </div>
+                
+                <div class="expanded-details hidden">
+                    <div class="expanded-row recommendation-row">
+                        <strong>Our Pick:</strong> ${rec.recommendation}
+                        <span class="ev-badge">EV: ${(rec.ev * 100).toFixed(1)}%</span>
+                    </div>
+                    ${rec.kingsCall ? `
+                        <div class="expanded-row kings-call-row">
+                            <strong>King's Call:</strong> 
+                            <span class="kings-call-text">${rec.kingsCall}</span>
+                        </div>
+                    ` : ''}
+                    <div class="expanded-row stats-row">
+                        <span>Confidence: ${rec.confidence}</span>
+                        <span>League: ${rec.league}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    groupGamesByTime(games) {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const dayAfter = new Date(tomorrow);
+        dayAfter.setDate(dayAfter.getDate() + 1);
+
+        const groups = {
+            'Today': [],
+            'Tomorrow': [],
+            'This Weekend': [],
+            'Next Week': []
+        };
+
+        games.forEach(game => {
+            if (game.datetime >= today && game.datetime < tomorrow) {
+                groups['Today'].push(game);
+            } else if (game.datetime >= tomorrow && game.datetime < dayAfter) {
+                groups['Tomorrow'].push(game);
+            } else if (game.datetime.getDay() >= 5 || game.datetime.getDay() <= 1) { // Fri-Mon
+                groups['This Weekend'].push(game);
+            } else {
+                groups['Next Week'].push(game);
+            }
+        });
+
+        // Remove empty groups
+        Object.keys(groups).forEach(key => {
+            if (groups[key].length === 0) delete groups[key];
+        });
+
+        return groups;
+    }
+
+    renderTimeGroup(timeGroup, games) {
+        return `
+            <div class="time-group">
+                <div class="time-group-header">
+                    <h4>${timeGroup}</h4>
+                    <span class="game-count">${games.length} games</span>
+                </div>
+                <div class="games-list">
+                    ${games.map((game, index) => this.renderGameCard(game, index)).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    renderGameCard(game, index) {
+        const signalIcon = this.getSignalIcon(game.primarySignal);
+        const isExpandable = game.hasRecommendation;
+        const timeDisplay = this.formatGameTime(game.datetime);
+        const oddsDisplay = this.formatOddsCompact(game);
+        
+        return `
+            <div class="game-card" 
+                 data-game-index="${index}"
+                 data-signal="${game.primarySignal}"
+                 data-expandable="${isExpandable}"
+                 data-is-future="${game.isFuture}">
+                
+                <div class="game-row">
+                    <div class="game-time">${timeDisplay}</div>
+                    <div class="signal-container">
+                        ${signalIcon ? `<span class="signal-icon ${game.primarySignal}" title="${this.getSignalTitle(game.primarySignal)}">${signalIcon}</span>` : ''}
+                        ${game.secondarySignal ? `<span class="signal-dot"></span>` : ''}
+                    </div>
+                    <div class="game-teams">
+                        <span class="league-flag">${game.leagueFlag}</span>
+                        <div class="teams-text">
+                            <span class="home">${game.home}</span>
+                            <span class="vs">vs</span>
+                            <span class="away">${game.away}</span>
+                        </div>
+                    </div>
+                    <div class="game-league mobile-hidden">${game.leagueShort}</div>
+                    <div class="game-odds mobile-hidden">${oddsDisplay}</div>
+                    <div class="expand-btn">${isExpandable ? '▼' : ''}</div>
+                </div>
+                
+                ${isExpandable ? this.renderExpandedContent(game) : ''}
+            </div>
+        `;
+    }
+
+    getSignalIcon(signalType) {
+        const icons = {
+            'kings-call': '👑',
+            'high-ev': '📈',
+            'hot-pick': '🔥',
+            'value-bet': '💎'
+        };
+        return icons[signalType] || '';
+    }
+
+    getSignalTitle(signalType) {
+        const titles = {
+            'kings-call': "King's Call Available",
+            'high-ev': 'High Expected Value',
+            'hot-pick': 'Hot Pick - High Confidence',
+            'value-bet': 'Value Bet Opportunity'
+        };
+        return titles[signalType] || '';
+    }
+
+    formatGameTime(datetime) {
+        if (!datetime) return '--:--';
+        return datetime.toLocaleTimeString('en-GB', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: false 
+        });
+    }
+
+    formatOddsCompact(game) {
+        if (!game.odds1 || !game.oddsX || !game.odds2) return 'TBD';
+        return `${game.odds1.toFixed(2)} ${game.oddsX.toFixed(2)} ${game.odds2.toFixed(2)}`;
+    }
+
+    renderExpandedContent(game) {
+        return `
+            <div class="expanded-details hidden">
+                <div class="expanded-row recommendation-row">
+                    <strong>Our Pick:</strong> ${game.recText}
+                    <span class="ev-badge">EV: ${(game.ev * 100).toFixed(1)}%</span>
+                </div>
+                
+                ${game.kingsCall && !game.kingsCall.includes('Unable to fetch') ? `
+                    <div class="expanded-row kings-call-row">
+                        <strong>King's Call:</strong> 
+                        <span class="kings-call-text">${game.kingsCall}</span>
+                    </div>
+                ` : ''}
+                
+                <div class="expanded-row stats-row">
+                    <span>Confidence: ${game.confidence}</span>
+                    <span>Tier: ${game.tier}</span>
+                    <span class="mobile-visible">Odds: ${this.formatOddsCompact(game)}</span>
+                </div>
+                
+                <div class="expanded-actions">
+                    <button class="action-btn secondary" onclick="parlayKing.shareGame(${game.datetime.getTime()})">
+                        Share Pick
+                    </button>
+                    <button class="action-btn primary" onclick="parlayKing.exportGame(${game.datetime.getTime()})">
+                        Export
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    initGameCardInteractions() {
+        // Click to expand/collapse
+        document.querySelectorAll('.game-card[data-expandable="true"]').forEach(card => {
+            card.addEventListener('click', (e) => {
+                // Don't toggle on button clicks
+                if (e.target.closest('.expanded-actions') || e.target.closest('.action-btn')) return;
+                this.toggleGameExpansion(card);
+            });
+        });
+    }
+
+    toggleGameExpansion(card) {
+        const expandedDetails = card.querySelector('.expanded-details');
+        const expandBtn = card.querySelector('.expand-btn');
+        
+        if (!expandedDetails || !expandBtn) return;
+        
+        if (expandedDetails.classList.contains('hidden')) {
+            expandedDetails.classList.remove('hidden');
+            expandBtn.textContent = '▲';
+            card.classList.add('expanded');
+            
+            // Analytics tracking
+            if (this.trackEvent) {
+                this.trackEvent('game_expanded', {
+                    signal: card.dataset.signal,
+                    league: card.querySelector('.game-league')?.textContent
+                });
+            }
+        } else {
+            expandedDetails.classList.add('hidden');
+            expandBtn.textContent = '▼';
+            card.classList.remove('expanded');
+        }
+    }
+
+    shareGame(gameTimestamp) {
+        const game = this.data.unifiedGames.find(g => g.datetime.getTime() === gameTimestamp);
+        if (!game) return;
+
+        const shareText = game.hasRecommendation 
+            ? `🎯 ${game.recText} @ ${game.recOdds.toFixed(2)} odds (EV: ${(game.ev * 100).toFixed(1)}%) - ${game.home} vs ${game.away}`
+            : `⚽ ${game.home} vs ${game.away} - ${this.formatDateTime(game.datetime)}`;
+
+        if (navigator.share) {
+            navigator.share({
+                title: 'ParlayKing Betting Pick',
+                text: shareText,
+                url: window.location.href
+            });
+        } else {
+            // Fallback: copy to clipboard
+            navigator.clipboard.writeText(shareText).then(() => {
+                alert('Shared text copied to clipboard!');
+            });
+        }
+    }
+
+    exportGame(gameTimestamp) {
+        const game = this.data.unifiedGames.find(g => g.datetime.getTime() === gameTimestamp);
+        if (!game || !game.hasRecommendation) return;
+
+        const csvData = [
+            ['Date/Time', 'League', 'Match', 'Recommendation', 'Odds', 'EV (%)', 'Confidence', 'King\'s Call'],
+            [
+                this.formatDateTime(game.datetime),
+                game.league,
+                `${game.home} vs ${game.away}`,
+                game.recText,
+                game.recOdds.toFixed(2),
+                (game.ev * 100).toFixed(1) + '%',
+                game.confidence,
+                game.kingsCall
+            ]
+        ];
+
+        const csvContent = csvData.map(row => row.join(',')).join('\n');
+        this.downloadCSV(csvContent, `pick_${game.home.replace(/\s+/g, '')}_vs_${game.away.replace(/\s+/g, '')}.csv`);
     }
 
     // Utility Functions
@@ -1843,7 +2288,7 @@ window.addEventListener('error', (event) => {
     }
 });
 
-// Initialize the application when DOM is loaded
+    // Initialize the application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.parlayKing = new ParlayKing();
     
@@ -1855,6 +2300,9 @@ document.addEventListener('DOMContentLoaded', () => {
             window.parlayKing.initAnalyticsPage();
         } else if (currentPage.includes('recommendations.html') && typeof window.parlayKing.initRecommendationsPage === 'function') {
             window.parlayKing.initRecommendationsPage();
+        } else if (currentPage.includes('index.html') || currentPage === '/' || currentPage === '') {
+            // Initialize unified schedule on homepage
+            window.parlayKing.initScheduleFilters();
         }
     }, 500); // Wait for initial data to load
 });

@@ -4901,3 +4901,178 @@ else:
             print("No betting recommendations generated based on the policy for the upcoming period.")
 
 print("\n--- End of Section 8: Generating Future Match Recommendations ---")
+
+"""Section 8.5: Export Unified Games Schedule for Frontend"""
+
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+import os
+
+print("\n--- Section 8.5: Export Unified Games Schedule for Frontend ---")
+
+# League metadata with flags and short names
+LEAGUE_METADATA = {
+    'England Premier League': {'flag': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'short': 'EPL', 'color': '#38003c'},
+    'Spain La Liga': {'flag': '🇪🇸', 'short': 'La Liga', 'color': '#ee8900'},
+    'Italy Serie A': {'flag': '🇮🇹', 'short': 'Serie A', 'color': '#024494'},
+    'Germany Bundesliga': {'flag': '🇩🇪', 'short': 'Bundesliga', 'color': '#d20515'},
+    'France Ligue 1': {'flag': '🇫🇷', 'short': 'Ligue 1', 'color': '#dae025'},
+    'Europe UEFA Champions League': {'flag': '🏆', 'short': 'UCL', 'color': '#00336a'},
+    'Europe UEFA Europa League': {'flag': '🥈', 'short': 'UEL', 'color': '#f68900'},
+    'England Championship': {'flag': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'short': 'Championship', 'color': '#004225'},
+    'Netherlands Eredivisie': {'flag': '🇳🇱', 'short': 'Eredivisie', 'color': '#ff6200'},
+    'Portugal Liga NOS': {'flag': '🇵🇹', 'short': 'Liga NOS', 'color': '#046a38'},
+    'Belgium Pro League': {'flag': '🇧🇪', 'short': 'Pro League', 'color': '#000000'},
+    'Brazil Serie A': {'flag': '🇧🇷', 'short': 'Brasileirão', 'color': '#009739'},
+    'Argentina Primera División': {'flag': '🇦🇷', 'short': 'Primera', 'color': '#74acdf'},
+    'Japan J1 League': {'flag': '🇯🇵', 'short': 'J1 League', 'color': '#e60012'},
+    'South Korea K League 1': {'flag': '🇰🇷', 'short': 'K League', 'color': '#cd212a'},
+    'USA MLS': {'flag': '🇺🇸', 'short': 'MLS', 'color': '#005da6'},
+    'Australia A-League': {'flag': '🇦🇺', 'short': 'A-League', 'color': '#00843d'},
+    'Turkey Süper Lig': {'flag': '🇹🇷', 'short': 'Süper Lig', 'color': '#e30613'},
+    'Saudi Arabia Professional League': {'flag': '🇸🇦', 'short': 'Saudi Pro', 'color': '#006c35'},
+    'China Chinese Super League': {'flag': '🇨🇳', 'short': 'CSL', 'color': '#de2910'},
+    'Denmark Superliga': {'flag': '🇩🇰', 'short': 'Superliga', 'color': '#c8102e'},
+    'Austria Bundesliga': {'flag': '🇦🇹', 'short': 'Bundesliga', 'color': '#ed2939'},
+    'Scotland Premiership': {'flag': '🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'short': 'Premiership', 'color': '#005eb8'},
+    'Malaysia Super League': {'flag': '🇲🇾', 'short': 'Super League', 'color': '#cc0001'},
+    'Israel Israeli Premier League': {'flag': '🇮🇱', 'short': 'Premier', 'color': '#0038b8'},
+    'Thailand League 1': {'flag': '🇹🇭', 'short': 'Thai L1', 'color': '#a51931'}
+}
+
+def determine_signal_type(rec_data):
+    """Determine signal icon based on recommendation data"""
+    if not rec_data:
+        return {'primary': '', 'secondary': ''}
+    
+    ev = rec_data.get('ev_for_bet_refined', 0) or rec_data.get('ev', 0)
+    confidence = rec_data.get('confidence_level', '') or rec_data.get('confidence', '')
+    has_kings_call = bool((rec_data.get('kings_call', '') or rec_data.get('kings_call_insight', '')).strip())
+    
+    # Avoid placeholder King's Calls
+    if has_kings_call and 'Unable to fetch insight' in str(rec_data.get('kings_call', '')):
+        has_kings_call = False
+    
+    # Primary signal hierarchy
+    if has_kings_call and ev > 0.15:
+        primary = 'kings-call'  # 👑
+    elif ev > 0.20:
+        primary = 'high-ev'     # 📈
+    elif confidence == 'High' and ev > 0.10:
+        primary = 'hot-pick'    # 🔥
+    elif ev > 0.05:
+        primary = 'value-bet'   # 💎
+    else:
+        primary = ''
+    
+    # Secondary signal (subtle indicator for moderate value)
+    secondary = 'value' if primary and ev > 0.08 else ''
+    
+    return {'primary': primary, 'secondary': secondary}
+
+def export_unified_games_schedule():
+    """Export unified schedule leveraging existing all_data_unified"""
+    try:
+        if 'all_data_unified' not in globals() or all_data_unified.empty:
+            print("Warning: all_data_unified not available, skipping unified schedule export")
+            return
+            
+        # Use existing data - no new API calls needed!
+        schedule_data = all_data_unified.copy()
+        
+        # Filter for relevant timeframe (past 24h + future 7 days)
+        now_gmt8 = pd.Timestamp.now(tz='Asia/Singapore').tz_localize(None)
+        recent_cutoff = now_gmt8 - pd.Timedelta(hours=24)
+        future_cutoff = now_gmt8 + pd.Timedelta(days=7)
+        
+        schedule_filtered = schedule_data[
+            (schedule_data['datetime_gmt8'] >= recent_cutoff) &
+            (schedule_data['datetime_gmt8'] <= future_cutoff)
+        ].copy()
+        
+        print(f"Filtered to {len(schedule_filtered)} games in relevant timeframe")
+        
+        # Link recommendations using existing final_recommendations_df
+        unified_schedule = []
+        recommendations_dict = {}
+        
+        # Create lookup dictionary from recommendations
+        if 'final_recommendations_df' in globals() and not final_recommendations_df.empty:
+            for _, rec in final_recommendations_df.iterrows():
+                key = f"{rec['home_name']}_{rec['away_name']}"
+                recommendations_dict[key] = rec.to_dict()
+            print(f"Loaded {len(recommendations_dict)} recommendations for linking")
+        
+        for _, game in schedule_filtered.iterrows():
+            # Find matching recommendation
+            game_key = f"{game['home_name']}_{game['away_name']}"
+            rec_match = recommendations_dict.get(game_key)
+            
+            # Determine signals
+            signals = determine_signal_type(rec_match)
+            
+            # Get league metadata
+            league_meta = LEAGUE_METADATA.get(game['league'], {})
+            
+            unified_schedule.append({
+                'datetime_gmt8': game['datetime_gmt8'],
+                'league': game['league'],
+                'league_short': league_meta.get('short', game['league']),
+                'league_flag': league_meta.get('flag', '⚽'),
+                'league_color': league_meta.get('color', '#666666'),
+                'home_name': game['home_name'],
+                'away_name': game['away_name'],
+                'odds_1': game.get('odds_ft_1', ''),
+                'odds_x': game.get('odds_ft_x', ''), 
+                'odds_2': game.get('odds_ft_2', ''),
+                'league_tier': game['league_tier'],
+                'competition_type': game['competition_type'],
+                'is_future': game['is_future'],
+                'status': game.get('status', ''),
+                
+                # Recommendation data
+                'has_recommendation': rec_match is not None,
+                'rec_text': rec_match.get('Recommendation', '') if rec_match else '',
+                'line': rec_match.get('line_betted_on_refined', 0) if rec_match else 0,
+                'rec_odds': rec_match.get('odds_betted_on_refined', 0) if rec_match else 0,
+                'ev': rec_match.get('ev_for_bet_refined', 0) if rec_match else 0,
+                'confidence': rec_match.get('confidence_level', '') if rec_match else '',
+                'kings_call': rec_match.get('kings_call', '') if rec_match else '',
+                'kings_call_agreement': rec_match.get('kings_call_agreement', '') if rec_match else '',
+                
+                # Signal data
+                'primary_signal': signals['primary'],
+                'secondary_signal': signals['secondary']
+            })
+        
+        # Export to site directory
+        df_unified = pd.DataFrame(unified_schedule)
+        os.makedirs('site', exist_ok=True)
+        df_unified.to_csv('site/unified_games.csv', index=False, encoding='utf-8')
+        print(f"✅ Exported {len(df_unified)} games to site/unified_games.csv")
+        
+        # Also copy to artifacts for backup
+        os.makedirs('artifacts/latest', exist_ok=True)
+        df_unified.to_csv('artifacts/latest/unified_games.csv', index=False, encoding='utf-8')
+        
+        # Log summary stats
+        signal_counts = df_unified['primary_signal'].value_counts()
+        rec_count = df_unified['has_recommendation'].sum()
+        future_count = df_unified['is_future'].sum()
+        
+        print(f"Schedule summary:")
+        print(f"  - Total games: {len(df_unified)}")
+        print(f"  - With recommendations: {rec_count}")
+        print(f"  - Future games: {future_count}")
+        print(f"  - Signal distribution: {dict(signal_counts)}")
+        
+        logging.info(f"Unified schedule exported: {len(df_unified)} games, {rec_count} with recommendations")
+        
+    except Exception as e:
+        print(f"Error exporting unified schedule: {e}")
+        logging.error(f"Unified schedule export failed: {e}")
+
+# Execute the export
+if __name__ == "__main__" or 'final_recommendations_df' in globals():
+    export_unified_games_schedule()

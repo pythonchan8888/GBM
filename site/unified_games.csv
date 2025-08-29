@@ -1,0 +1,11 @@
+datetime_gmt8,league,league_short,league_flag,league_color,home_name,away_name,odds_1,odds_x,odds_2,league_tier,competition_type,is_future,status,has_recommendation,rec_text,line,rec_odds,ev,confidence,kings_call,kings_call_agreement,primary_signal,secondary_signal
+2025-08-28 15:30:00,England Premier League,EPL,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#38003c,Manchester United,Arsenal,2.10,3.40,3.20,1,league,true,INCOMPLETE,true,Arsenal +0.25,0.25,1.93,0.1250,High,Arsenal's defense looks solid against United's inconsistent attack,Agree,hot-pick,value
+2025-08-28 18:00:00,Spain La Liga,La Liga,🇪🇸,#ee8900,Real Madrid,Barcelona,1.85,3.60,4.20,1,league,true,INCOMPLETE,true,Barcelona +0.5,0.5,1.90,0.2180,High,El Clasico always delivers surprises - Barcelona's form is trending upward,Agree,kings-call,
+2025-08-28 20:45:00,Italy Serie A,Serie A,🇮🇹,#024494,Juventus,AC Milan,2.25,3.20,3.10,1,league,true,INCOMPLETE,false,,0,0,0,,,,
+2025-08-29 12:00:00,England Premier League,EPL,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#38003c,Chelsea,Liverpool,2.40,3.30,2.90,1,league,true,INCOMPLETE,true,Liverpool -0.25,-0.25,1.95,0.0850,Medium,Liverpool's away form has been inconsistent lately,Neutral,value-bet,
+2025-08-29 14:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Bayern Munich,Borussia Dortmund,1.70,3.80,4.80,1,league,true,INCOMPLETE,false,,0,0,0,,,,
+2025-08-29 16:00:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,Paris Saint-Germain,Olympique Marseille,1.60,4.00,5.50,1,league,true,INCOMPLETE,true,PSG -1.0,-1.0,1.88,0.3200,High,PSG's attacking depth should overwhelm Marseille's defense,Agree,high-ev,value
+2025-08-30 13:00:00,Netherlands Eredivisie,Eredivisie,🇳🇱,#ff6200,Ajax,PSV Eindhoven,2.50,3.40,2.80,2,league,true,INCOMPLETE,false,,0,0,0,,,,
+2025-08-30 15:30:00,Portugal Liga NOS,Liga NOS,🇵🇹,#046a38,FC Porto,Sporting CP,2.20,3.20,3.20,2,league,true,INCOMPLETE,false,,0,0,0,,,,
+2025-08-30 18:00:00,Brazil Serie A,Brasileirão,🇧🇷,#009739,Flamengo,Palmeiras,2.60,3.10,2.70,2,league,true,INCOMPLETE,false,,0,0,0,,,,
+2025-08-31 10:00:00,Japan J1 League,J1 League,🇯🇵,#e60012,Urawa Red Diamonds,Yokohama F. Marinos,2.80,3.00,2.50,3,league,true,INCOMPLETE,false,,0,0,0,,,,
