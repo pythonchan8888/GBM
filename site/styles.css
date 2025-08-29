@@ -1231,6 +1231,112 @@ body {
   justify-content: flex-end;
 }
 
+.action-btn-compact {
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.action-btn-compact:hover {
+  background: var(--panel-elevated);
+  color: var(--text);
+  border-color: var(--primary);
+}
+
+.action-btn-compact.primary {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.action-btn-compact.primary:hover {
+  background: var(--primary-light);
+}
+
+.rec-main {
+  flex: 1;
+}
+
+.kings-call-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.kings-call-icon {
+  font-size: 16px;
+}
+
+.kings-call-content {
+  width: 100%;
+}
+
+.kings-call-row {
+  border-left: 3px solid #FFD700;
+  padding-left: var(--space-md);
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.stats-left {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.stats-right {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.stat-pill {
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+.odds-display {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+/* Update tier group styles (same as time group) */
+.tier-group {
+  margin-bottom: var(--space-lg);
+}
+
+.tier-group:last-child {
+  margin-bottom: 0;
+}
+
+.tier-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tier-group-header h4 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+}
+
 .schedule-footer {
   display: flex;
   justify-content: space-between;
@@ -1311,11 +1417,30 @@ body {
   
   .expanded-actions {
     justify-content: center;
-    flex-direction: column;
+    flex-direction: row;
   }
   
-  .expanded-actions button {
-    width: 100%;
+  .action-btn-compact {
+    flex: 1;
+    text-align: center;
+    min-height: 36px;
+  }
+
+  .stats-row {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .stats-left, .stats-right {
+    justify-content: flex-start;
+  }
+
+  .kings-call-row {
+    padding-left: var(--space-sm);
+  }
+
+  .kings-call-header {
+    margin-bottom: var(--space-sm);
   }
   
   .schedule-footer {

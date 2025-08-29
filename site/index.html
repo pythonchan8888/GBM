@@ -116,7 +116,36 @@
 
     <!-- Main Content -->
     <main class="main-container">
-        <!-- KPI Row -->
+        <!-- Unified Games Schedule - CENTERPIECE -->
+        <section class="unified-schedule-section">
+            <div class="schedule-card glass-panel">
+                <div class="schedule-header">
+                    <h3>Upcoming Matches</h3>
+                    <div class="schedule-filters">
+                        <button class="filter-tab active" data-filter="all">All Leagues</button>
+                        <button class="filter-tab" data-filter="tier1">Top Leagues</button>
+                        <button class="filter-tab" data-filter="recommendations">Our Picks</button>
+                    </div>
+                </div>
+                
+                <div class="games-container" id="unified-games-container">
+                    <!-- Populated by JavaScript -->
+                </div>
+                
+                <div class="schedule-footer">
+                    <div class="schedule-actions">
+                        <a href="recommendations.html" class="action-btn primary">
+                            <span>View All Recommendations</span>
+                        </a>
+                    </div>
+                    <div class="responsible-betting">
+                        <small>⚠️ Bet responsibly. Past performance does not guarantee future results.</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KPI Row - Moved Below Games -->
         <section class="kpi-section">
             <div class="kpi-grid">
                 <!-- New Hero Card -->
@@ -190,38 +219,6 @@
                 </div>
                 <div class="parlay-disclaimer">
                     <small>💡 Based on settled results from our recommendations. Past performance doesn't guarantee future results.</small>
-                </div>
-            </div>
-        </section>
-
-        
-
-        <!-- Unified Games Schedule -->
-        <section class="unified-schedule-section">
-            <div class="schedule-card glass-panel">
-                <div class="schedule-header">
-                    <h3>Upcoming Matches</h3>
-                    <div class="schedule-filters">
-                        <button class="filter-tab active" data-filter="today">Today</button>
-                        <button class="filter-tab" data-filter="tomorrow">Tomorrow</button>
-                        <button class="filter-tab" data-filter="weekend">Weekend</button>
-                        <button class="filter-tab" data-filter="recommendations">Our Picks</button>
-                    </div>
-                </div>
-                
-                <div class="games-container" id="unified-games-container">
-                    <!-- Populated by JavaScript -->
-                </div>
-                
-                <div class="schedule-footer">
-                    <div class="schedule-actions">
-                        <a href="recommendations.html" class="action-btn primary">
-                            <span>View All Recommendations</span>
-                        </a>
-                    </div>
-                    <div class="responsible-betting">
-                        <small>⚠️ Bet responsibly. Past performance does not guarantee future results.</small>
-                    </div>
                 </div>
             </div>
         </section>

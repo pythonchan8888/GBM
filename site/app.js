@@ -722,7 +722,7 @@ class ParlayKing {
         
         // Initialize game time filter
         if (!this.filters.gameTimeFilter) {
-            this.filters.gameTimeFilter = 'today';
+            this.filters.gameTimeFilter = 'all';
         }
 
         // Add event listeners for schedule filter tabs
@@ -1170,39 +1170,32 @@ class ParlayKing {
     getFilteredGames() {
         let filtered = [...(this.data.unifiedGames || [])];
         
-        // Time-based filtering
+        // Only show upcoming games (future matches)
         const now = new Date();
-        if (this.filters.gameTimeFilter === 'today') {
-            const endOfDay = new Date(now);
-            endOfDay.setHours(23, 59, 59, 999);
-            filtered = filtered.filter(g => g.datetime >= now && g.datetime <= endOfDay);
-        } else if (this.filters.gameTimeFilter === 'tomorrow') {
-            const startOfTomorrow = new Date(now);
-            startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
-            startOfTomorrow.setHours(0, 0, 0, 0);
-            const endOfTomorrow = new Date(startOfTomorrow);
-            endOfTomorrow.setHours(23, 59, 59, 999);
-            filtered = filtered.filter(g => g.datetime >= startOfTomorrow && g.datetime <= endOfTomorrow);
-        } else if (this.filters.gameTimeFilter === 'weekend') {
-            const friday = new Date(now);
-            friday.setDate(now.getDate() + (5 - now.getDay() + 7) % 7);
-            friday.setHours(18, 0, 0, 0);
-            const sunday = new Date(friday);
-            sunday.setDate(friday.getDate() + 2);
-            sunday.setHours(23, 59, 59, 999);
-            filtered = filtered.filter(g => g.datetime >= friday && g.datetime <= sunday);
+        filtered = filtered.filter(g => g.datetime > now);
+        
+        // League tier filtering
+        if (this.filters.gameTimeFilter === 'tier1') {
+            filtered = filtered.filter(g => g.tier === 1);
         } else if (this.filters.gameTimeFilter === 'recommendations') {
             filtered = filtered.filter(g => g.hasRecommendation);
         }
+        // 'all' shows everything (no additional filter)
         
         // League filtering (reuse existing logic)
         if (this.filters.league !== 'all') {
             filtered = filtered.filter(g => g.league === this.filters.league);
         }
 
-        // Sort by tier priority, then by datetime
+        // Sort by: recommendations first, then tier priority, then datetime
         return filtered.sort((a, b) => {
+            // Recommendations first
+            if (a.hasRecommendation !== b.hasRecommendation) {
+                return b.hasRecommendation - a.hasRecommendation;
+            }
+            // Then by tier (1 = top leagues first)
             if (a.tier !== b.tier) return a.tier - b.tier;
+            // Then by datetime (soonest first)
             return a.datetime - b.datetime;
         });
     }
@@ -1227,11 +1220,11 @@ class ParlayKing {
             return;
         }
 
-        // Group games by time periods
-        const groupedGames = this.groupGamesByTime(games);
+        // Group games by league tier for better organization
+        const groupedGames = this.groupGamesByImportance(games);
         
         container.innerHTML = Object.entries(groupedGames)
-            .map(([timeGroup, gamesList]) => this.renderTimeGroup(timeGroup, gamesList))
+            .map(([tierGroup, gamesList]) => this.renderTierGroup(tierGroup, gamesList))
             .join('');
         
         // Initialize interactions
@@ -1303,30 +1296,20 @@ class ParlayKing {
         `;
     }
 
-    groupGamesByTime(games) {
-        const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const dayAfter = new Date(tomorrow);
-        dayAfter.setDate(dayAfter.getDate() + 1);
-
+    groupGamesByImportance(games) {
         const groups = {
-            'Today': [],
-            'Tomorrow': [],
-            'This Weekend': [],
-            'Next Week': []
+            'Premier Matches': [], // Tier 1 with recommendations
+            'Top Leagues': [],     // Tier 1 without recommendations  
+            'Other Leagues': []    // Tier 2+ 
         };
 
         games.forEach(game => {
-            if (game.datetime >= today && game.datetime < tomorrow) {
-                groups['Today'].push(game);
-            } else if (game.datetime >= tomorrow && game.datetime < dayAfter) {
-                groups['Tomorrow'].push(game);
-            } else if (game.datetime.getDay() >= 5 || game.datetime.getDay() <= 1) { // Fri-Mon
-                groups['This Weekend'].push(game);
+            if (game.hasRecommendation && game.tier === 1) {
+                groups['Premier Matches'].push(game);
+            } else if (game.tier === 1) {
+                groups['Top Leagues'].push(game);
             } else {
-                groups['Next Week'].push(game);
+                groups['Other Leagues'].push(game);
             }
         });
 
@@ -1338,11 +1321,11 @@ class ParlayKing {
         return groups;
     }
 
-    renderTimeGroup(timeGroup, games) {
+    renderTierGroup(tierGroup, games) {
         return `
-            <div class="time-group">
-                <div class="time-group-header">
-                    <h4>${timeGroup}</h4>
+            <div class="tier-group">
+                <div class="tier-group-header">
+                    <h4>${tierGroup}</h4>
                     <span class="game-count">${games.length} games</span>
                 </div>
                 <div class="games-list">
@@ -1419,6 +1402,12 @@ class ParlayKing {
     }
 
     formatOddsCompact(game) {
+        // Show Asian Handicap odds if available, otherwise 1X2 odds
+        if (game.hasRecommendation && game.line && game.recOdds) {
+            const lineDisplay = game.line >= 0 ? `+${game.line.toFixed(2)}` : game.line.toFixed(2);
+            return `AH ${lineDisplay} @ ${game.recOdds.toFixed(2)}`;
+        }
+        
         if (!game.odds1 || !game.oddsX || !game.odds2) return 'TBD';
         return `${game.odds1.toFixed(2)} ${game.oddsX.toFixed(2)} ${game.odds2.toFixed(2)}`;
     }
@@ -1427,33 +1416,49 @@ class ParlayKing {
         return `
             <div class="expanded-details hidden">
                 <div class="expanded-row recommendation-row">
-                    <strong>Our Pick:</strong> ${game.recText}
+                    <div class="rec-main">
+                        <strong>Our Pick:</strong> ${game.recText} @ ${game.recOdds.toFixed(2)}
+                    </div>
                     <span class="ev-badge">EV: ${(game.ev * 100).toFixed(1)}%</span>
                 </div>
                 
-                ${game.kingsCall && !game.kingsCall.includes('Unable to fetch') ? `
+                ${game.kingsCall && !game.kingsCall.includes('Unable to fetch') && !game.kingsCall.includes('API error') ? `
                     <div class="expanded-row kings-call-row">
-                        <strong>King's Call:</strong> 
-                        <span class="kings-call-text">${game.kingsCall}</span>
+                        <div class="kings-call-header">
+                            <span class="kings-call-icon">👑</span>
+                            <strong>King's Call</strong>
+                        </div>
+                        <div class="kings-call-content">
+                            <span class="kings-call-text">${game.kingsCall}</span>
+                        </div>
                     </div>
                 ` : ''}
                 
                 <div class="expanded-row stats-row">
-                    <span>Confidence: ${game.confidence}</span>
-                    <span>Tier: ${game.tier}</span>
-                    <span class="mobile-visible">Odds: ${this.formatOddsCompact(game)}</span>
+                    <div class="stats-left">
+                        <span class="stat-pill">Confidence: ${game.confidence}</span>
+                        <span class="stat-pill">Tier: ${game.tier}</span>
+                    </div>
+                    <div class="stats-right mobile-visible">
+                        <span class="odds-display">1X2: ${this.format1X2Odds(game)}</span>
+                    </div>
                 </div>
                 
                 <div class="expanded-actions">
-                    <button class="action-btn secondary" onclick="parlayKing.shareGame(${game.datetime.getTime()})">
-                        Share Pick
+                    <button class="action-btn-compact secondary" onclick="parlayKing.shareGame(${game.datetime.getTime()})">
+                        📤 Share
                     </button>
-                    <button class="action-btn primary" onclick="parlayKing.exportGame(${game.datetime.getTime()})">
-                        Export
+                    <button class="action-btn-compact primary" onclick="parlayKing.exportGame(${game.datetime.getTime()})">
+                        📊 Export
                     </button>
                 </div>
             </div>
         `;
+    }
+
+    format1X2Odds(game) {
+        if (!game.odds1 || !game.oddsX || !game.odds2) return 'TBD';
+        return `${game.odds1.toFixed(2)} ${game.oddsX.toFixed(2)} ${game.odds2.toFixed(2)}`;
     }
 
     initGameCardInteractions() {
