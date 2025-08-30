@@ -3489,13 +3489,13 @@ body, .main-container, .chart-card, .recommendations-card {
 
 /* ===== V3 COMPONENT STYLES ===== */
 
-/* Day Navigator */
+/* Day Navigator - Minimal Padding for Mobile */
 .day-navigator {
   display: flex;
   justify-content: center;
   gap: var(--space-xs);
-  padding: var(--space-md) 0;
-  margin-bottom: var(--space-lg);
+  padding: 8px 0; /* Reduced from var(--space-md) */
+  margin-bottom: 8px; /* Reduced from var(--space-lg) */
   position: sticky;
   top: 0;
   background: rgba(var(--bg-rgb), 0.95);
@@ -3751,6 +3751,8 @@ body, .main-container, .chart-card, .recommendations-card {
   background: var(--panel);
   border-radius: var(--radius-sm);
   border-left: 3px solid var(--primary);
+  transition: max-height 0.3s ease;
+  overflow: hidden;
 }
 
 .game-card--v3 .analysis-text {
