@@ -1164,24 +1164,19 @@ body {
 
 /* Expanded Content */
 .expanded-details {
-  padding: 0 var(--space-md) var(--space-md);
-  border-top: 1px solid var(--border-secondary);
-  background: var(--bg-secondary);
-  transition: var(--transition);
-  grid-column: 1 / -1;
-}
-
-.expanded-details.hidden {
-  display: none;
+  padding: var(--space-xs);
+  background: var(--panel-elevated);
+  border-top: 1px solid var(--border);
+  margin-top: var(--space-xs);
+  font-size: 0.9rem;
+  transition: max-height var(--transition-fast) ease-in-out;
 }
 
 .expanded-row {
-  padding: var(--space-sm) 0;
+  margin-bottom: var(--space-xs);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
+  flex-direction: column;
+  gap: 4px;
 }
 
 .recommendation-row {
@@ -1439,13 +1434,16 @@ body {
 }
 
 .team-name {
+  font-size: 13px;
   font-weight: 500;
-  font-size: var(--font-size-sm);
-  color: var(--text);
+  line-height: 1.1;
   flex: 1;
-  white-space: nowrap;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: normal; /* Changed from nowrap to allow wrapping */
+  word-break: break-word; /* Break long words if needed */
+  max-height: 2.4em; /* Limit to 2 lines */
 }
 
 .vs-separator {
@@ -3489,5 +3487,316 @@ body, .main-container, .chart-card, .recommendations-card {
 /* Remove unintended gap after recommendations filters */
 .filter-summary { margin: 0 var(--space-lg); padding: 0; min-height: 0; }
 
-/* Card actions row */
-.card-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top: var(--space-sm); }
+/* ===== V3 COMPONENT STYLES ===== */
+
+/* Day Navigator */
+.day-navigator {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-md) 0;
+  margin-bottom: var(--space-lg);
+  position: sticky;
+  top: 0;
+  background: rgba(var(--bg-rgb), 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 50;
+  border-bottom: 1px solid var(--border);
+}
+
+.day-tab {
+  padding: var(--space-sm) var(--space-lg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  min-width: 80px;
+}
+
+.day-tab:hover {
+  background: var(--panel-elevated);
+  color: var(--text);
+  border-color: var(--primary);
+}
+
+.day-tab.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+}
+
+/* Game Card V3 - Perfect Compact Design */
+.game-card--v3 {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 2px; /* Ultra-tight for maximum density */
+  overflow: hidden;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.game-card--v3:hover {
+  border-color: var(--primary);
+  background: var(--panel-elevated);
+  transform: translateY(-1px);
+}
+
+.game-card--v3[data-expanded="true"] {
+  border-color: var(--primary);
+  background: var(--panel-elevated);
+}
+
+.game-card--v3 .game-row {
+  display: grid;
+  grid-template-columns: 50px 1fr auto;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 8px;
+  min-height: 48px; /* Optimal for thumb tapping */
+}
+
+.game-card--v3 .game-time {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  font-family: var(--font-mono);
+  text-align: center;
+}
+
+.game-card--v3 .game-matchup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.game-card--v3 .team-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.game-card--v3 .team-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  flex: 1;
+  min-width: 0;
+  /* Allow wrapping for full visibility */
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.2;
+  max-height: 2.4em; /* Limit to 2 lines max */
+  overflow: hidden;
+}
+
+.game-card--v3 .vs-separator {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: center;
+  font-weight: 500;
+  margin: 2px 0;
+}
+
+.game-card--v3 .ah-chip {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  min-width: 36px;
+  text-align: center;
+}
+
+.game-card--v3 .ah-chip--pos {
+  border-color: var(--positive);
+  color: var(--positive);
+}
+
+.game-card--v3 .ah-chip--neg {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.game-card--v3 .ah-chip--pk {
+  border-color: var(--text-tertiary);
+  color: var(--text-tertiary);
+}
+
+.game-card--v3 .ah-chip--selected {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.game-card--v3 .ah-chip--empty {
+  border-color: var(--border);
+  color: var(--text-tertiary);
+  opacity: 0.5;
+}
+
+.game-card--v3 .game-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.game-card--v3 .game-hint {
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+.game-card--v3 .expand-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.game-card--v3 .expand-btn:hover {
+  background: var(--panel-elevated);
+  color: var(--text);
+}
+
+.game-card--v3[data-expanded="true"] .expand-btn {
+  transform: rotate(180deg);
+  color: var(--primary);
+}
+
+/* Streamlined Expansion */
+.game-card--v3 .expanded-details {
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  transition: max-height 0.3s ease;
+  overflow: hidden;
+}
+
+.game-card--v3 .pick-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.game-card--v3 .pick-main {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+
+.game-card--v3 .pick-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.game-card--v3 .ev-badge {
+  background: var(--primary);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.game-card--v3 .confidence-icon {
+  font-size: 18px;
+  cursor: help;
+}
+
+.game-card--v3 .analysis-toggle {
+  width: 100%;
+  padding: var(--space-sm);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin-top: var(--space-sm);
+}
+
+.game-card--v3 .analysis-toggle:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.game-card--v3 .analysis-content {
+  margin-top: var(--space-sm);
+  padding: var(--space-sm);
+  background: var(--panel);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--primary);
+}
+
+.game-card--v3 .analysis-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Mobile optimizations for V3 */
+@media (max-width: 768px) {
+  .day-navigator {
+    padding: var(--space-sm) var(--space-md);
+    gap: var(--space-xs);
+  }
+  
+  .day-tab {
+    padding: var(--space-sm) var(--space-md);
+    font-size: 12px;
+    min-width: 70px;
+  }
+  
+  .game-card--v3 .game-row {
+    padding: 6px;
+    gap: 6px;
+    min-height: 44px;
+  }
+  
+  .game-card--v3 .game-time {
+    font-size: 12px;
+  }
+  
+  .game-card--v3 .team-name {
+    font-size: 13px;
+  }
+  
+  .game-card--v3 .ah-chip {
+    padding: 2px 6px;
+    font-size: 10px;
+    min-width: 32px;
+  }
+  
+  .game-card--v3 .expand-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+}
