@@ -39,7 +39,11 @@ class ParlayKing {
         this.renderQueue = [];
         this.isRendering = false;
         this.cardInstances = new Map();
+        
+        // Component instances
         this.dayNavigator = new DayNavigator(this);
+        this.filterManager = new FilterManager(this.uiState.activeFilters);
+        this.analyticsManager = new AnalyticsManager(this.data);
         
         this.init();
     }
@@ -2935,37 +2939,32 @@ class ParlayKing {
     getFilteredGamesByDay() {
         let filtered = [...(this.data.unifiedGames || [])];
         
-        // Filter by current day
+        // Filter by current day first
+        filtered = this.filterByDay(filtered, this.uiState.currentDay);
+        
+        // Apply other filters using FilterManager
+        filtered = this.filterManager.applyFilters(filtered, 'games');
+        
+        return filtered.sort((a, b) => a.datetime - b.datetime);
+    }
+    
+    filterByDay(games, day) {
         const today = new Date();
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
         const dayAfter = new Date(today);
         dayAfter.setDate(dayAfter.getDate() + 2);
         
-        switch (this.uiState.currentDay) {
+        switch (day) {
             case 'today':
-                filtered = filtered.filter(g => this.isSameDay(g.datetime, today));
-                break;
+                return games.filter(g => this.isSameDay(g.datetime, today));
             case 'tomorrow':
-                filtered = filtered.filter(g => this.isSameDay(g.datetime, tomorrow));
-                break;
+                return games.filter(g => this.isSameDay(g.datetime, tomorrow));
             case 'dayafter':
-                filtered = filtered.filter(g => this.isSameDay(g.datetime, dayAfter));
-                break;
+                return games.filter(g => this.isSameDay(g.datetime, dayAfter));
+            default:
+                return games;
         }
-        
-        // Apply other filters
-        const filters = this.uiState.activeFilters;
-        
-        if (filters.league !== 'all') {
-            filtered = filtered.filter(g => g.league === filters.league);
-        }
-        
-        if (filters.minEV > 0) {
-            filtered = filtered.filter(g => g.hasRecommendation && g.ev >= filters.minEV / 100);
-        }
-        
-        return filtered.sort((a, b) => a.datetime - b.datetime);
     }
     
     groupGamesByLeague(games) {
@@ -4267,6 +4266,88 @@ class ParlayKing {
                 expandedDetails.style.maxHeight = '';
             }, 200);
         }
+    }
+}
+
+// ===== FILTER MANAGER =====
+
+class FilterManager {
+    constructor(filters) {
+        this.filters = filters;
+    }
+
+    applyFilters(items, type = 'games') {
+        return items
+            .filter(item => this.matchesDateRange(item, this.filters.dateRange))
+            .filter(item => this.matchesLeague(item, this.filters.league))
+            .filter(item => this.matchesMinEV(item, this.filters.minEV))
+            .filter(item => this.matchesConfidence(item, this.filters.confidence));
+    }
+
+    matchesDateRange(item, range) {
+        if (range === 'all') return true;
+        const now = new Date();
+        const itemDate = item.datetime || new Date();
+        const days = parseInt(range);
+        const diffDays = (itemDate - now) / (1000 * 60 * 60 * 24);
+        return Math.abs(diffDays) <= days;
+    }
+
+    matchesLeague(item, league) {
+        return league === 'all' || item.league === league;
+    }
+
+    matchesMinEV(item, minEV) {
+        if (!item.hasRecommendation || !item.ev) return true;
+        return (item.ev * 100) >= minEV;
+    }
+
+    matchesConfidence(item, confidence) {
+        return confidence === 'all' || item.confidence === confidence;
+    }
+}
+
+// ===== ANALYTICS MANAGER =====
+
+class AnalyticsManager {
+    constructor(data) {
+        this.data = data;
+    }
+
+    renderROIHeatmap(container, options = {}) {
+        if (!container) return;
+        
+        const { minBets = 30, tier = 1 } = options;
+        const src = this.data.roiHeatmap || [];
+        const rows = src.filter(r => r.tier === tier && r.n >= minBets);
+        
+        if (rows.length === 0) {
+            container.innerHTML = '<div class="chart-placeholder">No data available</div>';
+            return;
+        }
+        
+        // Simplified heatmap rendering
+        const html = this.buildHeatmapHTML(rows);
+        container.innerHTML = html;
+    }
+    
+    buildHeatmapHTML(rows) {
+        const lines = [...new Set(rows.map(r => r.line))].sort((a, b) => a - b);
+        const maxCols = Math.max(lines.length, 1);
+        
+        let html = `<div class="heatmap-grid" style="grid-template-columns: repeat(${maxCols}, 1fr);">`;
+        lines.forEach(l => {
+            const r = rows.find(x => x.line === l) || { roi_pct: 0, n: 0 };
+            const roi = r.roi_pct;
+            const cls = roi >= 10 ? 'heat-pos' : (roi >= 3 ? 'heat-mid' : 'heat-neg');
+            html += `
+                <div class="heatmap-cell ${cls}">
+                    <div class="heatmap-value">${roi.toFixed(1)}%</div>
+                    <div class="heatmap-meta">${l >= 0 ? '+' : ''}${l.toFixed(2)} · ${r.n} bets</div>
+                </div>`;
+        });
+        html += '</div>';
+        return html;
     }
 }
 
