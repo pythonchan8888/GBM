@@ -373,7 +373,12 @@ class ParlayKing {
                     ev: parseFloat(game.ev) || 0,
                     confidence: game.confidence || '',
                     kingsCall: game.kings_call || '',
-                    primarySignal: game.primary_signal || ''
+                    primarySignal: game.primary_signal || '',
+                    // Include AH data from CSV
+                    ah_line_home: game.ah_line_home,
+                    ah_line_away: game.ah_line_away,
+                    ah_odds_home: game.ah_odds_home,
+                    ah_odds_away: game.ah_odds_away
                 };
                 
                 // Parse AH data

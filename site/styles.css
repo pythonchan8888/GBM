@@ -903,14 +903,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-xl);
+  padding: var(--space-md); /* Reduced from xl */
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
-  gap: var(--space-md);
+  gap: var(--space-sm); /* Reduced gap */
 }
 
 .schedule-header h3 {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-lg); /* Smaller header */
   font-weight: 600;
   color: var(--text);
   margin: 0;
@@ -3507,9 +3507,9 @@ body, .main-container, .chart-card, .recommendations-card {
 .day-navigator {
   display: flex;
   justify-content: center;
-  gap: var(--space-xs);
-  padding: 8px 0; /* Reduced from var(--space-md) */
-  margin-bottom: 8px; /* Reduced from var(--space-lg) */
+  gap: 4px; /* Tighter gap */
+  padding: 6px 0; /* Even tighter padding */
+  margin-bottom: 4px; /* Minimal margin */
   position: sticky;
   top: 0;
   background: rgba(var(--bg-rgb), 0.95);
@@ -3519,16 +3519,16 @@ body, .main-container, .chart-card, .recommendations-card {
 }
 
 .day-tab {
-  padding: var(--space-sm) var(--space-lg);
+  padding: 6px 16px; /* Consistent padding for all tabs */
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: var(--font-size-sm);
+  font-size: 13px;
   font-weight: 600;
-  min-width: 80px;
+  min-width: 70px; /* Consistent width */
 }
 
 .day-tab:hover {
@@ -3785,14 +3785,23 @@ body, .main-container, .chart-card, .recommendations-card {
 /* Mobile optimizations for V3 */
 @media (max-width: 768px) {
   .day-navigator {
-    padding: var(--space-sm) var(--space-md);
-    gap: var(--space-xs);
+    padding: 4px var(--space-md);
+    gap: 2px;
+    margin-bottom: 2px;
   }
   
   .day-tab {
-    padding: var(--space-sm) var(--space-md);
+    padding: 4px 12px;
     font-size: 12px;
-    min-width: 70px;
+    min-width: 60px;
+  }
+  
+  .schedule-header {
+    padding: var(--space-sm); /* Even smaller on mobile */
+  }
+  
+  .schedule-header h3 {
+    font-size: var(--font-size-base); /* Smaller on mobile */
   }
   
   .game-card--v3 .game-row {
