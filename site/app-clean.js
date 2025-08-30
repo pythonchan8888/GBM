@@ -379,17 +379,21 @@ class ParlayKing {
     }
 
     parseAsianHandicapData(game) {
+        // Parse AH lines from CSV data
         let homeLine = null;
         let awayLine = null;
         let recommendedTeam = null;
         
-        // PRIORITY 1: Use authoritative CSV data
-        if (game.ah_line_home !== undefined && game.ah_line_away !== undefined) {
+        // PRIORITY 1: Use CSV data if available
+        if (game.ah_line_home !== undefined && game.ah_line_home !== null) {
             homeLine = parseFloat(game.ah_line_home);
+        }
+        if (game.ah_line_away !== undefined && game.ah_line_away !== null) {
             awayLine = parseFloat(game.ah_line_away);
         }
-        // PRIORITY 2: Parse from recommendation text
-        else if (game.hasRecommendation && game.recText) {
+        
+        // PRIORITY 2: Parse from recommendation text if CSV not available
+        if ((homeLine === null || awayLine === null) && game.hasRecommendation && game.recText) {
             const recMatch = game.recText.match(/^(.+?)\s+([-+]?\d*\.?\d+)$/);
             if (recMatch) {
                 const parsedTeam = recMatch[1].trim();
@@ -406,37 +410,17 @@ class ParlayKing {
                 }
             }
         }
-        // PRIORITY 3: Estimate from 1X2 odds (fallback)
-        else if (game.odds1 > 0 && game.odds2 > 0) {
-            console.warn('Estimating AH lines from 1X2 odds - CSV data preferred');
-            const prob1 = 1 / game.odds1;
-            const prob2 = 1 / game.odds2;
-            const goalDiff = (prob1 - prob2) * 2.5;
-            
-            // Map to quarter lines
-            if (goalDiff > 0.625) homeLine = -0.75;
-            else if (goalDiff > 0.375) homeLine = -0.5;
-            else if (goalDiff > 0.125) homeLine = -0.25;
-            else if (goalDiff > -0.125) homeLine = 0.0;
-            else if (goalDiff > -0.375) homeLine = 0.25;
-            else if (goalDiff > -0.625) homeLine = 0.5;
-            else homeLine = 0.75;
-            
-            awayLine = -homeLine;
-        }
         
-        // Round to nearest quarter
-        if (homeLine !== null && awayLine !== null) {
-            homeLine = Math.round(homeLine * 4) / 4;
-            awayLine = Math.round(awayLine * 4) / 4;
-        }
+        // PRIORITY 3: Fallback to 0 if no data
+        if (homeLine === null) homeLine = 0;
+        if (awayLine === null) awayLine = 0;
         
         return {
             recommendedTeam,
-            homeLine: homeLine,
-            awayLine: awayLine,
+            homeLine,
+            awayLine,
             isPk: homeLine === 0 && awayLine === 0,
-            hasAhData: homeLine !== null && awayLine !== null
+            hasAhData: true // Always show chips, even if PK
         };
     }
 
@@ -472,6 +456,33 @@ class ParlayKing {
     initializeUI() {
         this.setupEventListeners();
         this.setFilterValues();
+        this.setupHeaderShrinking();
+    }
+    
+    setupHeaderShrinking() {
+        let ticking = false;
+        
+        const updateHeader = () => {
+            const scrollY = window.scrollY;
+            const header = document.querySelector('.nav-container');
+            
+            if (header) {
+                if (scrollY > 50) {
+                    header.classList.add('shrunk');
+                } else {
+                    header.classList.remove('shrunk');
+                }
+            }
+            
+            ticking = false;
+        };
+        
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateHeader);
+                ticking = true;
+            }
+        });
     }
 
     setupEventListeners() {
@@ -679,16 +690,23 @@ class ParlayKing {
     
     getLeagueFlag(league) {
         const flags = {
-            'England Premier League': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+            'England Premier League': '🇬🇧',
             'Spain La Liga': '🇪🇸',
-            'Germany Bundesliga': '🇩🇪',
             'Italy Serie A': '🇮🇹',
+            'Germany Bundesliga': '🇩🇪',
             'France Ligue 1': '🇫🇷',
             'Netherlands Eredivisie': '🇳🇱',
             'Portugal Primeira Liga': '🇵🇹',
-            'Belgium First Division A': '🇧🇪',
+            'Belgium Pro League': '🇧🇪',
+            'Scotland Premiership': '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
             'Turkey Super Lig': '🇹🇷',
-            'Scotland Premiership': '🏴󠁧󠁢󠁳󠁣󠁴󠁿'
+            'Brazil Serie A': '🇧🇷',
+            'Argentina Primera Division': '🇦🇷',
+            'Mexico Liga MX': '🇲🇽',
+            'USA MLS': '🇺🇸',
+            'Japan J1 League': '🇯🇵',
+            'South Korea K League 1': '🇰🇷',
+            'Australia A-League': '🇦🇺'
         };
         return flags[league] || '⚽';
     }
@@ -725,43 +743,36 @@ class ParlayKing {
         }
     }
     
-    // Analysis toggle with smooth animation
+    // Analysis toggle with smooth height animation
     toggleAnalysis(button) {
         const content = button.nextElementSibling;
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
         
-        if (!isExpanded) {
-            // Expand with smooth animation
-            content.classList.remove('hidden');
+        if (isExpanded) {
+            // Collapse
             content.style.maxHeight = '0';
             content.style.overflow = 'hidden';
+            button.setAttribute('aria-expanded', 'false');
+            button.innerHTML = 'Show Analysis ▼';
+            
+            setTimeout(() => {
+                content.classList.add('hidden');
+            }, 300);
+        } else {
+            // Expand
+            content.classList.remove('hidden');
+            content.style.overflow = 'hidden';
+            content.style.maxHeight = '0';
             
             requestAnimationFrame(() => {
                 content.style.maxHeight = content.scrollHeight + 'px';
+                button.setAttribute('aria-expanded', 'true');
+                button.innerHTML = 'Hide Analysis ▲';
+                
                 setTimeout(() => {
                     content.style.overflow = 'visible';
                 }, 300);
             });
-            
-            button.setAttribute('aria-expanded', 'true');
-            button.innerHTML = 'Hide Analysis ▲';
-        } else {
-            // Collapse with animation
-            content.style.maxHeight = content.scrollHeight + 'px';
-            content.style.overflow = 'hidden';
-            
-            requestAnimationFrame(() => {
-                content.style.maxHeight = '0';
-            });
-            
-            setTimeout(() => {
-                content.classList.add('hidden');
-                content.style.maxHeight = '';
-                content.style.overflow = '';
-            }, 300);
-            
-            button.setAttribute('aria-expanded', 'false');
-            button.innerHTML = 'Show Analysis ▼';
         }
     }
     
@@ -814,10 +825,9 @@ class ParlayKing {
     }
 
     updateLastRunStatus() {
-        // Log to console instead of showing in UI to save mobile space
         const lastUpdate = this.data.metrics.finished_at || this.data.metrics.started_at;
         if (lastUpdate) {
-            console.log(`Data last updated: ${this.formatTimeAgo(lastUpdate)}`);
+            document.getElementById('last-update').textContent = `Last run: ${this.formatTimeAgo(lastUpdate)}`;
         }
     }
 

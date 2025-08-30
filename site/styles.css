@@ -152,6 +152,20 @@ body {
   z-index: 1000;
   padding: var(--space-lg) 0;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28);
+  transition: all 0.3s ease;
+}
+
+.nav-container.shrunk {
+  padding: var(--space-md) 0;
+  background: rgba(0, 0, 0, 0.95);
+}
+
+.nav-container.shrunk .brand-title {
+  font-size: var(--font-size-lg);
+}
+
+.nav-container.shrunk .brand-subtitle {
+  font-size: var(--font-size-xs);
 }
 
 .nav-content {
@@ -3489,7 +3503,7 @@ body, .main-container, .chart-card, .recommendations-card {
 
 /* ===== V3 COMPONENT STYLES ===== */
 
-/* Day Navigator - Minimal Padding for Mobile */
+/* Day Navigator */
 .day-navigator {
   display: flex;
   justify-content: center;
@@ -3751,8 +3765,13 @@ body, .main-container, .chart-card, .recommendations-card {
   background: var(--panel);
   border-radius: var(--radius-sm);
   border-left: 3px solid var(--primary);
-  transition: max-height 0.3s ease;
   overflow: hidden;
+  transition: max-height 0.3s ease;
+  max-height: 0;
+}
+
+.game-card--v3 .analysis-content:not(.hidden) {
+  max-height: 200px; /* Reasonable max height */
 }
 
 .game-card--v3 .analysis-text {
