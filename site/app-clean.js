@@ -290,19 +290,25 @@ class ParlayKing {
     async loadAllData() {
         try {
             const [metrics, recommendations, unifiedGames] = await Promise.all([
-                this.loadCSV('metrics.csv'),
-                this.loadCSV('latest_recommendations.csv'),
+                this.loadCSV('metrics.csv').catch(() => []),
+                this.loadCSV('latest_recommendations.csv').catch(() => []),
                 this.loadCSV('unified_games.csv').catch(() => [])
             ]);
 
             this.data = {
                 ...this.data,
-                metrics: this.parseMetrics(metrics),
-                recommendations: this.parseRecommendations(recommendations),
-                unifiedGames: this.parseUnifiedGames(unifiedGames)
+                metrics: this.parseMetrics(metrics || []),
+                recommendations: this.parseRecommendations(recommendations || []),
+                unifiedGames: this.parseUnifiedGames(unifiedGames || [])
             };
 
             this.populateFilterOptions();
+
+            console.log('Data loaded successfully:', {
+                metrics: Object.keys(this.data.metrics).length,
+                recommendations: this.data.recommendations.length,
+                unifiedGames: this.data.unifiedGames.length
+            });
 
         } catch (error) {
             console.error('Failed to load data:', error);
@@ -571,50 +577,61 @@ class ParlayKing {
     }
 
     updateKPIs() {
-        // Simplified KPI update
-        const backtestROI = 23.81;
-        const backtestWinRate = 64.91;
-        const backtestNonLosingRate = 68.15;
-        
-        const winRateEl = document.getElementById('win-rate');
-        if (winRateEl) winRateEl.textContent = `${backtestWinRate.toFixed(1)}%`;
-        
-        const roiEl = document.getElementById('roi-performance');
-        if (roiEl) roiEl.textContent = `+${backtestROI.toFixed(1)}%`;
-        
-        const nonLosingEl = document.getElementById('non-losing-rate');
-        if (nonLosingEl) nonLosingEl.textContent = `${backtestNonLosingRate.toFixed(1)}%`;
+        try {
+            // Simplified KPI update with error handling
+            const backtestROI = 23.81;
+            const backtestWinRate = 64.91;
+            const backtestNonLosingRate = 68.15;
+            
+            const winRateEl = document.getElementById('win-rate');
+            if (winRateEl) winRateEl.textContent = `${backtestWinRate.toFixed(1)}%`;
+            
+            const roiEl = document.getElementById('roi-performance');
+            if (roiEl) roiEl.textContent = `+${backtestROI.toFixed(1)}%`;
+            
+            const nonLosingEl = document.getElementById('non-losing-rate');
+            if (nonLosingEl) nonLosingEl.textContent = `${backtestNonLosingRate.toFixed(1)}%`;
 
-        const totalBetsEl = document.getElementById('total-bets');
-        if (totalBetsEl) totalBetsEl.textContent = this.data.recommendations?.length || 0;
+            const totalBetsEl = document.getElementById('total-bets');
+            if (totalBetsEl) totalBetsEl.textContent = this.data.recommendations?.length || 0;
+        } catch (error) {
+            console.warn('Error updating KPIs:', error);
+        }
     }
 
     renderUnifiedSchedule() {
-        const container = document.getElementById('unified-games-container');
-        if (!container) return;
+        try {
+            const container = document.getElementById('unified-games-container');
+            if (!container) {
+                console.warn('Unified games container not found');
+                return;
+            }
 
-        // Add day navigator if not present
-        const scheduleSection = container.closest('.unified-schedule-section');
-        if (scheduleSection && !scheduleSection.querySelector('.day-navigator')) {
-            const dayNavHtml = this.dayNavigator.render();
-            scheduleSection.insertAdjacentHTML('afterbegin', dayNavHtml);
+            // Add day navigator if not present
+            const scheduleSection = container.closest('.unified-schedule-section');
+            if (scheduleSection && !scheduleSection.querySelector('.day-navigator')) {
+                const dayNavHtml = this.dayNavigator.render();
+                scheduleSection.insertAdjacentHTML('afterbegin', dayNavHtml);
+            }
+
+            if (!this.data.unifiedGames || this.data.unifiedGames.length === 0) {
+                container.innerHTML = '<div class="no-games">No games available.</div>';
+                return;
+            }
+
+            const games = this.getFilteredGamesByDay();
+            
+            if (games.length === 0) {
+                container.innerHTML = '<div class="no-games">No games found for the selected day.</div>';
+                return;
+            }
+
+            const groupedGames = this.groupGamesByLeague(games);
+            container.innerHTML = this.renderLeagueGroups(groupedGames);
+            this.initGameCardInteractions();
+        } catch (error) {
+            console.error('Error rendering schedule:', error);
         }
-
-        if (!this.data.unifiedGames || this.data.unifiedGames.length === 0) {
-            container.innerHTML = '<div class="no-games">No games available.</div>';
-            return;
-        }
-
-        const games = this.getFilteredGamesByDay();
-        
-        if (games.length === 0) {
-            container.innerHTML = '<div class="no-games">No games found for the selected day.</div>';
-            return;
-        }
-
-        const groupedGames = this.groupGamesByLeague(games);
-        container.innerHTML = this.renderLeagueGroups(groupedGames);
-        this.initGameCardInteractions();
     }
 
     getFilteredGamesByDay() {
@@ -825,9 +842,10 @@ class ParlayKing {
     }
 
     updateLastRunStatus() {
+        // Last run indicator removed from UI - log to console instead
         const lastUpdate = this.data.metrics.finished_at || this.data.metrics.started_at;
         if (lastUpdate) {
-            document.getElementById('last-update').textContent = `Last run: ${this.formatTimeAgo(lastUpdate)}`;
+            console.log(`Last run: ${this.formatTimeAgo(lastUpdate)}`);
         }
     }
 
