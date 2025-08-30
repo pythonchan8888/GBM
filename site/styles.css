@@ -1,6 +1,7 @@
 /* Soft Modern Design System */
 :root {
   --bg: #0B1220; /* deep soft navy */
+  --bg-rgb: 11, 18, 32; /* RGB values for rgba() usage */
   --bg-secondary: #121A2A;
   --text: #F5F7FA; /* soft white-blue */
   --text-secondary: #E6EBF2;
@@ -1513,13 +1514,32 @@ body {
   margin-left: var(--space-xs);
 }
 
-/* Game Actions (EV Pill + Expand) */
+/* Game Actions (Hints + EV Pill + Expand) */
 .game-actions {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: var(--space-xs);
   min-width: 60px;
+}
+
+/* Game Hints */
+.game-hints {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.game-hint {
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.8;
+  transition: var(--transition-fast);
+}
+
+.game-hint:hover {
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 /* EV Pill */
@@ -1659,8 +1679,10 @@ body {
 .schedule-filters--sticky {
   position: sticky;
   top: env(safe-area-inset-top, 0);
-  background: var(--bg);
-  z-index: 10;
+  background: rgba(var(--bg-rgb), 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 100;
   padding: var(--space-sm) 0;
   border-bottom: 1px solid var(--border);
   margin: 0 calc(-1 * var(--space-lg));
@@ -2013,8 +2035,15 @@ body {
   .date-range-section,
   .league-filter-section,
   .ev-filter-section,
-  .confidence-filter-section {
+  .confidence-filter-section,
+  .filter-bar,
+  .filters-section {
     display: none !important;
+  }
+  
+  /* Always show the drawer button on mobile */
+  .filters-drawer-btn {
+    display: flex !important;
   }
   
   /* Improve sticky filters on mobile */
@@ -2030,12 +2059,20 @@ body {
     margin-bottom: 4px; /* Ultra-tight for max density */
     border-radius: 6px;
     padding: 4px; /* Added card-level padding */
+    cursor: pointer; /* Show it's tappable */
   }
   
   .game-row--v2 {
     padding: 6px; /* Even tighter mobile padding */
-    min-height: 40px; /* Aggressive reduction for 4 games in first fold */
+    min-height: 44px; /* Ensure minimum tap target size */
     gap: 6px; /* Tighter gap between elements */
+  }
+  
+  /* Ensure expandable cards have visual feedback */
+  .game-card--v2[data-expandable="true"]:hover,
+  .game-card--v2[data-expandable="true"]:active {
+    background: var(--panel-elevated);
+    transform: translateY(-1px);
   }
   
   .game-meta {

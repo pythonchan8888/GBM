@@ -19,9 +19,10 @@ class ParlayKing {
         // UI state
         this.parlayPage = 0;
         
-        // Feature flags
+        // Feature flags - Auto-enable V2 on mobile
+        const isMobile = window.innerWidth <= 768;
         this.featureFlags = {
-            mobile_card_v2: localStorage.getItem('mobile_card_v2') === 'true'
+            mobile_card_v2: isMobile || localStorage.getItem('mobile_card_v2') === 'true'
         };
         
         // Mobile UI state
@@ -852,8 +853,10 @@ class ParlayKing {
         // Schedule filter functionality
         this.initScheduleFilters();
         
-        // Initialize mobile card v2 controls
-        this.initMobileCardV2Controls();
+        // Initialize mobile card v2 controls (only in debug mode)
+        if (window.location.search.includes('debug=true')) {
+            this.initMobileCardV2Controls();
+        }
     }
 
     initScheduleFilters() {
@@ -886,8 +889,9 @@ class ParlayKing {
             });
         });
         
-        // Initialize filters drawer (mobile card v2 only)
-        if (this.featureFlags.mobile_card_v2) {
+        // Initialize filters drawer on mobile
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile || this.featureFlags.mobile_card_v2) {
             this.initFiltersDrawer();
         }
     }
@@ -1865,53 +1869,16 @@ class ParlayKing {
     }
 
     renderGameCard(game, index) {
-        // Use mobile card v2 if feature flag is enabled
-        if (this.featureFlags.mobile_card_v2) {
-            return this.renderMobileGameCardV2(game, index);
-        }
-        
-        // Legacy card rendering
-        const signalIcon = this.getSignalIcon(game.primarySignal);
-        const isExpandable = game.hasRecommendation;
-        const timeDisplay = this.formatGameTime(game.datetime);
-        const oddsDisplay = this.formatOddsCompact(game);
-        
-        return `
-            <div class="game-card" 
-                 data-game-index="${index}"
-                 data-signal="${game.primarySignal}"
-                 data-expandable="${isExpandable}"
-                 data-is-future="${game.isFuture}">
-                
-                <div class="game-row">
-                    <div class="game-time">${timeDisplay}</div>
-                    <div class="signal-container">
-                        ${signalIcon ? `<span class="signal-icon ${game.primarySignal}" title="${this.getSignalTitle(game.primarySignal)}">${signalIcon}</span>` : ''}
-                        ${game.secondarySignal ? `<span class="signal-dot"></span>` : ''}
-                    </div>
-                    <div class="game-teams">
-                        <span class="league-flag">${game.leagueFlag}</span>
-                        <div class="teams-text">
-                            <span class="home">${game.home}</span>
-                            <span class="vs">vs</span>
-                            <span class="away">${game.away}</span>
-                        </div>
-                    </div>
-                    <div class="game-league mobile-hidden">${game.leagueShort}</div>
-                    <div class="game-odds mobile-hidden">${oddsDisplay}</div>
-                    <div class="expand-btn">${isExpandable ? '▼' : ''}</div>
-                </div>
-                
-                ${isExpandable ? this.renderExpandedContent(game) : ''}
-            </div>
-        `;
+        // Always use mobile card v2 for consistency
+        return this.renderMobileGameCardV2(game, index);
     }
 
     renderMobileGameCardV2(game, index) {
-        const isExpandable = game.hasRecommendation;
+        const isExpandable = game.hasRecommendation || game.kingsCall;
         const timeDisplay = this.formatGameTime(game.datetime);
         const { homeChip, awayChip } = this.renderAhChips(game);
         const evPill = this.renderEvPill(game);
+        const hints = this.renderGameHints(game);
         
         return `
             <div class="game-card game-card--v2" 
@@ -1942,6 +1909,7 @@ class ParlayKing {
                     </div>
                     
                     <div class="game-actions">
+                        <div class="game-hints">${hints}</div>
                         ${evPill}
                         <div class="expand-btn" ${isExpandable ? 'role="button" tabindex="0" aria-label="Expand game details"' : ''}>${isExpandable ? '▼' : ''}</div>
                     </div>
@@ -2022,6 +1990,27 @@ class ParlayKing {
         }
 
         return `<span class="${pillClass}" title="Expected Value: ${evPercent}%" aria-label="Expected value ${evPercent} percent">EV ${evPercent}%</span>`;
+    }
+
+    renderGameHints(game) {
+        const hints = [];
+        
+        // Crown for King's Call/Analysis
+        if (game.kingsCall && !game.kingsCall.includes('Unable to fetch') && !game.kingsCall.includes('API error')) {
+            hints.push('<span class="game-hint game-hint--analysis" title="Analysis available">👑</span>');
+        }
+        
+        // Fire for high confidence
+        if (game.confidence === 'High' && game.hasRecommendation) {
+            hints.push('<span class="game-hint game-hint--hot" title="High confidence pick">🔥</span>');
+        }
+        
+        // Diamond for high EV
+        if (game.ev && (game.ev * 100) >= 25) {
+            hints.push('<span class="game-hint game-hint--value" title="High value bet">💎</span>');
+        }
+        
+        return hints.join('');
     }
 
     getSignalIcon(signalType) {
@@ -2116,13 +2105,25 @@ class ParlayKing {
     initGameCardInteractions() {
         // Add a small delay to ensure DOM is ready
         setTimeout(() => {
-            // Click to expand/collapse
-            document.querySelectorAll('.game-card[data-expandable="true"]').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    // Don't toggle on button clicks
-                    if (e.target.closest('.expanded-actions') || e.target.closest('.action-btn')) return;
-                    this.toggleGameExpansion(card);
-                });
+            // Click to expand/collapse - works for all cards
+            document.querySelectorAll('.game-card').forEach(card => {
+                // Only add listener if expandable
+                const isExpandable = card.dataset.expandable === 'true';
+                if (isExpandable) {
+                    card.addEventListener('click', (e) => {
+                        // Don't toggle on button clicks or specific elements
+                        if (e.target.closest('.expanded-actions') || 
+                            e.target.closest('.action-btn') || 
+                            e.target.closest('.ah-chip') ||
+                            e.target.closest('.ev-pill') ||
+                            e.target.closest('.game-hint')) return;
+                        
+                        this.toggleGameExpansion(card);
+                    });
+                    
+                    // Make card appear clickable
+                    card.style.cursor = 'pointer';
+                }
             });
         }, 100);
     }
