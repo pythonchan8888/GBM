@@ -3565,9 +3565,11 @@ body, .main-container, .chart-card, .recommendations-card {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  margin-bottom: 2px; /* Ultra-tight for maximum density */
+  margin-bottom: 4px; /* Ensure border visibility */
   overflow: hidden;
   transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
 }
 
 /* Ensure last game card in each league has visible border */
@@ -3721,6 +3723,7 @@ body, .main-container, .chart-card, .recommendations-card {
   border-top: 1px solid var(--border);
   transition: max-height 0.3s ease;
   overflow: hidden;
+  margin-bottom: var(--space-sm); /* Prevent overlap with next league */
 }
 
 .game-card--v3 .pick-section {
@@ -3794,6 +3797,10 @@ body, .main-container, .chart-card, .recommendations-card {
   padding: var(--space-sm); /* Restore padding when expanded */
 }
 
+.game-card--v3 .analysis-content.hidden {
+  display: none !important; /* Ensure proper hiding for calculation */
+}
+
 .game-card--v3 .analysis-text {
   font-size: 13px;
   color: var(--text-secondary);
@@ -3804,9 +3811,16 @@ body, .main-container, .chart-card, .recommendations-card {
 
 /* Mobile optimizations for V3 */
 @media (max-width: 768px) {
+  /* Force remove all implicit spacing */
+  body { 
+    margin-top: 0 !important; 
+    padding-top: 0 !important; 
+  }
+  
   /* Tighter navigation on mobile - Force override */
   .nav-container {
     padding: 4px 0 !important; /* Force override any higher specificity */
+    margin-bottom: 4px !important;
   }
   
   .nav-container.shrunk {
@@ -3829,7 +3843,7 @@ body, .main-container, .chart-card, .recommendations-card {
     padding: 4px var(--space-sm) !important;
     gap: 2px;
     margin-bottom: 2px;
-    margin-top: 4px !important; /* Minimal top margin */
+    margin-top: 0 !important; /* No top margin at all */
   }
   
   .day-tab {
@@ -3839,11 +3853,7 @@ body, .main-container, .chart-card, .recommendations-card {
   }
   
   .schedule-header {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    padding: 6px 8px !important; /* Tighter sides and vertical */
-    gap: 8px; /* For text and ⚙️ icon */
+    display: none !important; /* Hide completely on mobile for games-first approach */
   }
   
   .schedule-header h3 {

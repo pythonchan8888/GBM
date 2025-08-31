@@ -799,6 +799,7 @@ class ParlayKing {
         } else {
             // Expand
             content.classList.remove('hidden');
+            content.style.display = 'block'; // Force visible for calculation
             content.style.overflow = 'hidden';
             content.style.maxHeight = '0';
             content.style.paddingTop = '0';
