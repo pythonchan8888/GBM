@@ -1644,9 +1644,22 @@ body {
 /* Schedule Header Improvements */
 .schedule-title-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-sm);
+  position: relative;
+}
+
+.schedule-title-row h3 {
+  margin: 0;
+  text-align: center;
+}
+
+.schedule-meta {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .schedule-meta {
@@ -3791,8 +3804,20 @@ body, .main-container, .chart-card, .recommendations-card {
     padding: var(--space-sm) 0; /* Even tighter on mobile */
   }
   
+  .nav-container.shrunk {
+    padding: 4px 0; /* Extra small when shrunk on mobile */
+  }
+  
+  .nav-container.shrunk .brand-title {
+    font-size: var(--font-size-base); /* Smaller title on mobile when shrunk */
+  }
+  
+  .nav-container.shrunk .brand-subtitle {
+    font-size: 10px; /* Tiny subtitle on mobile when shrunk */
+  }
+  
   .filter-bar {
-    padding: var(--space-sm) 0; /* Minimal filter bar padding on mobile */
+    display: none !important; /* Ensure filter bar is completely hidden on mobile */
   }
   
   .day-navigator {

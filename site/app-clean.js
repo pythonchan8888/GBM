@@ -770,38 +770,47 @@ class ParlayKing {
         const content = button.nextElementSibling;
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
         
+        // Prevent rapid clicking
+        if (button.dataset.animating === 'true') return;
+        button.dataset.animating = 'true';
+        
         if (isExpanded) {
             // Collapse
-            content.style.maxHeight = '0';
-            content.style.paddingTop = '0';
-            content.style.paddingBottom = '0';
+            content.style.maxHeight = content.scrollHeight + 'px'; // Set current height first
             content.style.overflow = 'hidden';
             button.setAttribute('aria-expanded', 'false');
             button.innerHTML = 'Show Analysis ▼';
             
+            requestAnimationFrame(() => {
+                content.style.maxHeight = '0';
+                content.style.paddingTop = '0';
+                content.style.paddingBottom = '0';
+            });
+            
             setTimeout(() => {
                 content.classList.add('hidden');
+                button.dataset.animating = 'false';
             }, 300);
         } else {
-            // Expand with dynamic height calculation
+            // Expand
             content.classList.remove('hidden');
             content.style.overflow = 'hidden';
             content.style.maxHeight = '0';
             content.style.paddingTop = '0';
             content.style.paddingBottom = '0';
             
+            button.setAttribute('aria-expanded', 'true');
+            button.innerHTML = 'Hide Analysis ▲';
+            
             requestAnimationFrame(() => {
-                // Calculate actual content height including padding
-                const actualHeight = content.scrollHeight + 16; // Add padding space
-                content.style.maxHeight = actualHeight + 'px';
-                content.style.paddingTop = 'var(--space-sm)';
-                content.style.paddingBottom = 'var(--space-sm)';
-                button.setAttribute('aria-expanded', 'true');
-                button.innerHTML = 'Hide Analysis ▲';
+                const targetHeight = content.scrollHeight + 16; // Add padding buffer
+                content.style.maxHeight = targetHeight + 'px';
+                content.style.paddingTop = '8px';
+                content.style.paddingBottom = '8px';
                 
                 setTimeout(() => {
                     content.style.overflow = 'visible';
-                    content.style.maxHeight = 'none'; // Allow natural height after animation
+                    button.dataset.animating = 'false';
                 }, 300);
             });
         }
