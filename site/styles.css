@@ -994,6 +994,7 @@ body {
 /* Game Cards */
 .games-list {
   background: var(--panel);
+  padding-bottom: 4px; /* Ensure last card's border is visible */
 }
 
 .game-card {
@@ -3567,7 +3568,11 @@ body, .main-container, .chart-card, .recommendations-card {
   margin-bottom: 2px; /* Ultra-tight for maximum density */
   overflow: hidden;
   transition: all 0.2s ease;
-  cursor: pointer;
+}
+
+/* Ensure last game card in each league has visible border */
+.games-list .game-card--v3:last-child {
+  margin-bottom: 4px; /* Extra space to show full border */
 }
 
 .game-card--v3:hover {
