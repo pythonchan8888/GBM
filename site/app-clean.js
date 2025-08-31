@@ -773,6 +773,8 @@ class ParlayKing {
         if (isExpanded) {
             // Collapse
             content.style.maxHeight = '0';
+            content.style.paddingTop = '0';
+            content.style.paddingBottom = '0';
             content.style.overflow = 'hidden';
             button.setAttribute('aria-expanded', 'false');
             button.innerHTML = 'Show Analysis ▼';
@@ -781,18 +783,25 @@ class ParlayKing {
                 content.classList.add('hidden');
             }, 300);
         } else {
-            // Expand
+            // Expand with dynamic height calculation
             content.classList.remove('hidden');
             content.style.overflow = 'hidden';
             content.style.maxHeight = '0';
+            content.style.paddingTop = '0';
+            content.style.paddingBottom = '0';
             
             requestAnimationFrame(() => {
-                content.style.maxHeight = content.scrollHeight + 'px';
+                // Calculate actual content height including padding
+                const actualHeight = content.scrollHeight + 16; // Add padding space
+                content.style.maxHeight = actualHeight + 'px';
+                content.style.paddingTop = 'var(--space-sm)';
+                content.style.paddingBottom = 'var(--space-sm)';
                 button.setAttribute('aria-expanded', 'true');
                 button.innerHTML = 'Hide Analysis ▲';
                 
                 setTimeout(() => {
                     content.style.overflow = 'visible';
+                    content.style.maxHeight = 'none'; // Allow natural height after animation
                 }, 300);
             });
         }
