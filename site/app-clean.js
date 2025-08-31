@@ -480,20 +480,25 @@ class ParlayKing {
             if (header) {
                 if (scrollY > 50) {
                     header.classList.add('shrunk');
+                    console.log('Header shrunk at scroll position:', scrollY); // Debug log
                 } else {
                     header.classList.remove('shrunk');
+                    console.log('Header expanded at scroll position:', scrollY); // Debug log
                 }
             }
             
             ticking = false;
         };
         
+        // Add scroll listener with debug
         window.addEventListener('scroll', () => {
             if (!ticking) {
                 requestAnimationFrame(updateHeader);
                 ticking = true;
             }
         });
+        
+        console.log('Header shrinking scroll listener initialized'); // Debug log
     }
 
     setupEventListeners() {
@@ -803,10 +808,10 @@ class ParlayKing {
             button.innerHTML = 'Hide Analysis ▲';
             
             requestAnimationFrame(() => {
+                // Force layout recalculation first
+                content.style.padding = 'var(--space-sm)';
                 const targetHeight = content.scrollHeight + 16; // Add padding buffer
                 content.style.maxHeight = targetHeight + 'px';
-                content.style.paddingTop = '8px';
-                content.style.paddingBottom = '8px';
                 
                 setTimeout(() => {
                     content.style.overflow = 'visible';

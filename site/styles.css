@@ -152,7 +152,7 @@ body {
   z-index: 1000;
   padding: var(--space-lg) 0;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28);
-  transition: all 0.3s ease;
+  transition: padding 0.3s ease, background 0.3s ease, font-size 0.3s ease;
 }
 
 .nav-container.shrunk {
@@ -3780,7 +3780,7 @@ body, .main-container, .chart-card, .recommendations-card {
 
 .game-card--v3 .analysis-content {
   margin-top: var(--space-sm);
-  padding: 0 var(--space-sm); /* No vertical padding when collapsed */
+  padding: 0; /* No padding when collapsed */
   background: var(--panel);
   border-radius: var(--radius-sm);
   border-left: 3px solid var(--primary);
@@ -3804,13 +3804,13 @@ body, .main-container, .chart-card, .recommendations-card {
 
 /* Mobile optimizations for V3 */
 @media (max-width: 768px) {
-  /* Tighter navigation on mobile */
+  /* Tighter navigation on mobile - Force override */
   .nav-container {
-    padding: var(--space-sm) 0; /* Even tighter on mobile */
+    padding: 4px 0 !important; /* Force override any higher specificity */
   }
   
   .nav-container.shrunk {
-    padding: 4px 0; /* Extra small when shrunk on mobile */
+    padding: 2px 0 !important; /* Even smaller when shrunk */
   }
   
   .nav-container.shrunk .brand-title {
@@ -3826,10 +3826,10 @@ body, .main-container, .chart-card, .recommendations-card {
   }
   
   .day-navigator {
-    padding: 4px var(--space-md);
+    padding: 4px var(--space-sm) !important;
     gap: 2px;
     margin-bottom: 2px;
-    margin-top: 0; /* Remove any top margin */
+    margin-top: 4px !important; /* Minimal top margin */
   }
   
   .day-tab {
@@ -3839,12 +3839,16 @@ body, .main-container, .chart-card, .recommendations-card {
   }
   
   .schedule-header {
-    padding: 4px var(--space-sm); /* Minimal vertical padding on mobile */
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 6px 8px !important; /* Tighter sides and vertical */
+    gap: 8px; /* For text and ⚙️ icon */
   }
   
   .schedule-header h3 {
     font-size: var(--font-size-base); /* Smaller on mobile */
-    margin: 0; /* Remove any default margin */
+    margin: 0 !important; /* Force remove any default margin */
   }
   
   .game-card--v3 .game-row {
