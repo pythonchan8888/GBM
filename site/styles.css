@@ -231,7 +231,7 @@ body {
   background: var(--panel);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-secondary);
-  padding: var(--space-xl) 0;
+  padding: var(--space-md) 0; /* Reduced from xl to md */
 }
 
 .filter-content {
@@ -902,11 +902,12 @@ body {
 .schedule-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: var(--space-md); /* Reduced from xl */
+  justify-content: center; /* Centered header */
+  padding: var(--space-sm) var(--space-md); /* Even tighter vertical padding */
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
-  gap: var(--space-sm); /* Reduced gap */
+  gap: var(--space-sm);
+  text-align: center; /* Center text */
 }
 
 .schedule-header h3 {
@@ -3761,17 +3762,18 @@ body, .main-container, .chart-card, .recommendations-card {
 
 .game-card--v3 .analysis-content {
   margin-top: var(--space-sm);
-  padding: var(--space-sm);
+  padding: 0 var(--space-sm); /* No vertical padding when collapsed */
   background: var(--panel);
   border-radius: var(--radius-sm);
   border-left: 3px solid var(--primary);
   overflow: hidden;
-  transition: max-height 0.3s ease;
+  transition: max-height 0.3s ease, padding 0.3s ease;
   max-height: 0;
 }
 
 .game-card--v3 .analysis-content:not(.hidden) {
-  max-height: 200px; /* Reasonable max height */
+  max-height: 300px; /* Increased max height for longer content */
+  padding: var(--space-sm); /* Restore padding when expanded */
 }
 
 .game-card--v3 .analysis-text {
@@ -3784,10 +3786,20 @@ body, .main-container, .chart-card, .recommendations-card {
 
 /* Mobile optimizations for V3 */
 @media (max-width: 768px) {
+  /* Tighter navigation on mobile */
+  .nav-container {
+    padding: var(--space-sm) 0; /* Even tighter on mobile */
+  }
+  
+  .filter-bar {
+    padding: var(--space-sm) 0; /* Minimal filter bar padding on mobile */
+  }
+  
   .day-navigator {
     padding: 4px var(--space-md);
     gap: 2px;
     margin-bottom: 2px;
+    margin-top: 0; /* Remove any top margin */
   }
   
   .day-tab {
@@ -3797,11 +3809,12 @@ body, .main-container, .chart-card, .recommendations-card {
   }
   
   .schedule-header {
-    padding: var(--space-sm); /* Even smaller on mobile */
+    padding: 4px var(--space-sm); /* Minimal vertical padding on mobile */
   }
   
   .schedule-header h3 {
     font-size: var(--font-size-base); /* Smaller on mobile */
+    margin: 0; /* Remove any default margin */
   }
   
   .game-card--v3 .game-row {
