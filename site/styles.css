@@ -2627,7 +2627,9 @@ body {
     flex-direction: column;
     gap: var(--space-xs); /* 4px gap */
     text-align: center;
-    padding: var(--space-md);
+    align-items: center; /* Center items when stacked */
+    /* Ensure horizontal padding aligns with main content on mobile */
+    padding: 0 var(--space-lg);
   }
   
   .brand-title {
@@ -2642,8 +2644,8 @@ body {
   }
 
   .nav-tabs {
-    width: 100%;
-    justify-content: center;
+      width: 100%; /* Ensure tabs take full width when stacked */
+      justify-content: center;
   }
 
   /* Mobile Shrunk State (When scrolled down) */
