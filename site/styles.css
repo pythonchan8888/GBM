@@ -142,6 +142,10 @@ body {
   }
 }
 
+/* ---------------------------------------- */
+/* Enhanced Header Shrinking (FutMob Style) */
+/* ---------------------------------------- */
+
 /* Modern Navigation */
 .nav-container {
   position: sticky;
@@ -152,20 +156,38 @@ body {
   z-index: 1000;
   padding: var(--space-lg) 0;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28);
-  transition: padding 0.3s ease, background 0.3s ease, font-size 0.3s ease;
+  /* Ensure smooth transitions on the container and branding elements */
+  transition: padding 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Brand title transitions */
+.brand-title {
+  /* Add transitions for smooth resizing */
+  transition: font-size 0.3s ease, line-height 0.3s ease;
+}
+
+/* Brand subtitle transitions */
+.brand-subtitle {
+  /* Add transitions for smooth hiding/showing (opacity and height) */
+  transition: opacity 0.3s ease, height 0.3s ease, margin 0.3s ease, font-size 0.3s ease;
+}
+
+/* General Shrunk State (Applies to all) */
 .nav-container.shrunk {
-  padding: var(--space-md) 0;
   background: rgba(0, 0, 0, 0.95);
+  /* Enhance the shadow when sticky/shrunk */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 
-.nav-container.shrunk .brand-title {
-  font-size: var(--font-size-lg);
-}
-
+/* Hide the subtitle universally when shrunk for maximum compactness */
 .nav-container.shrunk .brand-subtitle {
-  font-size: var(--font-size-xs);
+  /* Hide smoothly by collapsing height and fading out */
+  opacity: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 0;
+  overflow: hidden;
 }
 
 .nav-content {
@@ -289,8 +311,20 @@ body {
 
 @media (max-width: 768px) {
   .main-container {
-    padding: var(--space-xl) var(--space-lg);
+    /* FIX: Reduce top padding from 32px (space-xl) to 8px (space-sm) */
+    /* Using !important ensures this overrides the existing shorthand padding rule. */
+    padding-top: var(--space-sm) !important; 
+
+    /* Explicitly maintain the other padding values */
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+    padding-bottom: var(--space-xl);
     gap: var(--space-2xl);
+  }
+  
+  /* Ensure the schedule section itself doesn't add extra margin */
+  .unified-schedule-section {
+    margin-top: 0 !important;
   }
 }
 
@@ -1331,6 +1365,38 @@ body {
 
 .tier-group:last-child {
   margin-bottom: 0;
+}
+
+/* --- FIX 3: Last Game Card Border Visibility --- */
+
+/* 1. Override the rule that removes the border on the last card. */
+/* Targeting V3 specifically as it's the current implementation. */
+.game-card--v3:last-child {
+  /* Use !important to overcome the specificity of the existing .game-card:last-child rule */
+  /* Ensure the border style matches the definition for V3 cards (e.g., if it uses a full border defined by 'border') */
+  border-bottom-style: solid !important;
+  border-bottom-width: 1px !important; 
+  /* Assuming V3 uses var(--border) like V2, otherwise adjust the color if needed */
+  border-bottom-color: var(--border) !important; 
+}
+
+/* 2. Manage Stacking Context to prevent overlap (Robustness fix) */
+/* Ensure game cards stack above headers. Requires position: relative. */
+.game-card, .game-card--v2, .game-card--v3 {
+  /* ... other existing styles ... */
+  position: relative;
+  z-index: 2;
+}
+
+.tier-group-header {
+  /* ... other existing styles ... */
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure the safety padding (mentioned in your summary as already added) is present */
+.games-list {
+  padding-bottom: 4px; 
 }
 
 .tier-group-header {
@@ -2547,28 +2613,64 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* Mobile Responsive Design */
+/* Mobile Implementation (Layout Switch - The FutMob Effect) */
 @media (max-width: 768px) {
-  .nav-content {
-    flex-direction: column;
-    gap: var(--space-sm);
-    padding: var(--space-md);
-    text-align: center;
+  
+  /* Mobile Default State (When scrolled to the top) */
+  .nav-container {
+    /* Override desktop padding. Start compact on mobile. */
+    padding: var(--space-sm) 0; /* 8px top/bottom */
   }
   
-  .nav-brand .brand-title {
-    font-size: 20px;
+  .nav-content {
+    /* Default: Stacked vertically (Brand above Tabs) */
+    flex-direction: column;
+    gap: var(--space-xs); /* 4px gap */
+    text-align: center;
+    padding: var(--space-md);
+  }
+  
+  .brand-title {
+    font-size: 20px; /* Clear default mobile title size */
     margin-bottom: 2px;
   }
   
-  .nav-brand .brand-subtitle {
+  .brand-subtitle {
     font-size: 11px;
-    opacity: 0.7;
+    opacity: 0.8;
+    height: auto; /* Ensure height is calculated normally */
   }
-  
+
   .nav-tabs {
     width: 100%;
     justify-content: center;
+  }
+
+  /* Mobile Shrunk State (When scrolled down) */
+  .nav-container.shrunk {
+    /* Very tight padding when shrunk */
+    /* Using !important to ensure it overrides any conflicting padding definitions */
+    padding: var(--space-xs) 0 !important; /* 4px top/bottom */
+  }
+
+  .nav-container.shrunk .nav-content {
+     /* KEY CHANGE: Switch to row layout to save vertical space */
+     flex-direction: row;
+     justify-content: space-between;
+     align-items: center;
+     text-align: left; /* Align brand left when in row mode */
+  }
+
+  .nav-container.shrunk .brand-title {
+    font-size: 18px; /* Smaller title when shrunk and moved to the side */
+    margin-bottom: 0; /* Remove margin in row layout */
+  }
+  
+  /* Subtitle is hidden by the general rule in section 2 */
+
+  .nav-container.shrunk .nav-tabs {
+      /* Ensure tabs adjust their width in the row layout */
+      width: auto;
   }
   
   .nav-tabs {
@@ -2762,8 +2864,24 @@ body {
   }
 }
 
-/* Desktop Enhancements */
+/* Desktop/Tablet Refinements (min-width: 769px) */
 @media (min-width: 769px) {
+  /* Default State */
+  .nav-container {
+    padding: var(--space-lg) 0; /* 24px */
+  }
+  
+  /* Shrunk State */
+  .nav-container.shrunk {
+    /* Tighter padding on desktop when shrunk */
+    padding: var(--space-sm) 0; /* 8px */
+  }
+
+  .nav-container.shrunk .brand-title {
+    /* Smaller title size */
+    font-size: var(--font-size-lg); /* 1.125rem */
+  }
+
   .kpi-grid {
     grid-template-columns: repeat(4, 1fr); /* 4 columns on desktop */
   }
@@ -3817,23 +3935,8 @@ body, .main-container, .chart-card, .recommendations-card {
     padding-top: 0 !important; 
   }
   
-  /* Tighter navigation on mobile - Force override */
-  .nav-container {
-    padding: 4px 0 !important; /* Force override any higher specificity */
-    margin-bottom: 4px !important;
-  }
-  
-  .nav-container.shrunk {
-    padding: 2px 0 !important; /* Even smaller when shrunk */
-  }
-  
-  .nav-container.shrunk .brand-title {
-    font-size: var(--font-size-base); /* Smaller title on mobile when shrunk */
-  }
-  
-  .nav-container.shrunk .brand-subtitle {
-    font-size: 10px; /* Tiny subtitle on mobile when shrunk */
-  }
+  /* Mobile V3 optimizations - work with FutMob header system */
+  /* Remove conflicting nav-container padding rules - handled by FutMob system above */
   
   .filter-bar {
     display: none !important; /* Ensure filter bar is completely hidden on mobile */
