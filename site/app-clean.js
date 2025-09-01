@@ -52,7 +52,7 @@ class GameCard {
     
     render() {
         const timeDisplay = this.formatTime(this.game.datetime);
-        const { homeChip, awayChip } = this.renderAhChips();
+        const { homeChip, awayChip, homeTeamClass, awayTeamClass } = this.renderAhChips();
         const hint = this.renderHint();
         
         return `
@@ -66,12 +66,12 @@ class GameCard {
                     
                     <div class="game-matchup">
                         <div class="team-row">
-                            <span class="team-name">${this.game.home}</span>
+                            <span class="${homeTeamClass}">${this.game.home}</span>
                             ${homeChip}
                         </div>
                         <div class="vs-separator">vs</div>
                         <div class="team-row">
-                            <span class="team-name">${this.game.away}</span>
+                            <span class="${awayTeamClass}">${this.game.away}</span>
                             ${awayChip}
                         </div>
                     </div>
@@ -88,8 +88,8 @@ class GameCard {
     }
     
     renderExpansion() {
-        const confidenceIcon = this.game.confidence === 'High' ? '👑' : 
-                              this.game.confidence === 'Medium' ? '⭐' : '⚪';
+        const confidenceIcon = this.game.confidence === 'High' ? '<i data-feather="award"></i>' : 
+                              this.game.confidence === 'Medium' ? '<i data-feather="star"></i>' : '<i data-feather="circle"></i>';
         
         return `
             <div class="expanded-details hidden">
@@ -131,6 +131,10 @@ class GameCard {
         const isHomeRecommended = this.game.hasRecommendation && this.game.recommendedTeam === this.game.home;
         const isAwayRecommended = this.game.hasRecommendation && this.game.recommendedTeam === this.game.away;
 
+        // Determine favorite/underdog based on AH lines (negative line = favorite)
+        const isHomeFavorite = this.game.homeLine < 0;
+        const isAwayFavorite = this.game.awayLine < 0;
+
         const homeChipClass = [
             'ah-chip',
             this.game.homeLine < 0 ? 'ah-chip--neg' : this.game.homeLine > 0 ? 'ah-chip--pos' : 'ah-chip--pk',
@@ -143,16 +147,22 @@ class GameCard {
             isAwayRecommended ? 'ah-chip--selected' : ''
         ].filter(Boolean).join(' ');
 
+        // Add favorite/underdog classes to team names
+        const homeTeamClass = isHomeFavorite ? 'team-name team-favorite' : 'team-name team-underdog';
+        const awayTeamClass = isAwayFavorite ? 'team-name team-favorite' : 'team-name team-underdog';
+
         return {
             homeChip: `<span class="${homeChipClass}">${formatLine(this.game.homeLine)}</span>`,
-            awayChip: `<span class="${awayChipClass}">${formatLine(this.game.awayLine)}</span>`
+            awayChip: `<span class="${awayChipClass}">${formatLine(this.game.awayLine)}</span>`,
+            homeTeamClass: homeTeamClass,
+            awayTeamClass: awayTeamClass
         };
     }
     
     renderHint() {
         // Single diamond for any recommendation
         if (this.game.hasRecommendation && this.game.ev > 0) {
-            return '<span class="game-hint" title="Recommendation available">💎</span>';
+            return '<span class="game-hint" title="Recommendation available"><i data-feather="zap"></i></span>';
         }
         return '';
     }
@@ -605,6 +615,13 @@ class ParlayKing {
         this.updateKPIs();
         this.renderUnifiedSchedule();
         this.updateLastRunStatus();
+        
+        // Initialize Feather icons after DOM updates
+        setTimeout(() => {
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            }
+        }, 100);
     }
 
     updateKPIs() {
@@ -854,10 +871,25 @@ class ParlayKing {
     initGameCardInteractions() {
         setTimeout(() => {
             document.querySelectorAll('.game-card--v3[data-expandable="true"]').forEach(card => {
+                // Make entire game row tappable for better UX
+                const gameRow = card.querySelector('.game-row');
+                if (gameRow) {
+                    gameRow.addEventListener('click', (e) => {
+                        // Prevent expansion when clicking on interactive elements
+                        if (e.target.closest('.ah-chip') || 
+                            e.target.closest('.game-hint') ||
+                            e.target.closest('.analysis-toggle')) return;
+                        
+                        this.toggleGameExpansion(card);
+                    });
+                }
+                
+                // Keep original card click as fallback
                 card.addEventListener('click', (e) => {
                     if (e.target.closest('.ah-chip') || 
                         e.target.closest('.game-hint') ||
-                        e.target.closest('.analysis-toggle')) return;
+                        e.target.closest('.analysis-toggle') ||
+                        e.target.closest('.game-row')) return; // Avoid double-triggering
                     
                     this.toggleGameExpansion(card);
                 });

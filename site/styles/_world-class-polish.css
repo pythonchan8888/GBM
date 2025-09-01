@@ -1,0 +1,361 @@
+/* =================================================================== */
+/* WORLD-CLASS POLISH - FOTMOB STANDARD VISUAL HIERARCHY               */
+/* =================================================================== */
+
+/* ===== 1. FOTMOB VISUAL HIERARCHY ===== */
+
+/* Game Card Visual Hierarchy (FOTMOB Standard) */
+.team-name.team-favorite {
+  font-weight: 600; /* Bolder weight for the favorite */
+  color: var(--text); /* Brightest text color */
+}
+
+.team-name.team-underdog {
+  /* Keep normal weight but slightly dim the color */
+  color: var(--text-secondary); 
+  opacity: 0.8;
+}
+
+/* Default state (for PK or when data is missing) */
+.team-name {
+  font-weight: 400;
+  color: var(--text);
+}
+
+/* De-emphasize the "vs" separator */
+.game-card--v3 .vs-separator {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs); 
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+/* ===== 2. ENHANCED AH CHIP CLARITY ===== */
+
+.ah-chip {
+  font-weight: 600;
+  transition: var(--transition-fast);
+}
+
+/* Negative Line (e.g., -0.75) - Favorite Team */
+.ah-chip--neg {
+  background: rgba(231, 76, 60, 0.15); 
+  color: var(--negative); 
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+/* Positive Line (e.g., +0.5) - Underdog Team */
+.ah-chip--pos {
+  background: rgba(46, 204, 113, 0.15);
+  color: var(--positive);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+/* Pick'em (neutral) */
+.ah-chip--pk {
+  background: rgba(163, 174, 192, 0.15);
+  color: var(--text-tertiary);
+  border: 1px solid rgba(163, 174, 192, 0.3);
+}
+
+/* CRITICAL: Make the recommended chip vibrant and distinct */
+.ah-chip--selected {
+  background-color: var(--primary) !important; 
+  color: white !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 8px rgba(230, 126, 34, 0.4);
+  font-weight: 700;
+}
+
+/* ===== 3. INTERACTION FEEDBACK & POLISH ===== */
+
+/* Interactive Feedback for Expandable Game Cards */
+.game-card[data-expandable="true"] .game-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Desktop Hover State */
+@media (hover: hover) {
+  .game-card[data-expandable="true"] .game-row:hover {
+    background-color: var(--panel-elevated);
+  }
+}
+
+/* Mobile Tap State (Active) */
+.game-card[data-expandable="true"] .game-row:active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Rotating Chevron Animation */
+.expand-btn {
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.game-card[data-expanded="true"] .expand-btn {
+  transform: rotate(180deg);
+  color: var(--primary);
+}
+
+/* ===== 4. MODERN DAY NAVIGATOR (PILL DESIGN) ===== */
+
+.day-tab {
+  border-radius: 999px; /* Full pill shape */
+  transition: var(--transition-fast);
+  text-decoration: none;
+  border: 1px solid transparent;
+  font-weight: 500;
+}
+
+.day-tab:hover {
+  background-color: var(--panel-elevated);
+  border-color: var(--border);
+  transform: translateY(-1px);
+}
+
+/* Active State: Filled Pill */
+.day-tab.active {
+  background-color: var(--primary);
+  color: white;
+  font-weight: 600;
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+}
+
+/* ===== 5. PROFESSIONAL LOADING & SPINNERS ===== */
+
+/* Modern CSS Spinner */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Skeleton Loading States */
+.skeleton-loader {
+  background: linear-gradient(90deg, var(--border) 25%, var(--panel-elevated) 50%, var(--border) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-game-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 4px;
+  padding: 8px;
+  min-height: 48px;
+}
+
+.skeleton-team-name {
+  height: 14px;
+  width: 80px;
+  margin-bottom: 4px;
+}
+
+.skeleton-chip {
+  height: 24px;
+  width: 36px;
+  border-radius: 4px;
+}
+
+/* ===== 6. ENHANCED ANALYSIS READABILITY ===== */
+
+.analysis-text,
+.kings-call-text,
+.card-analysis-text {
+  line-height: 1.7; /* Increased for comfortable reading */
+  color: var(--text-secondary);
+  font-size: 14px;
+  letter-spacing: 0.01em;
+}
+
+.analysis-content,
+.card-analysis-content {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--primary);
+}
+
+/* ===== 7. PROFESSIONAL FEATHER ICONS ===== */
+
+/* Bottom Navigation - Feather Icons */
+.bottom-nav-item .icon {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* Ensure icons inherit the color from their parent */
+.bottom-nav-item .icon {
+  color: inherit;
+}
+
+/* Active state enhancement for icons */
+.bottom-nav-item.active .icon {
+  stroke-width: 2.5; /* Slightly bolder when active */
+}
+
+/* ===== 8. FEATHER ICONS IN CONTENT ===== */
+
+/* Icons in headers (KPI cards, sections) */
+.kpi-header h3 i,
+.header-content h3 i,
+.chart-header h3 i {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  margin-right: var(--space-xs);
+  vertical-align: text-top;
+}
+
+/* Icons in trend indicators */
+.kpi-trend i {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  margin-right: 4px;
+  vertical-align: text-top;
+}
+
+/* Icons in small text (warnings, disclaimers) */
+small i,
+.responsible-betting i {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  margin-right: 4px;
+  vertical-align: text-top;
+}
+
+/* Game hint icons */
+.game-hint i {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+/* Confidence icons in expanded details */
+.confidence-icon i {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+/* Game Hints - More Subtle */
+.game-hint {
+  opacity: 0.9;
+  transition: var(--transition-fast);
+}
+
+.game-hint:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* ===== 8. MICRO-INTERACTIONS ===== */
+
+/* Subtle button press feedback */
+.action-btn:active,
+.day-tab:active,
+.expand-btn:active {
+  transform: scale(0.98);
+}
+
+/* Card hover enhancements */
+.rec-card:hover,
+.kpi-card:hover {
+  box-shadow: var(--shadow-card-hover), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Smooth focus states */
+.game-card:focus-within {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ===== 9. TYPOGRAPHY REFINEMENTS ===== */
+
+/* Ensure consistent font weights across components */
+.kpi-value,
+.stat-value {
+  font-feature-settings: 'tnum'; /* Tabular numbers for alignment */
+  letter-spacing: -0.02em;
+}
+
+/* Improve readability of small text */
+.kpi-subtitle,
+.stat-label,
+.game-count,
+.timezone-badge {
+  letter-spacing: 0.01em;
+  opacity: 0.9;
+}
+
+/* ===== 10. ACCESSIBILITY ENHANCEMENTS ===== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .ah-chip--selected {
+    border-width: 3px;
+  }
+  
+  .team-favorite {
+    font-weight: 700;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .expand-btn,
+  .day-tab,
+  .rec-card,
+  .kpi-card {
+    transition: none;
+  }
+  
+  .skeleton-loader {
+    animation: none;
+  }
+}

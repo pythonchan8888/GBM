@@ -47,6 +47,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body>
@@ -106,65 +107,25 @@
 
     <!-- Main Content -->
     <main class="main-container">
-        <!-- View Toggle -->
-        <section class="view-toggle-section">
-            <div class="view-toggle">
-                <button class="view-btn active" data-view="table">
-                    <span>📋 Table View</span>
-                </button>
-                <button class="view-btn" data-view="cards">
-                    <span>🎴 Card View</span>
-                </button>
-            </div>
-        </section>
 
-        <!-- Table View -->
-        <section class="recommendations-section" id="table-view">
-            <div class="recommendations-card glass-panel">
-                <div class="recommendations-header">
-                    <h3>Live Recommendations</h3>
-                    <div class="recommendations-actions">
-                        <button class="action-btn" id="export-recommendations-full">
-                            <span>Export Filtered CSV</span>
-                        </button>
-                        <button class="action-btn primary" id="refresh-recommendations">
-                            <span>🔄 Refresh</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="table-container">
-                    <table class="recommendations-table" aria-label="Recommendations Table">
-                        <thead aria-label="Recommendations Table Headers">
-                            <tr>
-                                <th>Time</th>
-                                <th>Match</th>
-                                <th>League</th>
-                                <th>Recommendation</th>
-                                <th>Odds</th>
-                                <th>EV</th>
-                                <th>Confidence</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="recommendations-tbody-full">
-                            <!-- Populated by JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="table-footer">
-                    <div class="responsible-betting">
-                        <small>⚠️ Bet responsibly. Past performance does not guarantee future results. Only bet what you can afford to lose.</small>
-                    </div>
+
+        <!-- Card View (Default) -->
+        <section class="recommendations-section" id="cards-view">
+            <div class="recommendations-header-card">
+                <h3>Live Recommendations</h3>
+                <div class="recommendations-actions">
+                    <button class="action-btn primary" id="refresh-recommendations">
+                        <span>🔄 Refresh</span>
+                    </button>
                 </div>
             </div>
-        </section>
-
-        <!-- Card View -->
-        <section class="recommendations-section hidden" id="cards-view">
             <div class="recommendations-grid" id="recommendations-cards">
                 <!-- Populated by JavaScript -->
+            </div>
+            <div class="recommendations-footer">
+                <div class="responsible-betting">
+                    <small><i data-feather="alert-triangle"></i> Bet responsibly. Past performance does not guarantee future results. Only bet what you can afford to lose.</small>
+                </div>
             </div>
         </section>
     </main>
@@ -172,10 +133,6 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-links">
-                <a href="latest_recommendations.csv" target="_blank">latest_recommendations.csv</a>
-                <a href="metrics.csv" target="_blank">metrics.csv</a>
-            </div>
             <div class="footer-info">
                 <p>ParlayKing © 2024 - Data-driven football analytics</p>
             </div>
@@ -191,15 +148,15 @@
     <!-- Bottom Navigation (Mobile) -->
     <nav class="bottom-nav">
         <a href="index.html" class="bottom-nav-item" data-tab="overview">
-            <span class="icon">🏠</span>
+            <i class="icon" data-feather="home"></i>
             <span class="label">Overview</span>
         </a>
         <a href="analytics.html" class="bottom-nav-item" data-tab="analytics">
-            <span class="icon">📊</span>
+            <i class="icon" data-feather="trending-up"></i>
             <span class="label">Analytics</span>
         </a>
         <a href="recommendations.html" class="bottom-nav-item active" data-tab="recommendations">
-            <span class="icon">💎</span>
+            <i class="icon" data-feather="crosshair"></i>
             <span class="label">Picks</span>
         </a>
     </nav>
@@ -210,6 +167,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (window.parlayKing) {
                 window.parlayKing.initRecommendationsPage();
+            }
+            // Initialize Feather Icons
+            if (typeof feather !== 'undefined') {
+                feather.replace();
             }
         });
     </script>

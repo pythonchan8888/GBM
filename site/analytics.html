@@ -47,6 +47,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body class="analytics-page">
@@ -88,6 +89,34 @@
 
     <!-- Main Content -->
     <main class="main-container">
+        <!-- Parlay Wins Showcase (Moved from Overview) -->
+        <section class="parlay-wins-section">
+            <div class="parlay-wins-card">
+                <div class="parlay-wins-header">
+                    <div class="header-content">
+                        <h3><i data-feather="trophy"></i> Parlay Wins This Week</h3>
+                        <p class="header-subtitle">If you followed our recommendations...</p>
+                    </div>
+                    <div class="parlay-stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="total-parlays">--</span>
+                            <span class="stat-label">Winning Parlays</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="max-payout">--</span>
+                            <span class="stat-label">Biggest Win</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="parlay-grid" id="parlay-grid">
+                    <!-- Populated by JavaScript -->
+                </div>
+                <div class="parlay-disclaimer">
+                    <small>💡 Based on settled results from our recommendations. Past performance doesn't guarantee future results.</small>
+                </div>
+            </div>
+        </section>
+
         <!-- ROI Heatmap -->
         <section class="chart-section">
             <div class="chart-card glass-panel">
@@ -160,12 +189,6 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-links">
-                <a href="metrics.csv" target="_blank">metrics.csv</a>
-                <a href="pnl_by_month.csv" target="_blank">pnl_by_month.csv</a>
-                <a href="roi_heatmap.csv" target="_blank">roi_heatmap.csv</a>
-                <a href="top_segments.csv" target="_blank">top_segments.csv</a>
-            </div>
             <div class="footer-info">
                 <p>ParlayKing © 2024 - Data-driven football analytics</p>
             </div>
@@ -181,15 +204,15 @@
     <!-- Bottom Navigation (Mobile) -->
     <nav class="bottom-nav">
         <a href="index.html" class="bottom-nav-item" data-tab="overview">
-            <span class="icon">🏠</span>
+            <i class="icon" data-feather="home"></i>
             <span class="label">Overview</span>
         </a>
         <a href="analytics.html" class="bottom-nav-item active" data-tab="analytics">
-            <span class="icon">📊</span>
+            <i class="icon" data-feather="trending-up"></i>
             <span class="label">Analytics</span>
         </a>
         <a href="recommendations.html" class="bottom-nav-item" data-tab="recommendations">
-            <span class="icon">💎</span>
+            <i class="icon" data-feather="crosshair"></i>
             <span class="label">Picks</span>
         </a>
     </nav>
@@ -200,6 +223,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (window.parlayKing) {
                 window.parlayKing.initAnalyticsPage();
+            }
+            // Initialize Feather Icons
+            if (typeof feather !== 'undefined') {
+                feather.replace();
             }
         });
     </script>

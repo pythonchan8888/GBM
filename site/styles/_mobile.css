@@ -149,6 +149,12 @@
     display: none;
   }
 
+  /* Hide any additional filter elements on mobile */
+  .filter-summary,
+  .optional-filter {
+    display: none;
+  }
+
   /* ===== KPI GRID MOBILE ===== */
   .kpi-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -279,6 +285,86 @@
     font-size: 0.9rem;
     padding: var(--space-sm) var(--space-md);
     min-height: 40px;
+  }
+
+  /* ===== RECOMMENDATIONS CARD VIEW MOBILE (KPI-STYLE) ===== */
+  .recommendations-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    padding: 0 var(--space-md);
+  }
+  
+  .rec-card {
+    /* Match mobile KPI card styling for consistency */
+    padding: var(--space-lg);
+    /* Documented Optimization: 160px minimum height on mobile */
+    /* Using !important ensures this overrides potential conflicts from KPI card rules */
+    min-height: 160px !important;
+    border-radius: var(--radius-lg);
+    gap: var(--space-sm); /* Tighter gap on mobile */
+  }
+  
+  .card-header {
+    /* Similar to kpi-header structure */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-sm);
+    min-height: 32px;
+  }
+  
+  .card-match {
+    /* Similar to kpi-value styling */
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+  }
+  
+  .card-recommendation {
+    /* Primary content like kpi-value */
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    padding: var(--space-sm);
+    margin: var(--space-sm) 0;
+  }
+  
+  .card-odds {
+    /* Similar to kpi-subtitle layout */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+  }
+
+  .card-ev {
+    /* Match kpi-trend styling */
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+  }
+
+  /* Mobile analysis sections */
+  .card-analysis-toggle {
+    padding: var(--space-sm);
+    font-size: var(--font-size-sm);
+    margin-top: var(--space-sm);
+  }
+
+  .card-analysis-content.expanded {
+    max-height: 300px; /* Slightly smaller on mobile */
+    padding: var(--space-sm);
+  }
+
+  .card-kings-call {
+    margin-top: var(--space-sm);
+    padding: var(--space-sm);
+  }
+
+  .kings-call-text {
+    font-size: var(--font-size-xs);
+    line-height: 1.3;
   }
 
   /* ===== FOOTER MOBILE ===== */

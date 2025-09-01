@@ -10,6 +10,7 @@
   --text: #F5F7FA; /* soft white-blue */
   --text-secondary: #E6EBF2;
   --text-tertiary: #A3AEC0;
+  --text-on-primary: #FFFFFF; /* White text on primary color */
   --panel: rgba(18, 26, 42, 0.85);
   --panel-elevated: rgba(22, 32, 52, 0.92);
   --border: rgba(255, 255, 255, 0.08);
