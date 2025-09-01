@@ -1,0 +1,80 @@
+/* =================================================================== */
+/* FORM COMPONENTS & FILTERS                                            */
+/* =================================================================== */
+
+/* ===== FILTER BAR ===== */
+.filter-bar {
+  background: var(--panel);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-secondary);
+  padding: var(--space-md) 0;
+}
+
+.filter-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-xl);
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  min-width: 140px;
+}
+
+.filter-group label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filter-select, .filter-input {
+  background: var(--panel-elevated);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: var(--transition-fast);
+  backdrop-filter: blur(20px);
+}
+
+.filter-select:focus, .filter-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+  outline: none;
+  background: var(--panel-elevated);
+}
+
+.filter-select:hover, .filter-input:hover {
+  border-color: var(--border);
+  background: var(--panel-elevated);
+}
+
+.filter-reset, #reset-filters {
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--panel-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  backdrop-filter: blur(20px);
+}
+
+.filter-reset:hover, #reset-filters:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}

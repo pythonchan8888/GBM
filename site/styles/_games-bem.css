@@ -1,0 +1,395 @@
+/* =================================================================== */
+/* GAME COMPONENTS - BEM METHODOLOGY                                    */
+/* Phase 3: BEM Implementation for Better Maintainability              */
+/* =================================================================== */
+
+/* ===== SCHEDULE BLOCK ===== */
+.schedule {
+  margin: var(--space-2xl) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.schedule__card {
+  background: var(--gradient-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.schedule__card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.schedule__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: none;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  text-align: center;
+}
+
+.schedule__title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+/* ===== GAMES CONTAINER BLOCK ===== */
+.games {
+  background: var(--panel);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: var(--space-md);
+}
+
+.games__list {
+  background: var(--panel);
+  padding-bottom: 4px;
+}
+
+/* ===== LEAGUE GROUP BLOCK ===== */
+.league-group {
+  margin-bottom: var(--space-md);
+}
+
+.league-group:last-child {
+  margin-bottom: 0;
+}
+
+.league-group__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  color: var(--text);
+  position: relative;
+  z-index: 1;
+}
+
+.league-group__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+}
+
+.league-group__count {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+  background: var(--border);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+/* ===== GAME CARD BLOCK (BEM) ===== */
+.game-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 4px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.game-card:last-child {
+  border-bottom-style: solid;
+  border-bottom-width: 1px; 
+  border-bottom-color: var(--border);
+}
+
+.game-card:hover {
+  border-color: var(--primary);
+  background: var(--panel-elevated);
+  transform: translateY(-1px);
+}
+
+.game-card--expanded {
+  border-color: var(--primary);
+  background: var(--panel-elevated);
+}
+
+.game-card--has-recommendation {
+  border-left: 3px solid var(--primary);
+}
+
+.game-card--kings-call {
+  border-left: 3px solid #FFD700;
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.05) 0%, transparent 100%);
+}
+
+/* ===== GAME CARD ELEMENTS ===== */
+.game-card__row {
+  display: grid;
+  grid-template-columns: 50px 1fr auto;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 8px;
+  min-height: 48px;
+}
+
+.game-card__time {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  font-family: var(--font-mono);
+  text-align: center;
+}
+
+.game-card__matchup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.game-card__team-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.game-card__team-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.2;
+  max-height: 2.4em;
+  overflow: hidden;
+}
+
+.game-card__vs {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: center;
+  font-weight: 500;
+  margin: 2px 0;
+}
+
+.game-card__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.game-card__hint {
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+.game-card__expand-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.game-card__expand-btn:hover {
+  background: var(--panel-elevated);
+  color: var(--text);
+}
+
+.game-card--expanded .game-card__expand-btn {
+  transform: rotate(180deg);
+  color: var(--primary);
+}
+
+/* ===== HANDICAP CHIP BLOCK ===== */
+.handicap-chip {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  min-width: 36px;
+  text-align: center;
+}
+
+.handicap-chip--positive {
+  border-color: var(--positive);
+  color: var(--positive);
+}
+
+.handicap-chip--negative {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.handicap-chip--pick-em {
+  border-color: var(--text-tertiary);
+  color: var(--text-tertiary);
+}
+
+.handicap-chip--selected {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.handicap-chip--empty {
+  border-color: var(--border);
+  color: var(--text-tertiary);
+  opacity: 0.5;
+}
+
+/* ===== EXPANDED DETAILS BLOCK ===== */
+.game-details {
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  transition: max-height 0.3s ease;
+  overflow: hidden;
+  margin-bottom: var(--space-sm);
+}
+
+.game-details__pick {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.game-details__pick-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+
+.game-details__pick-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* ===== EV BADGE BLOCK ===== */
+.ev-badge {
+  background: var(--primary);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ev-badge--high {
+  background: var(--positive);
+}
+
+.ev-badge--medium {
+  background: var(--warning);
+}
+
+/* ===== CONFIDENCE INDICATOR BLOCK ===== */
+.confidence-indicator {
+  font-size: 18px;
+  cursor: help;
+}
+
+.confidence-indicator--high::before {
+  content: '👑';
+}
+
+.confidence-indicator--medium::before {
+  content: '⭐';
+}
+
+.confidence-indicator--low::before {
+  content: '⚪';
+}
+
+/* ===== ANALYSIS BLOCK ===== */
+.analysis {
+  margin-top: var(--space-sm);
+}
+
+.analysis__toggle {
+  width: 100%;
+  padding: var(--space-sm);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.analysis__toggle:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.analysis__content {
+  padding: 0;
+  background: var(--panel);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--primary);
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  max-height: 0;
+}
+
+.analysis__content--visible {
+  max-height: 300px;
+  padding: var(--space-sm);
+}
+
+.analysis__text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
+  font-style: italic;
+}
+
+/* ===== SCHEDULE FOOTER BLOCK ===== */
+.schedule__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-lg);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.schedule__actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.schedule__disclaimer {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+}

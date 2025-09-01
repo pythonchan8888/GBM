@@ -139,7 +139,7 @@ LEAGUES_TO_FETCH = [
 import os as _os
 if _os.environ.get('GBM_QUICK', '').strip() == '1':
     print("Quick mode ON: limiting leagues for smoke run.")
-    LEAGUES_TO_FETCH = ['England Premier League', 'Italy Serie A', 'Spain La Liga']
+    LEAGUES_TO_FETCH = ['England Premier League', 'Italy Serie A', 'Spain La Liga', 'Germany Bundesliga', 'France Ligue 1', 'Japan J1 League']
 
 # --- Mappings for Competition Type and Tier (ensure these are complete for LEAGUES_TO_FETCH) ---
 COMPETITION_TYPES = {

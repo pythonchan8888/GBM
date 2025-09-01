@@ -471,34 +471,55 @@ class ParlayKing {
     }
     
     setupHeaderShrinking() {
-        let ticking = false;
-        
-        const updateHeader = () => {
+        const header = document.querySelector('.nav-container');
+        // Get the day navigator for sticky activation tracking
+        const dayNavigator = document.querySelector('.day-navigator');
+        if (!header) return;
+
+        const scrollThreshold = 50; 
+
+        const updateHeaderAndSticky = () => {
             const scrollY = window.scrollY;
-            const header = document.querySelector('.nav-container');
+
+            // 1. Handle the header shrinking class (still useful for subtle shrinking)
+            if (scrollY > scrollThreshold) {
+                header.classList.add('shrunk');
+            } else {
+                header.classList.remove('shrunk');
+            }
             
-            if (header) {
-                if (scrollY > 50) {
-                    header.classList.add('shrunk');
-                    console.log('Header shrunk at scroll position:', scrollY); // Debug log
+            // 2. Dynamically update the header height CSS variable
+            // This ensures the Day Navigator sticks perfectly below the header
+            const headerHeight = header.offsetHeight;
+            document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+
+            // 3. Add class to Day Navigator when it becomes sticky (for the shadow)
+            if (dayNavigator) {
+                // Check if we have scrolled past the top of the schedule section
+                if (scrollY > 0) {
+                     dayNavigator.classList.add('sticky-active');
                 } else {
-                    header.classList.remove('shrunk');
-                    console.log('Header expanded at scroll position:', scrollY); // Debug log
+                     dayNavigator.classList.remove('sticky-active');
                 }
             }
-            
-            ticking = false;
         };
-        
-        // Add scroll listener with debug
-        window.addEventListener('scroll', () => {
+
+        // Use requestAnimationFrame for optimized, smooth scroll handling
+        let ticking = false;
+        const handleScroll = () => {
             if (!ticking) {
-                requestAnimationFrame(updateHeader);
+                window.requestAnimationFrame(() => {
+                    updateHeaderAndSticky();
+                    ticking = false;
+                });
                 ticking = true;
             }
-        });
-        
-        console.log('Header shrinking scroll listener initialized'); // Debug log
+        };
+
+        // Initial check on page load and resize (for orientation changes)
+        updateHeaderAndSticky();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('resize', updateHeaderAndSticky);
     }
 
     setupEventListeners() {
