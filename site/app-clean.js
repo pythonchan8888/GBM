@@ -770,54 +770,28 @@ class ParlayKing {
         }
     }
     
-    // Analysis toggle with smooth height animation
+    // Analysis toggle for expanded cards
     toggleAnalysis(button) {
-        const content = button.nextElementSibling;
+        const content = button.nextElementSibling; // .analysis-content
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
         
-        // Prevent rapid clicking
-        if (button.dataset.animating === 'true') return;
-        button.dataset.animating = 'true';
-        
-        if (isExpanded) {
-            // Collapse
-            content.style.maxHeight = content.scrollHeight + 'px'; // Set current height first
-            content.style.overflow = 'hidden';
-            button.setAttribute('aria-expanded', 'false');
-            button.innerHTML = 'Show Analysis ▼';
+        // Toggle visibility (removes/adds display: none via .hidden class)
+        content.classList.toggle('hidden', isExpanded);
+        button.setAttribute('aria-expanded', !isExpanded);
+        button.innerHTML = isExpanded ? 'Show Analysis ▼' : 'Hide Analysis ▲';
+
+        // FIX: Recalculate the parent container's height.
+        const expandedDetails = button.closest('.expanded-details');
+        const card = button.closest('.game-card');
+
+        // Check if the card is expanded and if maxHeight is being used for animation control
+        if (expandedDetails && card && card.getAttribute('data-expanded') === 'true' && expandedDetails.style.maxHeight) {
             
+            // Use requestAnimationFrame to ensure the layout engine has updated the scrollHeight 
+            // after the 'hidden' class change took effect.
             requestAnimationFrame(() => {
-                content.style.maxHeight = '0';
-                content.style.paddingTop = '0';
-                content.style.paddingBottom = '0';
-            });
-            
-            setTimeout(() => {
-                content.classList.add('hidden');
-                button.dataset.animating = 'false';
-            }, 300);
-        } else {
-            // Expand
-            content.classList.remove('hidden');
-            content.style.display = 'block'; // Force visible for calculation
-            content.style.overflow = 'hidden';
-            content.style.maxHeight = '0';
-            content.style.paddingTop = '0';
-            content.style.paddingBottom = '0';
-            
-            button.setAttribute('aria-expanded', 'true');
-            button.innerHTML = 'Hide Analysis ▲';
-            
-            requestAnimationFrame(() => {
-                // Force layout recalculation first
-                content.style.padding = 'var(--space-sm)';
-                const targetHeight = content.scrollHeight + 16; // Add padding buffer
-                content.style.maxHeight = targetHeight + 'px';
-                
-                setTimeout(() => {
-                    content.style.overflow = 'visible';
-                    button.dataset.animating = 'false';
-                }, 300);
+                // Update the maxHeight to the new scrollHeight. CSS transition handles the animation.
+                expandedDetails.style.maxHeight = expandedDetails.scrollHeight + 'px';
             });
         }
     }
