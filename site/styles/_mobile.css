@@ -106,6 +106,14 @@
      padding: 0 var(--space-lg);
   }
   
+  .brand-logo {
+    height: 32px; /* Smaller on mobile */
+  }
+
+  .nav-container.shrunk .brand-logo {
+    height: 28px; /* Even smaller when shrunk */
+  }
+
   .brand-title {
     font-size: 20px;
     margin-bottom: 0;
