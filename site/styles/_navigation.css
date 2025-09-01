@@ -53,6 +53,24 @@
   gap: var(--space-xs);
 }
 
+.brand-logo-combo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs); /* 4px gap between crown and text */
+}
+
+.brand-crown {
+  height: 28px; /* Slightly smaller than text for balance */
+  width: auto;
+  transition: height 0.3s ease;
+}
+
+.brand-text {
+  height: 32px; /* Main text height */
+  width: auto;
+  transition: height 0.3s ease;
+}
+
 .brand-logo {
   height: 40px;
   width: auto;

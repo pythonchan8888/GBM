@@ -106,12 +106,28 @@
      padding: 0 var(--space-lg);
   }
   
+  .brand-crown {
+    height: 24px; /* Mobile crown size */
+  }
+
+  .brand-text {
+    height: 28px; /* Mobile text size */
+  }
+
+  .nav-container.shrunk .brand-crown {
+    height: 20px; /* Shrunk crown */
+  }
+
+  .nav-container.shrunk .brand-text {
+    height: 24px; /* Shrunk text */
+  }
+
   .brand-logo {
-    height: 32px; /* Smaller on mobile */
+    height: 32px; /* Fallback for single logo */
   }
 
   .nav-container.shrunk .brand-logo {
-    height: 28px; /* Even smaller when shrunk */
+    height: 28px; /* Fallback shrunk */
   }
 
   .brand-title {
