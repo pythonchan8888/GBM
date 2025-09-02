@@ -17,8 +17,13 @@
     padding-top: var(--space-sm);
     padding-left: var(--space-lg);
     padding-right: var(--space-lg);
-    padding-bottom: calc(56px + var(--space-xl) + env(safe-area-inset-bottom));
+    padding-bottom: calc(56px + var(--space-lg) + env(safe-area-inset-bottom)); /* Reduced from xl to lg */
     gap: var(--space-2xl);
+  }
+
+  /* ===== OVERVIEW PAGE SPECIFIC - MINIMAL BOTTOM PADDING ===== */
+  body.page-overview .main-container {
+    padding-bottom: calc(56px + var(--space-sm) + env(safe-area-inset-bottom)); /* Minimal padding for Overview */
   }
   
   .unified-schedule-section {
