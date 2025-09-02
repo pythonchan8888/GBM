@@ -250,15 +250,16 @@
 /* Icons in small text (warnings, disclaimers) */
 small i,
 .responsible-betting i {
-  width: 12px;
-  height: 12px;
+  width: 10px; /* Reduced from 12px to better match small text */
+  height: 10px;
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 1.5; /* Slightly thinner stroke for small size */
   stroke-linecap: round;
   stroke-linejoin: round;
   fill: none;
-  margin-right: 4px;
+  margin-right: 3px; /* Tighter spacing */
   vertical-align: text-top;
+  opacity: 0.8; /* Slightly subdued to not overpower the text */
 }
 
 /* Game hint icons */

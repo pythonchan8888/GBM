@@ -413,6 +413,15 @@
     font-size: var(--font-size-xs);
   }
 
+  /* ===== SMALL TEXT ICONS MOBILE ===== */
+  small i,
+  .responsible-betting i {
+    width: 8px; /* Even smaller on mobile for better proportion */
+    height: 8px;
+    stroke-width: 1.5;
+    margin-right: 2px;
+  }
+
   /* ===== FOOTER MOBILE ===== */
   .footer-content {
     flex-direction: column;
