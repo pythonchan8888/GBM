@@ -345,7 +345,34 @@ small i,
   opacity: 0.9;
 }
 
-/* ===== 10. ACCESSIBILITY ENHANCEMENTS ===== */
+/* ===== 10. OVERVIEW PAGE FILTER HIDING (CRITICAL FIX) ===== */
+
+/* Force hide filters on Overview page - highest specificity */
+body.page-overview .filter-bar,
+html body.page-overview .filter-bar,
+.page-overview .filter-bar {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Also hide filter drawer system completely on Overview page */
+body.page-overview .filters-drawer-btn,
+body.page-overview .filters-drawer,
+body.page-overview #filters-drawer,
+body.page-overview #filters-drawer-btn,
+body.page-overview .filters-icon,
+.page-overview .filters-drawer-btn,
+.page-overview .filters-drawer,
+.page-overview #filters-drawer,
+.page-overview #filters-drawer-btn,
+.page-overview .filters-icon {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* ===== 11. ACCESSIBILITY ENHANCEMENTS ===== */
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {

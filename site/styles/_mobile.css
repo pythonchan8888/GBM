@@ -172,15 +172,18 @@
     font-size: var(--font-size-sm);
   }
 
-  /* ===== FILTER BAR MOBILE (HIDDEN) ===== */
-  .filter-bar {
-    display: none;
+  /* ===== FILTER BAR MOBILE (OVERVIEW ONLY) ===== */
+  body.page-overview .filter-bar,
+  .page-overview .filter-bar {
+    display: none !important;
   }
 
-  /* Hide any additional filter elements on mobile */
-  .filter-summary,
-  .optional-filter {
-    display: none;
+  /* Hide any additional filter elements on mobile for Overview */
+  body.page-overview .filter-summary,
+  body.page-overview .optional-filter,
+  .page-overview .filter-summary,
+  .page-overview .optional-filter {
+    display: none !important;
   }
 
   /* ===== KPI GRID MOBILE ===== */
