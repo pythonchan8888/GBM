@@ -407,10 +407,13 @@
     min-height: 350px; /* Adequate mobile height */
   }
 
-  .heatmap-grid {
+  /* Force override JavaScript-generated inline styles */
+  #roi-heatmap .heatmap-grid,
+  .heatmap-chart .heatmap-grid,
+  .chart-container .heatmap-grid {
     /* Stack heatmap cells vertically on mobile for better readability */
-    grid-template-columns: 1fr;
-    gap: var(--space-sm);
+    grid-template-columns: 1fr !important;
+    gap: var(--space-sm) !important;
   }
 
   .heatmap-cell {
@@ -438,11 +441,14 @@
   }
 
   /* Create a mobile-specific layout structure for heatmap cells */
-  .heatmap-cell {
+  #roi-heatmap .heatmap-cell,
+  .heatmap-chart .heatmap-cell,
+  .chart-container .heatmap-cell {
     display: flex !important; /* Override desktop column layout */
     flex-direction: row !important;
     justify-content: space-between !important;
     align-items: center !important;
+    text-align: left !important; /* Override center alignment for horizontal layout */
   }
 
   .heatmap-value {
