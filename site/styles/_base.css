@@ -126,6 +126,11 @@ body {
   100% { transform: rotate(360deg); }
 }
 
+/* Page-Specific Filter Handling */
+body.page-overview .filter-bar {
+  display: none !important;
+}
+
 /* Footer */
 .footer {
   background: var(--panel);

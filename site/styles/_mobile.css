@@ -106,20 +106,24 @@
      padding: 0 var(--space-lg);
   }
   
+  /* Default mobile state (when at the top of the page) */
   .brand-crown {
-    height: 24px; /* Mobile crown size */
+    width: 28px;
+    height: 28px;
   }
 
   .brand-text {
-    height: 28px; /* Mobile text size */
+    width: 100px;
   }
 
+  /* Shrunk mobile state (when scrolled) - Keep compact */
   .nav-container.shrunk .brand-crown {
-    height: 20px; /* Shrunk crown */
+    width: 24px;
+    height: 24px;
   }
 
   .nav-container.shrunk .brand-text {
-    height: 24px; /* Shrunk text */
+    width: 90px;
   }
 
   .brand-logo {
@@ -391,6 +395,21 @@
     line-height: 1.3;
   }
 
+  /* ===== ROI HEATMAP MOBILE OPTIMIZATIONS ===== */
+  .heatmap-cell {
+    /* Tighter padding on mobile */
+    padding: var(--space-md);
+  }
+
+  .heatmap-value {
+    /* Slightly smaller font size for the main value */
+    font-size: var(--font-size-lg);
+  }
+
+  .heatmap-meta {
+    font-size: var(--font-size-xs);
+  }
+
   /* ===== FOOTER MOBILE ===== */
   .footer-content {
     flex-direction: column;
@@ -413,6 +432,14 @@
     .kpi-value,
     .kpi-card.hero-card .kpi-value {
         font-size: var(--font-size-xl);
+    }
+}
+
+/* Adjustment for very small screens - Single column heatmap */
+@media (max-width: 400px) {
+    .heatmap-grid {
+        /* Switch to a single column layout for maximum clarity */
+        grid-template-columns: 1fr;
     }
 }
 

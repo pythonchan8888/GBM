@@ -283,6 +283,18 @@ small i,
   fill: none;
 }
 
+/* Icons in action buttons */
+.action-btn i {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  margin-right: var(--space-xs);
+}
+
 /* Game Hints - More Subtle */
 .game-hint {
   opacity: 0.9;

@@ -92,7 +92,8 @@
 
 .heatmap-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  /* Decreased minimum width for better mobile responsiveness */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: var(--space-md);
   margin-top: var(--space-lg);
 }
@@ -107,6 +108,11 @@
   transition: var(--transition-fast);
   position: relative;
   overflow: hidden;
+  /* Ensure consistent internal alignment using flexbox */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .heatmap-cell:hover {
@@ -135,6 +141,9 @@
   color: var(--text-tertiary);
   font-size: var(--font-size-sm);
   line-height: 1.4;
+  /* Allow wrapping for long names or descriptions */
+  white-space: normal; 
+  word-wrap: break-word;
 }
 
 /* Heatmap Color Coding */
