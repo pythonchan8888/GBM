@@ -81,15 +81,17 @@
 
 .chart-container {
   position: relative;
-  height: 360px;
+  height: 600px; /* Increased from 360px for better heatmap visibility */
   margin-top: var(--space-md);
 }
 
-/* ===== ROI HEATMAP STYLING ===== */
+/* Specific height for heatmap container */
 .heatmap-chart {
   width: 100%;
+  min-height: 500px; /* Ensure adequate height for data visualization */
 }
 
+/* ===== ROI HEATMAP STYLING ===== */
 .heatmap-grid {
   display: grid;
   /* Decreased minimum width for better mobile responsiveness */
@@ -102,7 +104,7 @@
   background: var(--panel-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: var(--space-lg);
+  padding: var(--space-xl); /* Increased from lg to xl for more breathing room */
   text-align: center;
   box-shadow: var(--shadow-sm);
   transition: var(--transition-fast);
@@ -113,6 +115,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  min-height: 120px; /* Ensure adequate height for readability */
 }
 
 .heatmap-cell:hover {

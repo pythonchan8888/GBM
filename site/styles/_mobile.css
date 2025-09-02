@@ -399,18 +399,62 @@
   }
 
   /* ===== ROI HEATMAP MOBILE OPTIMIZATIONS ===== */
+  .chart-container {
+    height: 400px; /* Reduced from 600px but still generous for mobile */
+  }
+
+  .heatmap-chart {
+    min-height: 350px; /* Adequate mobile height */
+  }
+
+  .heatmap-grid {
+    /* Stack heatmap cells vertically on mobile for better readability */
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+
   .heatmap-cell {
-    /* Tighter padding on mobile */
+    /* Reduced padding for compact mobile layout */
     padding: var(--space-md);
+    min-height: 60px; /* Compact height since they're stacked */
+    /* Horizontal layout for mobile cells */
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
   }
 
   .heatmap-value {
     /* Slightly smaller font size for the main value */
     font-size: var(--font-size-lg);
+    margin-bottom: 0; /* Remove bottom margin in horizontal layout */
   }
 
   .heatmap-meta {
     font-size: var(--font-size-xs);
+    line-height: 1.2; /* Tighter line height for mobile */
+    text-align: right; /* Right-align metadata in horizontal layout */
+    flex-shrink: 0; /* Prevent metadata from shrinking */
+  }
+
+  /* Create a mobile-specific layout structure for heatmap cells */
+  .heatmap-cell {
+    display: flex !important; /* Override desktop column layout */
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+
+  .heatmap-value {
+    /* Left side: ROI percentage */
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+
+  .heatmap-meta {
+    /* Right side: Line and bet count */
+    flex-shrink: 0;
+    text-align: right;
   }
 
   /* ===== SMALL TEXT ICONS MOBILE ===== */
