@@ -12,8 +12,7 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
-  /* FIX: Ensure html element takes full viewport height */
-  height: 100%;
+  /* REMOVED: height: 100% - using vh/dvh on body for robustness */
 }
 
 body {
@@ -31,7 +30,12 @@ body {
   /* FIX: Implement Flexbox Layout for robust vertical spacing */
   display: flex;
   flex-direction: column;
-  min-height: 100%; /* Ensure it covers the viewport height */
+  
+  /* FIX: Use 100vh/100dvh for robust mobile full-height */
+  min-height: 100vh;
+  
+  /* Modern approach using dynamic viewport height (dvh) where supported */
+  min-height: 100dvh;
 }
 
 /* Hero Background */
@@ -148,7 +152,9 @@ body.page-overview .filter-bar,
 .footer {
   background: var(--panel);
   border-top: 1px solid var(--border);
-  margin-top: var(--space-4xl);
+  
+  /* CRITICAL FIX: Remove margin-top - spacing handled by main-container padding */
+  margin-top: 0;
   
   /* FIX: Ensure the footer doesn't shrink */
   flex-shrink: 0;
