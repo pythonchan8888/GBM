@@ -546,10 +546,88 @@ class ParlayKing {
             this.updateUI(); 
         });
 
+        // Initialize recommendations page specific features
+        this.initRecommendationsPage();
+
         // Initialize mobile drawer if needed
         if (window.innerWidth <= 768) {
             this.initFiltersDrawer();
         }
+    }
+
+    // Recommendations page initialization
+    initRecommendationsPage() {
+        // Set defaults for filters that no longer have UI controls
+        this.setDefaultFiltersForRecommendations();
+        
+        // Initialize the new EV Slider interaction
+        this.initEvSlider();
+        
+        // Setup the League filter interaction
+        this.setupLeagueFilter('league-filter-recs');
+    }
+
+    setDefaultFiltersForRecommendations() {
+        // Enforce the default Date Range (7 days) as the UI control is removed
+        this.uiState.activeFilters.dateRange = '7'; 
+        // Enforce 'all' Confidence as the UI control is removed
+        this.uiState.activeFilters.confidence = 'all';
+    }
+    
+    setupLeagueFilter(elementId) {
+        const leagueFilter = document.getElementById(elementId);
+        if (leagueFilter) {
+            leagueFilter.addEventListener('change', (e) => {
+                this.uiState.activeFilters.league = e.target.value;
+                this.updateUI();
+            });
+        }
+    }
+
+    initEvSlider() {
+        const slider = document.getElementById('min-ev-slider');
+        const valueDisplay = document.getElementById('min-ev-value');
+        const presets = document.querySelectorAll('.slider-presets button');
+
+        if (!slider || !valueDisplay) return;
+
+        // Function to update the display and internal state
+        const updateDisplay = (value) => {
+            const formattedValue = parseFloat(value).toFixed(1);
+            slider.value = value;
+            valueDisplay.textContent = `${formattedValue}%`;
+            this.uiState.activeFilters.minEV = parseFloat(value);
+            
+            // Update active preset button highlight
+            presets.forEach(btn => {
+                btn.classList.toggle('active', Math.abs(parseFloat(btn.dataset.value) - parseFloat(value)) < 0.1);
+            });
+        };
+
+        // Function to trigger the UI update (filter the list)
+        const applyFilter = () => {
+            this.updateUI();
+        };
+
+        // Initialize display with the current value
+        const initialValue = this.uiState.activeFilters.minEV || 0;
+        updateDisplay(initialValue);
+
+        // 'input' event: Real-time update while sliding
+        slider.addEventListener('input', (e) => {
+            updateDisplay(e.target.value);
+        });
+
+        // 'change' event: Trigger the actual UI update after sliding
+        slider.addEventListener('change', applyFilter);
+
+        // Event listeners for preset buttons
+        presets.forEach(button => {
+            button.addEventListener('click', () => {
+                updateDisplay(button.dataset.value);
+                applyFilter(); // Apply immediately when a preset is clicked
+            });
+        });
     }
 
     initFiltersDrawer() {

@@ -1,0 +1,182 @@
+/* =================================================================== */
+/* SIMPLIFIED FILTER BAR & CRYPTO-STYLE EV SLIDER                      */
+/* =================================================================== */
+
+/* --- Simplified Layout --- */
+.filter-bar--simplified {
+    padding-top: var(--space-sm);
+    padding-bottom: var(--space-sm);
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+}
+
+.filter-bar--simplified .filter-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  flex-wrap: nowrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-xl);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.filter-group label {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.filter-group--league {
+  flex-shrink: 0;
+  width: 180px; /* Fixed width for the league dropdown */
+}
+
+.filter-group--slider {
+  flex-grow: 1; /* Allow slider to take remaining space */
+  max-width: 400px; /* Constrain width on large desktops */
+}
+
+/* --- EV Slider Styling (Crypto Exchange Style) --- */
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+#min-ev-value {
+  font-weight: 600;
+  color: var(--primary);
+  font-family: var(--font-mono); /* Monospaced font for clear number display */
+  font-size: var(--font-size-sm);
+}
+
+/* Modern Slider Track (Cross-browser) */
+.filter-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: var(--panel-elevated); /* Track color */
+  border-radius: 999px; /* Full rounded track */
+  outline: none;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.filter-slider:hover {
+  border-color: var(--primary);
+}
+
+/* Modern Slider Thumb (Chrome/Safari/Edge) */
+.filter-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--primary);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  cursor: pointer;
+}
+
+/* Modern Slider Thumb (Firefox) */
+.filter-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--primary);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  border: none;
+  cursor: pointer;
+}
+
+/* Active/Hover state */
+.filter-slider:active::-webkit-slider-thumb,
+.filter-slider:hover::-webkit-slider-thumb {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(230, 126, 34, 0.5); /* Primary color glow */
+}
+
+.filter-slider:active::-moz-range-thumb,
+.filter-slider:hover::-moz-range-thumb {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(230, 126, 34, 0.5);
+}
+
+/* Slider Presets (Crypto-style buttons) */
+.slider-presets {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-sm);
+  gap: var(--space-xs);
+}
+
+.slider-presets button {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-tertiary);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  transition: var(--transition-fast);
+  flex: 1;
+  text-align: center;
+}
+
+.slider-presets button:hover {
+  background: var(--panel-elevated);
+  color: var(--text);
+  border-color: var(--primary);
+}
+
+.slider-presets button.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(230, 126, 34, 0.3);
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  .filter-bar--simplified .filter-content {
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    align-items: stretch;
+  }
+
+  .filter-group--league {
+    width: 100%; /* Full width on mobile */
+  }
+
+  .filter-group--slider {
+    width: 100%;
+    max-width: none;
+  }
+
+  .filter-group label, #min-ev-value {
+    font-size: var(--font-size-xs);
+  }
+
+  .slider-presets {
+    gap: var(--space-xs);
+  }
+
+  .slider-presets button {
+    font-size: var(--font-size-xs);
+    padding: var(--space-xs);
+  }
+}
