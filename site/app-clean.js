@@ -9,19 +9,39 @@ class FilterManager {
 
     applyFilters(items, type = 'games') {
         return items
-            .filter(item => this.matchesDateRange(item, this.filters.dateRange))
+            .filter(item => this.matchesDateRange(item, this.filters.dateRange, type))
             .filter(item => this.matchesLeague(item, this.filters.league))
             .filter(item => this.matchesMinEV(item, this.filters.minEV, type))
             .filter(item => this.matchesConfidence(item, this.filters.confidence));
     }
 
-    matchesDateRange(item, range) {
+    matchesDateRange(item, range, type = 'games') {
         if (range === 'all') return true;
+        
         const now = new Date();
-        const itemDate = item.datetime || new Date();
+        const itemDate = item.datetime;
+        if (!itemDate) return false;
+
         const days = parseInt(range);
-        const diffDays = (itemDate - now) / (1000 * 60 * 60 * 24);
-        return Math.abs(diffDays) <= days;
+        
+        // Calculate difference relative to 'now'
+        const diffMs = itemDate.getTime() - now.getTime();
+        const diffDays = diffMs / (1000 * 60 * 60 * 24);
+
+        if (type === 'recommendations') {
+            // Context: Recommendations (Live Picks) - FUTURE ONLY
+            
+            // Define a buffer for games that might have just started (e.g., 30 minutes ago)
+            const bufferMinutes = 30;
+            const bufferDays = bufferMinutes / (24 * 60);
+
+            // Must be upcoming (diffDays >= -bufferDays) AND within the range (diffDays <= days)
+            return diffDays >= -bufferDays && diffDays <= days;
+        } else {
+            // Context: Overview/Games/Analytics (Default) - Historical or upcoming
+            // (The original logic for other pages, using Math.abs)
+            return Math.abs(diffDays) <= days;
+        }
     }
 
     matchesLeague(item, league) {
@@ -313,17 +333,33 @@ class ParlayKing {
 
     async loadAllData() {
         try {
-            const [metrics, recommendations, unifiedGames] = await Promise.all([
+            // FIX: Load all required data files concurrently, including analytics data
+            const [
+                metrics, 
+                recommendations, 
+                unifiedGames,
+                roiHeatmapData, // ADDED
+                topSegmentsData, // ADDED
+                parlayWinsData // ADDED
+            ] = await Promise.all([
                 this.loadCSV('metrics.csv').catch(() => []),
                 this.loadCSV('latest_recommendations.csv').catch(() => []),
-                this.loadCSV('unified_games.csv').catch(() => [])
+                this.loadCSV('unified_games.csv').catch(() => []),
+                // Add the missing analytics data sources
+                this.loadCSV('roi_heatmap.csv').catch(() => []), // ADDED
+                this.loadCSV('top_segments.csv').catch(() => []), // ADDED
+                this.loadCSV('parlay_wins.csv').catch(() => []) // ADDED
             ]);
 
             this.data = {
                 ...this.data,
                 metrics: this.parseMetrics(metrics || []),
                 recommendations: this.parseRecommendations(recommendations || []),
-                unifiedGames: this.parseUnifiedGames(unifiedGames || [])
+                unifiedGames: this.parseUnifiedGames(unifiedGames || []),
+                // FIX: Assign the new data using dedicated parsers
+                roiHeatmap: this.parseRoiHeatmap(roiHeatmapData || []), // ADDED
+                topSegments: this.parseTopSegments(topSegmentsData || []), // ADDED
+                parlayWins: this.parseParlayWins(parlayWinsData || []) // ADDED
             };
 
             this.populateFilterOptions();
@@ -331,7 +367,10 @@ class ParlayKing {
             console.log('Data loaded successfully:', {
                 metrics: Object.keys(this.data.metrics).length,
                 recommendations: this.data.recommendations.length,
-                unifiedGames: this.data.unifiedGames.length
+                unifiedGames: this.data.unifiedGames.length,
+                roiHeatmap: this.data.roiHeatmap.length,
+                topSegments: this.data.topSegments.length,
+                parlayWins: this.data.parlayWins.length
             });
 
         } catch (error) {
@@ -457,6 +496,34 @@ class ParlayKing {
             isPk: homeLine === 0 && awayLine === 0,
             hasAhData: true // Always show chips, even if PK
         };
+    }
+
+    // Add these parsing methods for analytics data
+    parseRoiHeatmap(rawData) {
+        if (!Array.isArray(rawData)) return [];
+        return rawData.map(item => ({
+            // Adjust keys based on your actual CSV structure
+            segment: item.segment || `${item.league} (${item.confidence})`,
+            roi: parseFloat(item.roi) || 0,
+            count: parseInt(item.count) || 0
+        })).filter(item => item.count > 0);
+    }
+
+    parseTopSegments(rawData) {
+        if (!Array.isArray(rawData)) return [];
+        return rawData.map(item => ({
+            // Adjust keys based on your actual CSV structure
+            segment: item.segment || `${item.league} - ${item.confidence}`,
+            roi: parseFloat(item.roi) || 0,
+            avg_odds: parseFloat(item.avg_odds) || 0,
+            count: parseInt(item.count) || 0
+        })).filter(item => item.count > 0);
+    }
+    
+    parseParlayWins(rawWins) {
+        if (!Array.isArray(rawWins)) return [];
+        // Basic parsing/validation logic
+        return rawWins.filter(w => w && w.date && w.payout);
     }
 
     // Essential utility methods
@@ -829,7 +896,7 @@ class ParlayKing {
                               rec.confidence === 'Medium' ? '<i data-feather="star"></i>' : '<i data-feather="circle"></i>';
         
         return `
-            <div class="recommendation-card">
+            <div class="rec-card">
                 <div class="rec-header">
                     <div class="rec-time">${timeDisplay}</div>
                     <div class="rec-confidence" title="${rec.confidence}">${confidenceIcon}</div>
