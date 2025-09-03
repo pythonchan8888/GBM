@@ -587,29 +587,38 @@ class ParlayKing {
     initEvSlider() {
         const slider = document.getElementById('min-ev-slider');
         const valueDisplay = document.getElementById('min-ev-value');
-        const presets = document.querySelectorAll('.slider-presets button');
+        // FIX: Select the new interactive labels instead of the old presets
+        const labels = document.querySelectorAll('.slider-labels .slider-label');
 
         if (!slider || !valueDisplay) return;
 
         // Function to update the display and internal state
         const updateDisplay = (value) => {
-            const formattedValue = parseFloat(value).toFixed(0); // Whole numbers for 0-50% range
-            slider.value = value;
-            valueDisplay.textContent = `${formattedValue}%`;
-            this.uiState.activeFilters.minEV = parseFloat(value);
+            const floatValue = parseFloat(value);
+            const formattedValue = floatValue.toFixed(0); // Whole numbers for 0-50% range
             
-            // Update orange progress line using CSS variable
-            const progressPercent = (parseFloat(value) / 50) * 100; // Convert to 0-100% for CSS
+            // Update slider value (Crucial for Firefox progress bar)
+            slider.value = value; 
+            
+            valueDisplay.textContent = `${formattedValue}%`;
+            this.uiState.activeFilters.minEV = floatValue;
+            
+            // Update orange progress line using CSS variable (Crucial for WebKit/Blink)
+            const progressPercent = (floatValue / 50) * 100; // Convert to 0-100% for CSS
             slider.style.setProperty('--slider-progress', `${progressPercent}%`);
             
-            // Update active preset button highlight
-            presets.forEach(btn => {
-                btn.classList.toggle('active', Math.abs(parseFloat(btn.dataset.value) - parseFloat(value)) < 1);
+            // FIX: Update active label highlighting
+            labels.forEach(label => {
+                const labelValue = parseFloat(label.dataset.value);
+                // Highlight if the label value is less than or equal to the current slider value
+                label.classList.toggle('active', labelValue <= floatValue);
             });
         };
 
         // Function to trigger the UI update (filter the list)
         const applyFilter = () => {
+            // We call updateUI() which handles rendering across different pages.
+            // If on the recommendations page, ensure updateUI() calls renderRecommendations() if needed.
             this.updateUI();
         };
 
@@ -617,19 +626,19 @@ class ParlayKing {
         const initialValue = this.uiState.activeFilters.minEV || 0;
         updateDisplay(initialValue);
 
-        // 'input' event: Real-time update while sliding
+        // 'input' event: Real-time update while sliding (updates display and progress line)
         slider.addEventListener('input', (e) => {
             updateDisplay(e.target.value);
         });
 
-        // 'change' event: Trigger the actual UI update after sliding
+        // 'change' event: Trigger the actual UI update after sliding (Performance optimization)
         slider.addEventListener('change', applyFilter);
 
-        // Event listeners for preset buttons
-        presets.forEach(button => {
-            button.addEventListener('click', () => {
-                updateDisplay(button.dataset.value);
-                applyFilter(); // Apply immediately when a preset is clicked
+        // FIX: Event listeners for clicking the labels (restores preset functionality)
+        labels.forEach(label => {
+            label.addEventListener('click', () => {
+                updateDisplay(label.dataset.value);
+                applyFilter(); // Apply immediately when a label is clicked
             });
         });
     }

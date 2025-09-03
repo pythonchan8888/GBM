@@ -59,28 +59,21 @@
   font-size: var(--font-size-sm);
 }
 
-/* Modern Slider Track with Progress Line */
+/* Modern Slider Track with Robust Progress Line (Cross-Browser) */
 .filter-slider {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
   height: 8px;
-  background: var(--panel-elevated); /* Track color */
-  border-radius: 999px; /* Full rounded track */
+  border-radius: 999px;
   outline: none;
-  border: 1px solid var(--border);
   cursor: pointer;
   transition: var(--transition-fast);
   position: relative;
-}
+  border: none; /* Remove any conflicting borders */
 
-.filter-slider:hover {
-  border-color: var(--primary);
-}
-
-/* Orange Progress Line (Webkit browsers) */
-.filter-slider::-webkit-slider-runnable-track {
-  height: 8px;
+  /* FIX (WebKit/Blink): Apply the gradient directly to the input element */
+  /* This relies on the --slider-progress variable set by JavaScript */
   background: linear-gradient(
     to right,
     var(--primary) 0%,
@@ -88,22 +81,21 @@
     var(--panel-elevated) var(--slider-progress, 0%),
     var(--panel-elevated) 100%
   );
-  border-radius: 999px;
-  border: 1px solid var(--border);
 }
 
-/* Firefox Progress Line */
+/* FIX (Firefox): Define track and progress for native handling */
+/* Firefox relies on the input's 'value' attribute, not the CSS variable */
 .filter-slider::-moz-range-track {
+  width: 100%;
   height: 8px;
-  background: linear-gradient(
-    to right,
-    var(--primary) 0%,
-    var(--primary) var(--slider-progress, 0%),
-    var(--panel-elevated) var(--slider-progress, 0%),
-    var(--panel-elevated) 100%
-  );
+  background: var(--panel-elevated);
   border-radius: 999px;
-  border: 1px solid var(--border);
+}
+
+.filter-slider::-moz-range-progress {
+  height: 8px;
+  background: var(--primary);
+  border-radius: 999px;
 }
 
 /* Modern Slider Thumb (Chrome/Safari/Edge) */
@@ -117,6 +109,9 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   transition: transform 0.1s ease, box-shadow 0.1s ease;
   cursor: pointer;
+  /* CRITICAL FIX: Center the thumb vertically on the track in WebKit */
+  /* (Thumb height (20) - Track height (8)) / 2 = 6px offset */
+  margin-top: -6px; 
 }
 
 /* Modern Slider Thumb (Firefox) */
@@ -144,39 +139,49 @@
     box-shadow: 0 0 15px rgba(230, 126, 34, 0.5);
 }
 
-/* Slider Presets (Crypto-style buttons) */
-.slider-presets {
+/* Slider Labels/Tick Marks (Replaces Slider Presets Buttons) */
+.slider-labels {
   display: flex;
   justify-content: space-between;
   margin-top: var(--space-sm);
-  gap: var(--space-xs);
+  /* Padding aligns labels with track edges, accounting for thumb radius (10px) */
+  padding: 0 10px; 
 }
 
-.slider-presets button {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-tertiary);
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
+.slider-label {
   font-size: var(--font-size-xs);
-  font-weight: 500;
-  transition: var(--transition-fast);
-  flex: 1;
+  color: var(--text-tertiary);
   text-align: center;
+  position: relative;
+  cursor: pointer; /* Make labels clickable */
+  transition: color 0.2s ease;
+  user-select: none; /* Prevent text selection when interacting */
 }
 
-.slider-presets button:hover {
-  background: var(--panel-elevated);
-  color: var(--text);
-  border-color: var(--primary);
+/* Add subtle visual tick marks (the sub-lines) above the labels */
+.slider-label::before {
+  content: '';
+  position: absolute;
+  top: -8px; /* Position above the label, just below the track */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 4px;
+  background: var(--border);
+  transition: background 0.2s ease;
 }
 
-.slider-presets button.active {
+.slider-label:hover {
+    color: var(--text);
+}
+
+/* Highlight labels that are less than or equal to the current value (Crypto style) */
+.slider-label.active {
+  color: var(--primary);
+  font-weight: 600;
+}
+.slider-label.active::before {
     background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-    box-shadow: 0 2px 8px rgba(230, 126, 34, 0.3);
 }
 
 /* Mobile Optimization */
@@ -201,12 +206,11 @@
     font-size: var(--font-size-xs);
   }
 
-  .slider-presets {
-    gap: var(--space-xs);
+  .slider-labels {
+    padding: 0 10px; /* Maintain consistent padding on mobile */
   }
 
-  .slider-presets button {
+  .slider-label {
     font-size: var(--font-size-xs);
-    padding: var(--space-xs);
   }
 }
