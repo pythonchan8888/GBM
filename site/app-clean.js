@@ -11,7 +11,7 @@ class FilterManager {
         return items
             .filter(item => this.matchesDateRange(item, this.filters.dateRange))
             .filter(item => this.matchesLeague(item, this.filters.league))
-            .filter(item => this.matchesMinEV(item, this.filters.minEV))
+            .filter(item => this.matchesMinEV(item, this.filters.minEV, type))
             .filter(item => this.matchesConfidence(item, this.filters.confidence));
     }
 
@@ -28,9 +28,23 @@ class FilterManager {
         return league === 'all' || item.league === league;
     }
 
-    matchesMinEV(item, minEV) {
-        if (!item.hasRecommendation || !item.ev) return true;
-        return (item.ev * 100) >= minEV;
+    matchesMinEV(item, minEV, type = 'games') {
+        if (type === 'recommendations') {
+            // Context: Recommendations Page. All items are recommendations.
+            // We must check the EV value directly. 
+            // Handle missing data robustly (null/undefined).
+            if (item.ev === null || item.ev === undefined) return false; 
+            return (item.ev * 100) >= minEV;
+
+        } else {
+            // Context: Overview/Games Page (Default).
+            // If it's just a game without a recommendation, show it (default behavior).
+            if (!item.hasRecommendation) return true;
+            
+            // If it has a recommendation, check the EV.
+            if (item.ev === null || item.ev === undefined) return true;
+            return (item.ev * 100) >= minEV;
+        }
     }
 
     matchesConfidence(item, confidence) {
@@ -705,6 +719,7 @@ class ParlayKing {
     updateUI() {
         this.updateKPIs();
         this.renderUnifiedSchedule();
+        this.renderRecommendations(); // Add recommendations rendering
         this.updateLastRunStatus();
         
         // Initialize Feather icons after DOM updates
@@ -771,6 +786,69 @@ class ParlayKing {
         } catch (error) {
             console.error('Error rendering schedule:', error);
         }
+    }
+
+    renderRecommendations() {
+        try {
+            const container = document.getElementById('recommendations-cards');
+            if (!container) {
+                // Not on recommendations page, skip
+                return;
+            }
+
+            if (!this.data.recommendations || this.data.recommendations.length === 0) {
+                container.innerHTML = '<div class="no-recommendations">No recommendations available.</div>';
+                return;
+            }
+
+            // CRITICAL FIX: Apply filters using the correct type 'recommendations'
+            const filteredRecs = this.filterManager.applyFilters(this.data.recommendations, 'recommendations');
+            
+            if (filteredRecs.length === 0) {
+                container.innerHTML = '<div class="no-recommendations">No recommendations match your filters.</div>';
+                return;
+            }
+
+            // Render recommendation cards
+            container.innerHTML = filteredRecs.map(rec => this.renderRecommendationCard(rec)).join('');
+            
+        } catch (error) {
+            console.error('Error rendering recommendations:', error);
+        }
+    }
+
+    renderRecommendationCard(rec) {
+        const timeDisplay = rec.datetime ? rec.datetime.toLocaleTimeString('en-GB', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: false 
+        }) : '--:--';
+        
+        const evDisplay = rec.ev ? `+${(rec.ev * 100).toFixed(1)}%` : '--';
+        const confidenceIcon = rec.confidence === 'High' ? '<i data-feather="award"></i>' : 
+                              rec.confidence === 'Medium' ? '<i data-feather="star"></i>' : '<i data-feather="circle"></i>';
+        
+        return `
+            <div class="recommendation-card">
+                <div class="rec-header">
+                    <div class="rec-time">${timeDisplay}</div>
+                    <div class="rec-confidence" title="${rec.confidence}">${confidenceIcon}</div>
+                </div>
+                <div class="rec-matchup">
+                    <h4>${rec.home} vs ${rec.away}</h4>
+                    <div class="rec-league">${rec.league}</div>
+                </div>
+                <div class="rec-pick">
+                    <div class="pick-text">${rec.recommendation}</div>
+                    <div class="pick-odds">@ ${rec.odds.toFixed(2)}</div>
+                </div>
+                <div class="rec-footer">
+                    <div class="ev-badge">EV ${evDisplay}</div>
+                    ${rec.kingsCall ? `<button class="show-analysis-btn" onclick="this.nextElementSibling.classList.toggle('hidden')">Analysis</button>
+                    <div class="analysis-content hidden">${rec.kingsCall}</div>` : ''}
+                </div>
+            </div>
+        `;
     }
 
     getFilteredGamesByDay() {

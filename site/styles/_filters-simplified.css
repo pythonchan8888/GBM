@@ -70,32 +70,46 @@
   cursor: pointer;
   transition: var(--transition-fast);
   position: relative;
-  border: none; /* Remove any conflicting borders */
-
-  /* FIX (WebKit/Blink): Apply the gradient directly to the input element */
-  /* This relies on the --slider-progress variable set by JavaScript */
-  background: linear-gradient(
-    to right,
-    var(--primary) 0%,
-    var(--primary) var(--slider-progress, 0%),
-    var(--panel-elevated) var(--slider-progress, 0%),
-    var(--panel-elevated) 100%
-  );
+  background: var(--panel-elevated);
+  border: 1px solid var(--border);
 }
 
-/* FIX (Firefox): Define track and progress for native handling */
-/* Firefox relies on the input's 'value' attribute, not the CSS variable */
+/* WebKit browsers - remove default track styling */
+.filter-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  background: transparent;
+  border-radius: 999px;
+}
+
+/* Firefox track */
 .filter-slider::-moz-range-track {
   width: 100%;
   height: 8px;
   background: var(--panel-elevated);
   border-radius: 999px;
+  border: 1px solid var(--border);
 }
 
+/* Firefox progress (built-in feature) */
 .filter-slider::-moz-range-progress {
   height: 8px;
   background: var(--primary);
   border-radius: 999px;
+}
+
+/* Create progress overlay using ::before pseudo-element */
+.filter-slider::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 999px;
+  width: var(--slider-progress, 0%);
+  pointer-events: none;
+  transition: width 0.1s ease;
 }
 
 /* Modern Slider Thumb (Chrome/Safari/Edge) */
