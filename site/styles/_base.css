@@ -12,6 +12,8 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  /* FIX: Ensure html element takes full viewport height */
+  height: 100%;
 }
 
 body {
@@ -25,6 +27,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: -0.01em;
   overflow-x: hidden;
+  
+  /* FIX: Implement Flexbox Layout for robust vertical spacing */
+  display: flex;
+  flex-direction: column;
+  min-height: 100%; /* Ensure it covers the viewport height */
 }
 
 /* Hero Background */
@@ -75,6 +82,11 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--space-3xl);
+  
+  /* FIX: Allow the main content area to grow and fill available space */
+  flex: 1 0 auto;
+  /* Ensure it takes full width within the body flex container */
+  width: 100%;
 }
 
 /* Utility Classes */
@@ -137,6 +149,9 @@ body.page-overview .filter-bar,
   background: var(--panel);
   border-top: 1px solid var(--border);
   margin-top: var(--space-4xl);
+  
+  /* FIX: Ensure the footer doesn't shrink */
+  flex-shrink: 0;
 }
 
 .footer-content {

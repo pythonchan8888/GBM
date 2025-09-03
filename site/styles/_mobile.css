@@ -405,11 +405,24 @@
 
   /* ===== ROI HEATMAP MOBILE OPTIMIZATIONS ===== */
   .chart-container {
-    height: 400px; /* Reduced from 600px but still generous for mobile */
+    /* FIX: Use max-height and allow height to adjust if content is less */
+    /* Use 60vh (60% of viewport height) as reasonable maximum before scrolling */
+    max-height: 60vh;
+    height: auto;
+
+    /* CRITICAL FIX: Enable vertical scrolling when content overflows */
+    overflow-y: auto;
+    
+    /* Improve scrolling smoothness on iOS devices */
+    -webkit-overflow-scrolling: touch;
+
+    /* Optional: Add slight padding for the scrollbar area */
+    padding-right: var(--space-xs);
   }
 
   .heatmap-chart {
-    min-height: 350px; /* Adequate mobile height */
+    /* Let content dictate height */
+    min-height: auto;
   }
 
   /* Force override JavaScript-generated inline styles */
