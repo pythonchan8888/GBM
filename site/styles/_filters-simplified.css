@@ -5,9 +5,10 @@
 /* --- Simplified Layout --- */
 .filter-bar--simplified {
     padding-top: var(--space-sm);
-    padding-bottom: var(--space-sm);
+    padding-bottom: var(--space-lg); /* Increased bottom padding for more space before Live Picks */
     background: var(--panel);
     border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-lg); /* Add margin for extra separation */
 }
 
 .filter-bar--simplified .filter-content {
@@ -58,7 +59,7 @@
   font-size: var(--font-size-sm);
 }
 
-/* Modern Slider Track (Cross-browser) */
+/* Modern Slider Track with Progress Line */
 .filter-slider {
   -webkit-appearance: none;
   appearance: none;
@@ -70,10 +71,39 @@
   border: 1px solid var(--border);
   cursor: pointer;
   transition: var(--transition-fast);
+  position: relative;
 }
 
 .filter-slider:hover {
   border-color: var(--primary);
+}
+
+/* Orange Progress Line (Webkit browsers) */
+.filter-slider::-webkit-slider-runnable-track {
+  height: 8px;
+  background: linear-gradient(
+    to right,
+    var(--primary) 0%,
+    var(--primary) var(--slider-progress, 0%),
+    var(--panel-elevated) var(--slider-progress, 0%),
+    var(--panel-elevated) 100%
+  );
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+
+/* Firefox Progress Line */
+.filter-slider::-moz-range-track {
+  height: 8px;
+  background: linear-gradient(
+    to right,
+    var(--primary) 0%,
+    var(--primary) var(--slider-progress, 0%),
+    var(--panel-elevated) var(--slider-progress, 0%),
+    var(--panel-elevated) 100%
+  );
+  border-radius: 999px;
+  border: 1px solid var(--border);
 }
 
 /* Modern Slider Thumb (Chrome/Safari/Edge) */

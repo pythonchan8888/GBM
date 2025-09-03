@@ -372,6 +372,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-xl);
+  margin-top: var(--space-lg); /* Add top margin for separation from filters */
   margin-bottom: var(--space-lg);
   background: var(--gradient-card);
   border: 1px solid var(--border);

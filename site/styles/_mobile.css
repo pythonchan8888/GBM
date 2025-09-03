@@ -25,6 +25,11 @@
   body.page-overview .main-container {
     padding-bottom: calc(56px + var(--space-sm) + env(safe-area-inset-bottom)); /* Minimal padding for Overview */
   }
+
+  /* ===== RECOMMENDATIONS PAGE SPECIFIC - COMFORTABLE BOTTOM PADDING ===== */
+  .main-container {
+    padding-bottom: calc(56px + var(--space-md) + env(safe-area-inset-bottom)); /* Comfortable spacing like Live Picks */
+  }
   
   .unified-schedule-section {
     margin-top: 0;

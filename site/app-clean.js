@@ -593,14 +593,18 @@ class ParlayKing {
 
         // Function to update the display and internal state
         const updateDisplay = (value) => {
-            const formattedValue = parseFloat(value).toFixed(1);
+            const formattedValue = parseFloat(value).toFixed(0); // Whole numbers for 0-50% range
             slider.value = value;
             valueDisplay.textContent = `${formattedValue}%`;
             this.uiState.activeFilters.minEV = parseFloat(value);
             
+            // Update orange progress line using CSS variable
+            const progressPercent = (parseFloat(value) / 50) * 100; // Convert to 0-100% for CSS
+            slider.style.setProperty('--slider-progress', `${progressPercent}%`);
+            
             // Update active preset button highlight
             presets.forEach(btn => {
-                btn.classList.toggle('active', Math.abs(parseFloat(btn.dataset.value) - parseFloat(value)) < 0.1);
+                btn.classList.toggle('active', Math.abs(parseFloat(btn.dataset.value) - parseFloat(value)) < 1);
             });
         };
 
