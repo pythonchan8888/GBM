@@ -502,21 +502,24 @@ class ParlayKing {
     parseRoiHeatmap(rawData) {
         if (!Array.isArray(rawData)) return [];
         return rawData.map(item => ({
-            // Adjust keys based on your actual CSV structure
-            segment: item.segment || `${item.league} (${item.confidence})`,
-            roi: parseFloat(item.roi) || 0,
-            count: parseInt(item.count) || 0
+            // FIX: Use actual CSV column names
+            tier: parseInt(item.tier) || 0,
+            line: parseFloat(item.line) || 0,
+            segment: `Tier ${item.tier} | Line ${item.line > 0 ? '+' : ''}${item.line}`,
+            roi: parseFloat(item.roi_pct) / 100 || 0, // Convert percentage to decimal
+            count: parseInt(item.n) || 0
         })).filter(item => item.count > 0);
     }
 
     parseTopSegments(rawData) {
         if (!Array.isArray(rawData)) return [];
         return rawData.map(item => ({
-            // Adjust keys based on your actual CSV structure
-            segment: item.segment || `${item.league} - ${item.confidence}`,
-            roi: parseFloat(item.roi) || 0,
-            avg_odds: parseFloat(item.avg_odds) || 0,
-            count: parseInt(item.count) || 0
+            // FIX: Use actual CSV column names (same structure as ROI heatmap)
+            tier: parseInt(item.tier) || 0,
+            line: parseFloat(item.line) || 0,
+            segment: `Tier ${item.tier} | Line ${item.line > 0 ? '+' : ''}${item.line}`,
+            roi: parseFloat(item.roi_pct) / 100 || 0, // Convert percentage to decimal
+            count: parseInt(item.n) || 0
         })).filter(item => item.count > 0);
     }
     
@@ -722,8 +725,7 @@ class ParlayKing {
 
         const html = sortedData.map(item => {
             const roiPercent = (item.roi * 100).toFixed(1);
-            // Ensure avg_odds is handled robustly
-            const avgOdds = item.avg_odds ? item.avg_odds.toFixed(2) : 'N/A';
+            const lineDisplay = item.line > 0 ? `+${item.line}` : `${item.line}`;
 
             return `
                 <div class="segment-pill">
@@ -732,7 +734,7 @@ class ParlayKing {
                         <span class="segment-name">${item.segment}</span>
                     </div>
                     <div class="pill-bottom">
-                        <span>Avg Odds: ${avgOdds}</span>
+                        <span>Line: ${lineDisplay}</span>
                         <span>Bets: ${item.count}</span>
                     </div>
                 </div>
