@@ -648,6 +648,145 @@ class ParlayKing {
         this.setupLeagueFilter('league-filter-recs');
     }
 
+    // Analytics page initialization
+    initAnalyticsPage() {
+        console.log("Initializing Analytics Page...");
+        
+        // Render all analytics components
+        this.renderRoiHeatmap();
+        this.renderTopSegments();
+        this.renderParlayWins();
+        
+        // Setup filter interactions specific to the analytics page (if any)
+        this.setupAnalyticsFilters();
+    }
+
+    // Render ROI Heatmap
+    renderRoiHeatmap() {
+        const container = document.getElementById('roi-heatmap');
+        if (!container) return;
+
+        if (!this.data.roiHeatmap || this.data.roiHeatmap.length === 0) {
+            container.innerHTML = '<p class="empty-state">No ROI Heatmap data available.</p>';
+            return;
+        }
+
+        console.log(`Rendering ROI Heatmap with ${this.data.roiHeatmap.length} items.`);
+
+        // Sort data by highest ROI first
+        const sortedData = [...this.data.roiHeatmap].sort((a, b) => b.roi - a.roi);
+
+        const html = sortedData.map(item => {
+            const roiPercent = (item.roi * 100).toFixed(1);
+            
+            // Determine color coding class based on ROI value (using existing CSS classes)
+            let heatClass = 'heat-mid';
+            if (item.roi > 0.05) { // > 5% ROI
+                heatClass = 'heat-pos';
+            } else if (item.roi < -0.05) { // < -5% ROI
+                heatClass = 'heat-neg';
+            }
+
+            return `
+                <div class="heatmap-cell ${heatClass}">
+                    <div class="heatmap-value">${roiPercent}%</div>
+                    <div class="heatmap-meta">
+                        <strong>${item.segment}</strong><br>
+                        <small>Bets: ${item.count}</small>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // Wrap the cells in the grid container
+        container.innerHTML = `<div class="heatmap-grid">${html}</div>`;
+    }
+
+    // Render Top Performing Segments
+    renderTopSegments() {
+        const container = document.getElementById('top-segments-container');
+        if (!container) {
+            console.log('Top segments container not found, skipping...');
+            return;
+        }
+
+        if (!this.data.topSegments || this.data.topSegments.length === 0) {
+            container.innerHTML = '<p class="empty-state">No Top Segments data available.</p>';
+            return;
+        }
+        
+        console.log(`Rendering Top Segments with ${this.data.topSegments.length} items.`);
+
+        // Sort by ROI descending and take top 10
+        const sortedData = [...this.data.topSegments].sort((a, b) => b.roi - a.roi).slice(0, 10);
+
+        const html = sortedData.map(item => {
+            const roiPercent = (item.roi * 100).toFixed(1);
+            // Ensure avg_odds is handled robustly
+            const avgOdds = item.avg_odds ? item.avg_odds.toFixed(2) : 'N/A';
+
+            return `
+                <div class="segment-pill">
+                    <div class="pill-top">
+                        <span class="line-text">${roiPercent}% ROI</span>
+                        <span class="segment-name">${item.segment}</span>
+                    </div>
+                    <div class="pill-bottom">
+                        <span>Avg Odds: ${avgOdds}</span>
+                        <span>Bets: ${item.count}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = `<div class="segments-pills">${html}</div>`;
+    }
+    
+    // Render Parlay Wins
+    renderParlayWins() {
+        const container = document.getElementById('parlay-grid');
+        if (!container) return;
+        
+        if (!this.data.parlayWins || this.data.parlayWins.length === 0) {
+            container.innerHTML = '<p class="empty-state">No parlay wins data available.</p>';
+            return;
+        }
+        
+        console.log(`Rendering Parlay Wins with ${this.data.parlayWins.length} items.`);
+
+        // Update stats in header
+        const totalParlaysEl = document.getElementById('total-parlays');
+        const maxPayoutEl = document.getElementById('max-payout');
+        
+        if (totalParlaysEl) totalParlaysEl.textContent = this.data.parlayWins.length;
+        
+        // Find max payout
+        const maxPayout = Math.max(...this.data.parlayWins.map(w => parseFloat(w.payout) || 0));
+        if (maxPayoutEl) maxPayoutEl.textContent = `$${maxPayout.toFixed(0)}`;
+
+        // Render parlay items
+        const html = this.data.parlayWins.map(win => `
+            <div class="parlay-item">
+                <div class="parlay-date">${win.date}</div>
+                <div class="parlay-payout">$${parseFloat(win.payout).toFixed(0)}</div>
+                <div class="parlay-details">${win.details || 'Multi-leg parlay win'}</div>
+            </div>
+        `).join('');
+
+        container.innerHTML = html;
+    }
+
+    // Setup Analytics Filters
+    setupAnalyticsFilters() {
+        const dateRangeFilter = document.getElementById('date-range-analytics');
+        if (dateRangeFilter) {
+            dateRangeFilter.addEventListener('change', (e) => {
+                this.uiState.activeFilters.dateRange = e.target.value;
+                console.log("Analytics Date Range changed (Note: Dynamic filtering may not be fully supported yet).");
+            });
+        }
+    }
+
     setDefaultFiltersForRecommendations() {
         // Enforce the default Date Range (7 days) as the UI control is removed
         this.uiState.activeFilters.dateRange = '7'; 
