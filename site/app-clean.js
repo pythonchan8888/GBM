@@ -968,7 +968,7 @@ class ParlayKing {
             }
 
             // Add day navigator if not present
-            const scheduleSection = container.closest('.unified-schedule-section');
+            const scheduleSection = container.closest('.schedule');
             if (scheduleSection && !scheduleSection.querySelector('.day-navigator')) {
                 const dayNavHtml = this.dayNavigator.render();
                 scheduleSection.insertAdjacentHTML('afterbegin', dayNavHtml);
