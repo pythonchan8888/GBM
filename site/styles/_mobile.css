@@ -14,11 +14,11 @@
 
   /* ===== MAIN CONTAINER MOBILE ===== */
   .main-container {
-    padding-top: var(--space-sm);
-    padding-left: var(--space-lg);
-    padding-right: var(--space-lg);
-    padding-bottom: calc(56px + var(--space-lg) + env(safe-area-inset-bottom)); /* Reduced from xl to lg */
-    gap: var(--space-2xl);
+    padding-top: var(--space-xs); /* Minimal top padding */
+    padding-left: var(--space-md); /* Reduced side padding */
+    padding-right: var(--space-md); /* Reduced side padding */
+    padding-bottom: calc(56px + var(--space-sm) + env(safe-area-inset-bottom)); /* Minimal bottom padding */
+    gap: var(--space-md); /* Much tighter gap between sections */
   }
 
   /* ===== OVERVIEW PAGE SPECIFIC - MINIMAL BOTTOM PADDING ===== */
@@ -331,18 +331,34 @@
   /* ===== RECOMMENDATIONS CARD VIEW MOBILE (KPI-STYLE) ===== */
   .recommendations-grid {
     grid-template-columns: 1fr;
-    gap: var(--space-md);
-    padding: 0 var(--space-md);
+    gap: var(--space-sm); /* Reduced gap between cards */
+    padding: 0; /* Remove horizontal padding - handled by main-container */
   }
   
   .rec-card {
     /* Match mobile KPI card styling for consistency */
-    padding: var(--space-lg);
-    /* Documented Optimization: 160px minimum height on mobile */
+    padding: var(--space-md) !important; /* Reduced padding */
+    /* Documented Optimization: 140px minimum height on mobile for compactness */
     /* Using !important ensures this overrides potential conflicts from KPI card rules */
-    min-height: 160px !important;
+    min-height: 140px !important;
     border-radius: var(--radius-lg);
-    gap: var(--space-sm); /* Tighter gap on mobile */
+    gap: var(--space-xs); /* Even tighter gap on mobile */
+  }
+
+  /* Reduce margins and padding on mobile for all analytics components */
+  .recommendations-header-card {
+    margin-top: 0 !important;
+    margin-bottom: var(--space-xs) !important;
+    padding: var(--space-md) !important;
+  }
+
+  .chart-section {
+    margin: var(--space-sm) 0 !important;
+  }
+
+  .chart-card {
+    margin: var(--space-sm) 0 !important;
+    padding: var(--space-md) !important;
   }
   
   .card-header {

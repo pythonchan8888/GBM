@@ -371,9 +371,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-xl);
-  margin-top: var(--space-lg); /* Add top margin for separation from filters */
-  margin-bottom: var(--space-lg);
+  padding: var(--space-lg); /* Reduced from xl */
+  margin-top: var(--space-sm); /* Reduced margin */
+  margin-bottom: var(--space-sm); /* Reduced margin */
   background: var(--gradient-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
@@ -390,9 +390,9 @@
 .recommendations-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: var(--space-lg);
-  padding: 0 var(--space-lg);
-  margin-bottom: var(--space-xl);
+  gap: var(--space-md); /* Reduced from lg */
+  padding: 0; /* Remove padding - handled by main container */
+  margin-bottom: var(--space-lg); /* Reduced from xl */
 }
 
 /* Hide View Toggles globally (Safeguard) */
