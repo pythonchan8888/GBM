@@ -4,7 +4,8 @@
 
 /* ===== SCHEDULE SECTION ===== */
 .unified-schedule-section {
-  margin: var(--space-2xl) 0;
+  /* FIX: Remove vertical margins. Spacing is controlled by .main-container gap. */
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
@@ -48,7 +49,8 @@
   background: var(--panel);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  margin: var(--space-md);
+  /* FIX: Remove internal margins. Spacing controlled by parent container. */
+  margin: 0;
 }
 
 .games-list {
