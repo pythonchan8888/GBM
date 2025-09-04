@@ -16,7 +16,8 @@
   padding: var(--space-xl);
   box-shadow: var(--shadow-card);
   backdrop-filter: blur(20px);
-  margin: var(--space-xl) 0;
+  /* FIX: Remove vertical margins. Spacing is controlled by the parent's gap property. */
+  margin: 0;
   transition: var(--transition);
 }
 
@@ -392,7 +393,8 @@
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: var(--space-md); /* Reduced from lg */
   padding: 0; /* Remove padding - handled by main container */
-  margin-bottom: var(--space-lg); /* Reduced from xl */
+  /* FIX: Remove bottom margin. Spacing is controlled by parent gap property. */
+  margin-bottom: 0;
 }
 
 /* Hide View Toggles globally (Safeguard) */

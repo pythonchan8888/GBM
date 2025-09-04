@@ -12,23 +12,21 @@
     opacity: 0.08;
   }
 
-  /* ===== MAIN CONTAINER MOBILE ===== */
+  /* ===== MAIN CONTAINER MOBILE (CONSOLIDATED & FIXED) ===== */
   .main-container {
-    padding-top: var(--space-xs); /* Minimal top padding */
-    padding-left: var(--space-md); /* Reduced side padding */
-    padding-right: var(--space-md); /* Reduced side padding */
-    padding-bottom: calc(56px + var(--space-sm) + env(safe-area-inset-bottom)); /* Minimal bottom padding */
-    gap: var(--space-md); /* Much tighter gap between sections */
-  }
-
-  /* ===== OVERVIEW PAGE SPECIFIC - MINIMAL BOTTOM PADDING ===== */
-  body.page-overview .main-container {
-    padding-bottom: calc(56px + var(--space-sm) + env(safe-area-inset-bottom)); /* Minimal padding for Overview */
-  }
-
-  /* ===== RECOMMENDATIONS PAGE SPECIFIC - COMFORTABLE BOTTOM PADDING ===== */
-  .main-container {
-    padding-bottom: calc(56px + var(--space-md) + env(safe-area-inset-bottom)); /* Comfortable spacing like Live Picks */
+    padding-top: var(--space-xs); /* Minimal top padding (4px) */
+    padding-left: var(--space-md); /* Side padding (16px) */
+    padding-right: var(--space-md); /* Side padding (16px) */
+    
+    /* CRITICAL FIX: Consolidate padding-bottom to the minimal required space */
+    /* 56px (Nav Height) + 8px (Minimal spacing/space-sm) + Safe Area */
+    /* Use !important to ensure this centralized rule overrides any potential conflicts. */
+    padding-bottom: calc(56px + var(--space-sm) + env(safe-area-inset-bottom)) !important;
+    
+    /* FIX: Establish Flex Column layout to enable reliable 'gap' control */
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md); /* Tighter gap between sections (16px) */
   }
   
   .unified-schedule-section {
@@ -200,7 +198,8 @@
   .kpi-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-md);
-    margin: var(--space-md) 0;
+    /* FIX: Remove vertical margins. Spacing is controlled by .main-container gap. */
+    margin: 0;
   }
 
   .kpi-card, .kpi-card.hero-card {
