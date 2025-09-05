@@ -1095,8 +1095,7 @@ class ParlayKing {
                     <div class="rec-league">${rec.league}</div>
                 </div>
                 <div class="rec-pick">
-                    <div class="pick-text">${rec.recommendation}</div>
-                    <div class="pick-odds">@ ${rec.odds.toFixed(2)}</div>
+                    <div class="pick-text" onclick="navigator.clipboard.writeText('${rec.recommendation.replace(/'/g, "\\'")}'); this.style.transform='scale(0.95)'; setTimeout(() => this.style.transform='', 150);" title="Click to copy recommendation">${rec.recommendation}</div>
                 </div>
                 <div class="rec-footer">
                     <div class="ev-badge">EV ${evDisplay}</div>

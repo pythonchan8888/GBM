@@ -372,9 +372,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-lg); /* Reduced from xl */
-  margin-top: var(--space-sm); /* Reduced margin */
-  margin-bottom: var(--space-sm); /* Reduced margin */
+  padding: var(--space-lg);
+  margin-top: var(--space-sm);
+  margin-bottom: var(--space-lg); /* Add more space before cards */
   background: var(--gradient-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
@@ -740,6 +740,18 @@
   margin-bottom: var(--space-xs);
   position: relative;
   z-index: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.pick-text:hover {
+  color: var(--text);
+  text-shadow: 0 0 8px rgba(255, 140, 66, 0.5);
+}
+
+.pick-text:active {
+  transform: scale(0.95);
 }
 
 .pick-odds {
@@ -765,7 +777,7 @@
   background: var(--gradient-primary);
   color: white;
   padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-lg); /* More curved edges instead of full circle */
   font-size: var(--font-size-sm);
   font-weight: 700;
   font-family: var(--font-mono);
