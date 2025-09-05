@@ -501,14 +501,29 @@ class ParlayKing {
     // Add these parsing methods for analytics data
     parseRoiHeatmap(rawData) {
         if (!Array.isArray(rawData)) return [];
-        return rawData.map(item => ({
-            // FIX: Use actual CSV column names
-            tier: parseInt(item.tier) || 0,
-            line: parseFloat(item.line) || 0,
-            segment: `Tier ${item.tier} | Line ${item.line > 0 ? '+' : ''}${item.line}`,
-            roi: parseFloat(item.roi_pct) / 100 || 0, // Convert percentage to decimal
-            count: parseInt(item.n) || 0
-        })).filter(item => item.count > 0);
+        
+        return rawData.map(item => {
+            // 1. Validate: Ensure required fields exist in the CSV row
+            if (item.tier === undefined || item.line === undefined || item.roi_pct === undefined || item.n === undefined) {
+                return null; // Skip this row if data is missing
+            }
+
+            // 2. Transform: Construct the segment name (e.g., "Tier 1 (Line -1.5)")
+            const segmentDescription = `Tier ${item.tier} (Line: ${item.line})`;
+            
+            // 3. Format: Convert roi_pct (e.g., 71.77) to decimal (0.7177)
+            // The rendering logic expects a decimal value.
+            const roiValue = parseFloat(item.roi_pct) / 100;
+            
+            // 4. Format: Parse the count (n)
+            const countValue = parseInt(item.n);
+
+            return {
+                segment: segmentDescription,
+                roi: isNaN(roiValue) ? 0 : roiValue,
+                count: isNaN(countValue) ? 0 : countValue
+            };
+        }).filter(item => item !== null && item.count > 0); // Filter out invalid rows and zero counts
     }
 
     parseTopSegments(rawData) {
@@ -557,11 +572,34 @@ class ParlayKing {
         };
     }
 
+    // Helper to determine the current page
+    getCurrentPage() {
+        const path = window.location.pathname;
+        // Check pathname (more reliable than body classes)
+        if (path.includes('analytics.html')) return 'analytics';
+        if (path.includes('recommendations.html')) return 'recommendations';
+        return 'overview'; // Default to overview
+    }
+
     // UI Initialization
     initializeUI() {
+        // Global initializations
         this.setupEventListeners();
         this.setFilterValues();
         this.setupHeaderShrinking();
+        
+        // Determine the current page context
+        const currentPage = this.getCurrentPage();
+        console.log(`Initializing UI for page: ${currentPage}`);
+        
+        // Call the appropriate page initializer
+        if (currentPage === 'overview') {
+            // Overview page initialization (if needed)
+        } else if (currentPage === 'analytics') {
+            this.initAnalyticsPage(); // CRITICAL CALL
+        } else if (currentPage === 'recommendations') {
+            this.initRecommendationsPage();
+        }
     }
     
     setupHeaderShrinking() {
@@ -666,8 +704,12 @@ class ParlayKing {
 
     // Render ROI Heatmap
     renderRoiHeatmap() {
+        // Ensure the container element exists in analytics.html 
         const container = document.getElementById('roi-heatmap');
-        if (!container) return;
+        if (!container) {
+            console.warn("ROI Heatmap container (roi-heatmap) not found in HTML.");
+            return;
+        }
 
         if (!this.data.roiHeatmap || this.data.roiHeatmap.length === 0) {
             container.innerHTML = '<p class="empty-state">No ROI Heatmap data available.</p>';
