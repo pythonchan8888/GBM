@@ -28,3 +28,6 @@ dt_gmt8,league,home,away,rec_text,line,odds,ev,confidence,kings_call_insight,kin
 2025-09-01 02:45:00+00:00,Italy Serie A,Lazio,Hellas Verona,Hellas Verona +1.25,1.25,1.93,0.4196,High,Unable to fetch insight—rely on EV!,,,
 2025-09-01 03:30:00+00:00,Spain La Liga,Rayo Vallecano,FC Barcelona,Rayo Vallecano +1.5,1.50,1.93,0.7206,High,API error—check log.,,,
 2025-09-07 08:30:00+00:00,USA MLS,Chicago Fire,New England Revolution,New England Revolution +0.75,0.75,1.93,0.1754,High,King's insight: Solid bet based on ML analysis—watch this space!,,,
+2025-09-12 18:00:00+00:00,Japan J1 League,Sanfrecce Hiroshima,Kyoto Sanga,Kyoto Sanga +0.75,0.75,1.93,0.2968,High,API error—check log.,,,
+2025-09-12 18:00:00+00:00,Japan J1 League,Vissel Kobe,Kashiwa Reysol,Kashiwa Reysol +0.5,0.50,1.93,0.2374,High,API error—check log.,,,
+2025-09-12 18:00:00+00:00,Japan J1 League,Machida Zelvia,Yokohama,Yokohama +0.75,0.75,1.93,0.2044,High,API error—check log.,,,
