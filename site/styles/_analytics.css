@@ -393,7 +393,8 @@
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: var(--space-md); /* Reduced from lg */
   padding: 0; /* Remove padding - handled by main container */
-  /* FIX: Remove bottom margin. Spacing is controlled by parent gap property. */
+  /* FIX: Add top margin to match spacing between slider and Live Picks header */
+  margin-top: var(--space-lg);
   margin-bottom: 0;
 }
 
