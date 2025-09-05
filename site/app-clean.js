@@ -1078,8 +1078,14 @@ class ParlayKing {
         const confidenceIcon = rec.confidence === 'High' ? '<i data-feather="award"></i>' : 
                               rec.confidence === 'Medium' ? '<i data-feather="star"></i>' : '<i data-feather="circle"></i>';
         
+        // Add premium styling for high EV recommendations
+        const cardClasses = ['rec-card'];
+        if (rec.ev && rec.ev > 0.15) { // >15% EV gets hero treatment
+            cardClasses.push('high-ev');
+        }
+        
         return `
-            <div class="rec-card">
+            <div class="${cardClasses.join(' ')}">
                 <div class="rec-header">
                     <div class="rec-time">${timeDisplay}</div>
                     <div class="rec-confidence" title="${rec.confidence}">${confidenceIcon}</div>
