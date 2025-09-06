@@ -1,4 +1,7 @@
 datetime_gmt8,league,league_short,league_flag,league_color,home_name,away_name,odds_1,odds_x,odds_2,league_tier,competition_type,is_future,status,ah_line_home,ah_line_away,ah_odds_home,ah_odds_away,has_recommendation,rec_text,line,rec_odds,ev,confidence,kings_call,kings_call_agreement,primary_signal,secondary_signal
-2025-09-12 18:00:00,Japan J1 League,J1 League,🇯🇵,#e60012,Machida Zelvia,Yokohama,1.65,3.7,5.8,3,league,True,incomplete,-1.0,1.0,1.925,1.925,False,,0,0,0,,,,,
-2025-09-12 18:00:00,Japan J1 League,J1 League,🇯🇵,#e60012,Vissel Kobe,Kashiwa Reysol,2.08,3.35,3.7,3,league,True,incomplete,-0.5,0.5,1.925,1.925,False,,0,0,0,,,,,
-2025-09-12 18:00:00,Japan J1 League,J1 League,🇯🇵,#e60012,Sanfrecce Hiroshima,Kyoto Sanga,1.7,3.85,4.9,3,league,True,incomplete,-1.0,1.0,1.925,1.925,False,,0,0,0,,,,,
+2025-09-12 18:00:00,Japan J1 League,J1 League,🇯🇵,#e60012,Machida Zelvia,Yokohama,1.53,3.66,5.2,3,league,True,incomplete,-1.0,1.0,1.925,1.925,False,,0.0,0.0,0.0,,,,,
+2025-09-12 18:00:00,Japan J1 League,J1 League,🇯🇵,#e60012,Vissel Kobe,Kashiwa Reysol,2.08,3.09,3.18,3,league,True,incomplete,-0.25,0.25,1.925,1.925,False,,0.0,0.0,0.0,,,,,
+2025-09-12 18:00:00,Japan J1 League,J1 League,🇯🇵,#e60012,Sanfrecce Hiroshima,Kyoto Sanga,1.75,3.38,3.98,3,league,True,incomplete,-0.75,0.75,1.925,1.925,False,,0.0,0.0,0.0,,,,,
+2025-09-13 02:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Bayer Leverkusen,Eintracht Frankfurt,2.25,3.75,3.0,1,league,True,incomplete,-0.25,0.25,1.925,1.925,False,,0.0,0.0,0.0,,,,,
+2025-09-13 02:45:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,Olympique Marseille,Lorient,1.45,4.6,7.3,1,league,True,incomplete,-1.25,1.25,1.925,1.925,True,Lorient +1.25,1.25,1.925,0.1458819445545449,High,API error—check log.,Neutral,hot-pick,value
+2025-09-13 03:00:00,Spain La Liga,La Liga,🇪🇸,#ee8900,Sevilla FC,Elche CF,2.12,3.4,3.4,1,league,True,incomplete,-0.25,0.25,1.925,1.925,True,Sevilla FC -0.25,-0.25,1.925,0.18607411916047675,High,API error—check log.,Neutral,kings-call,value

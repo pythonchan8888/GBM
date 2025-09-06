@@ -1,8 +1,4 @@
 dt_gmt8,league,home,away,rec_text,line,odds,ev,confidence,kings_call_insight,kings_call_agreement,kings_call_reasoning,kings_call_sources
-2025-08-30 00:30:00+00:00,Italy Serie A,Cremonese,Sassuolo,Sassuolo +0.25,0.25,1.93,0.3112,High,Unable to fetch insight—rely on EV!,,,
-2025-08-30 01:30:00+00:00,Spain La Liga,Elche CF,Levante UD,Levante UD +0.25,0.25,1.93,0.4280,High,Disagree: Pinning hopes on Levante +0.25 is like trusting a leaky boat in a storm – Elche's home fortress will sink this bet faster than you,,,
-2025-08-30 02:45:00+00:00,Italy Serie A,Lecce,AC Milan,Lecce +0.75,0.75,1.93,0.2489,High,Agree: Lecce +0.75 shines as Milan's injury-hit attack stumbles like a clown on ice in this Serie A mismatch.,,,
-2025-08-30 03:30:00+00:00,Spain La Liga,Valencia CF,Getafe CF,Valencia CF -0.25,-0.25,1.93,0.2373,High,API error—check log.,,,
 2025-08-30 19:30:00+00:00,England Premier League,Chelsea,Fulham,Fulham +1.0,1.00,1.93,0.1922,High,Unable to fetch insight—rely on EV!,,,
 2025-08-30 22:00:00+00:00,England Premier League,Manchester United,Burnley,Burnley +1.5,1.50,1.93,0.6066,High,Unable to fetch insight—rely on EV!,,,
 2025-08-30 22:00:00+00:00,England Premier League,Tottenham Hotspur,AFC Bournemouth,Tottenham Hotspur -0.75,-0.75,1.93,0.4329,High,API error—check log.,,,
@@ -29,5 +25,7 @@ dt_gmt8,league,home,away,rec_text,line,odds,ev,confidence,kings_call_insight,kin
 2025-09-01 03:30:00+00:00,Spain La Liga,Rayo Vallecano,FC Barcelona,Rayo Vallecano +1.5,1.50,1.93,0.7206,High,API error—check log.,,,
 2025-09-07 08:30:00+00:00,USA MLS,Chicago Fire,New England Revolution,New England Revolution +0.75,0.75,1.93,0.1754,High,King's insight: Solid bet based on ML analysis—watch this space!,,,
 2025-09-12 18:00:00+00:00,Japan J1 League,Sanfrecce Hiroshima,Kyoto Sanga,Kyoto Sanga +0.75,0.75,1.93,0.2968,High,API error—check log.,,,
+2025-09-12 18:00:00+00:00,Japan J1 League,Machida Zelvia,Yokohama,Yokohama +1.0,1.00,1.93,0.2469,High,API error—check log.,,,
 2025-09-12 18:00:00+00:00,Japan J1 League,Vissel Kobe,Kashiwa Reysol,Kashiwa Reysol +0.5,0.50,1.93,0.2374,High,API error—check log.,,,
-2025-09-12 18:00:00+00:00,Japan J1 League,Machida Zelvia,Yokohama,Yokohama +0.75,0.75,1.93,0.2044,High,API error—check log.,,,
+2025-09-13 02:45:00+00:00,France Ligue 1,Olympique Marseille,Lorient,Lorient +1.25,1.25,1.93,0.2970,High,API error—check log.,,,
+2025-09-13 03:00:00+00:00,Spain La Liga,Sevilla FC,Elche CF,Sevilla FC -0.25,-0.25,1.93,0.1861,High,API error—check log.,,,
