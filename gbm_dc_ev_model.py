@@ -4710,10 +4710,15 @@ else:
                 debug_rows = []
                 total_recommendations = len(final_recommendations_df)
                 
-                print(f"Generating King's Call for {total_recommendations} recommendations...")
+                # Filter for Tier 1 games only to optimize API usage
+                tier1_recommendations = final_recommendations_df[final_recommendations_df['league_tier'] == 1].copy()
+                total_tier1 = len(tier1_recommendations)
+                total_all = len(final_recommendations_df)
                 
-                for i, (idx, row) in enumerate(final_recommendations_df.iterrows()):
-                    print(f"Processing {i+1}/{total_recommendations}: {row['home_name']} vs {row['away_name']}")
+                print(f"Generating King's Call for {total_tier1} Tier 1 recommendations (out of {total_all} total)...")
+                
+                for i, (idx, row) in enumerate(tier1_recommendations.iterrows()):
+                    print(f"Processing {i+1}/{total_tier1}: {row['home_name']} vs {row['away_name']} ({row['league']})")
                     
                     prompt = (
                         f"Analyze betting recommendation: {row['Recommendation']} @ {row['odds_betted_on_refined']:.2f} odds, EV {row['ev_for_bet_refined']:.2f}. "
@@ -4726,7 +4731,7 @@ else:
                     result = get_grok_response(prompt, model="grok-4-0709", enable_retry=True)
                     
                     # Add delay between API calls to avoid rate limiting
-                    if i < total_recommendations - 1:  # Don't delay after last call
+                    if i < total_tier1 - 1:  # Don't delay after last call
                         time.sleep(3)  # 3 second delay between calls
                     
                     # Store all King's Call data

@@ -894,11 +894,38 @@ class ParlayKing {
     setupLeagueFilter(elementId) {
         const leagueFilter = document.getElementById(elementId);
         if (leagueFilter) {
+            // Populate league options from recommendations data
+            this.populateLeagueOptions(elementId);
+            
+            // Set up event listener
             leagueFilter.addEventListener('change', (e) => {
                 this.uiState.activeFilters.league = e.target.value;
                 this.updateUI();
             });
         }
+    }
+    
+    populateLeagueOptions(elementId) {
+        const leagueSelect = document.getElementById(elementId);
+        if (!leagueSelect || !this.data.recommendations) return;
+        
+        // Get unique leagues from recommendations data
+        const leagues = [...new Set(this.data.recommendations.map(r => r.league))].filter(Boolean).sort();
+        
+        // Clear existing options except "All leagues"
+        while (leagueSelect.children.length > 1) {
+            leagueSelect.removeChild(leagueSelect.lastChild);
+        }
+        
+        // Add league options
+        leagues.forEach(league => {
+            const option = document.createElement('option');
+            option.value = league;
+            option.textContent = league;
+            leagueSelect.appendChild(option);
+        });
+        
+        console.log(`Populated ${leagues.length} leagues in ${elementId}:`, leagues);
     }
 
     initEvSlider() {
@@ -1024,6 +1051,10 @@ class ParlayKing {
         this.renderUnifiedSchedule();
         this.renderRecommendations(); // Add recommendations rendering
         this.updateLastRunStatus();
+        
+        // Populate filter options if data is available
+        this.populateFilterOptions();
+        this.populateLeagueOptions('league-filter-recs');
         
         // Initialize Feather icons after DOM updates
         setTimeout(() => {
