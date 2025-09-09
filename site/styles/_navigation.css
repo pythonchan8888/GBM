@@ -186,9 +186,8 @@
 .day-navigator {
   display: flex;
   justify-content: center;
-  gap: 4px;
-  padding-top: var(--space-sm);
-  padding-bottom: var(--space-sm);
+  gap: 6px;
+  padding: var(--space-sm) var(--space-md);
   margin-bottom: 0;
   border-top: none;
   border-bottom: none;
@@ -198,6 +197,8 @@
   backdrop-filter: blur(10px);
   z-index: 999;
   transition: box-shadow 0.3s ease;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .day-navigator.sticky-active {
@@ -205,16 +206,18 @@
 }
 
 .day-tab {
-  padding: 6px 16px;
+  padding: 6px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   min-width: 70px;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .day-tab:hover {

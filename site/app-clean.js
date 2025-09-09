@@ -218,22 +218,18 @@ class DayNavigator {
     }
     
     getDaysWithGames() {
-        const games = this.parlayKing.data.unifiedGames || [];
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
-        // Get unique days that have games (future only)
-        const daysWithGames = [...new Set(games
-            .filter(game => game.datetime && game.datetime >= today)
-            .map(game => {
-                const gameDate = new Date(game.datetime);
-                gameDate.setHours(0, 0, 0, 0);
-                return gameDate.getTime();
-            })
-        )].sort();
+        // Generate 7 consecutive days starting from today (FOTMOB style)
+        const sevenDays = [];
+        for (let i = 0; i < 7; i++) {
+            const day = new Date(today);
+            day.setDate(today.getDate() + i);
+            sevenDays.push(day);
+        }
         
-        // Convert back to Date objects and take first 5 days
-        return daysWithGames.slice(0, 5).map(timestamp => new Date(timestamp));
+        return sevenDays;
     }
     
     render() {
@@ -255,10 +251,23 @@ class DayNavigator {
         return `
             <div class="day-navigator">
                 ${daysWithGames.map((day, index) => {
-                    // Always use short date format for consistency and clarity
-                    const dayNum = day.getDate();
-                    const month = day.toLocaleDateString('en-US', { month: 'short' });
-                    const label = `${dayNum}-${month}`;
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(today.getDate() + 1);
+                    
+                    let label;
+                    if (day.getTime() === today.getTime()) {
+                        label = 'Today';
+                    } else if (day.getTime() === tomorrow.getTime()) {
+                        label = 'Tomorrow';
+                    } else {
+                        // FOTMOB style: "Thu 12 Sep"
+                        const dayName = day.toLocaleDateString('en-US', { weekday: 'short' });
+                        const dayNum = day.getDate();
+                        const month = day.toLocaleDateString('en-US', { month: 'short' });
+                        label = `${dayName} ${dayNum} ${month}`;
+                    }
                     
                     return `
                         <button class="day-tab ${this.parlayKing.uiState.currentDay === index.toString() ? 'active' : ''}" 
