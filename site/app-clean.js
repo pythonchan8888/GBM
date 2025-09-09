@@ -255,17 +255,10 @@ class DayNavigator {
         return `
             <div class="day-navigator">
                 ${daysWithGames.map((day, index) => {
-                    const isToday = day.getTime() === today.getTime();
-                    const isTomorrow = day.getTime() === today.getTime() + (24 * 60 * 60 * 1000);
-                    
-                    let label;
-                    if (isToday) {
-                        label = 'Today';
-                    } else if (isTomorrow) {
-                        label = 'Tomorrow';
-                    } else {
-                        label = day.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-                    }
+                    // Always use short date format for consistency and clarity
+                    const dayNum = day.getDate();
+                    const month = day.toLocaleDateString('en-US', { month: 'short' });
+                    const label = `${dayNum}-${month}`;
                     
                     return `
                         <button class="day-tab ${this.parlayKing.uiState.currentDay === index.toString() ? 'active' : ''}" 
