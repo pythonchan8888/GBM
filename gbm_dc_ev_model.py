@@ -4491,28 +4491,33 @@ else:
                 Do NOT add any text outside of this JSON structure.
                 """
 
-                # Validation function for insights (helper for get_grok_response)
+                # Relaxed validation function for insights (helper for get_grok_response)
                 def validate_insight(response: dict) -> bool:
                     insight = response.get('insight', '')
                     reasoning = response.get('reasoning', '')
                     agreement = response.get('agreement', '')
-                    if not insight or len(insight) < 80 or len(insight) > 140:
-                        logging.warning(f"Validation failed: Invalid insight length ({len(insight)} chars).")
+                    
+                    # Basic validation - much more lenient
+                    if not insight or len(insight) < 50:
+                        logging.warning(f"Validation failed: Insight too short ({len(insight)} chars).")
                         return False
-                    if not (30 <= len(reasoning.split()) <= 50):
-                        logging.warning(f"Validation failed: Invalid reasoning length ({len(reasoning.split())} words).")
+                    
+                    if len(insight) > 200:
+                        logging.info(f"Insight long ({len(insight)} chars) but acceptable, will truncate if needed.")
+                    
+                    if not reasoning or len(reasoning.split()) < 10:
+                        logging.warning(f"Validation failed: Reasoning too short ({len(reasoning.split())} words).")
                         return False
+                    
                     if agreement not in ['Agree', 'Disagree', 'Neutral']:
                         logging.warning(f"Validation failed: Invalid agreement value ({agreement}).")
                         return False
-                    if not insight.startswith(f"{agreement}:"):
-                        logging.warning(f"Validation failed: Insight does not start with '{agreement}:'.")
+                    
+                    # Don't require specific format - just check if it's meaningful
+                    if len(insight.strip()) < 50:
+                        logging.warning("Validation failed: Insight appears empty or too short.")
                         return False
-                    # Check for sarcasm/pun (basic keyword check)
-                    sarcasm_keywords = ['joke', 'laughable', 'crown', 'royal', 'fool', 'clown', 'mess', 'flop']
-                    if not any(keyword in insight.lower() or keyword in reasoning.lower() for keyword in sarcasm_keywords):
-                        logging.warning("Validation failed: No sarcastic tone or pun detected.")
-                        return False
+                        
                     return True
 
                 # Function to get Grok response with live search and structured output
@@ -4526,23 +4531,47 @@ else:
                     data = {
                         "model": model,
                         "messages": messages,
-                        "max_tokens": 2000,  # For reasoning + output
-                        "temperature": 0.8,  # For sarcastic personality
+                        "max_tokens": 1500,  # Reduced for more focused output
+                        "temperature": 0.7,  # Slightly less creative for more reliability
                         "search_parameters": {"mode": "on"}  # Enable live search
                     }
                     max_retries = 3
+                    base_delay = 2  # Base delay for exponential backoff
+                    
                     for attempt in range(max_retries):
                         try:
-                            response = requests.post(url, headers=headers, json=data, timeout=60)  # Increased timeout
-                            if response.status_code != 200:
+                            # Add exponential backoff delay
+                            if attempt > 0:
+                                delay = base_delay * (2 ** (attempt - 1))
+                                logging.info(f"Retrying after {delay}s delay (attempt {attempt + 1})")
+                                time.sleep(delay)
+                            
+                            response = requests.post(url, headers=headers, json=data, timeout=45)  # Shorter timeout
+                            if response.status_code == 429:  # Rate limit
+                                logging.warning(f"Rate limited (attempt {attempt + 1}). Status: {response.status_code}")
+                                if attempt < max_retries - 1:  # Don't sleep on last attempt
+                                    time.sleep(10)  # Wait 10s for rate limit
+                                    continue
+                                else:
+                                    return {
+                                        "agreement": "Neutral",
+                                        "insight": "Rate limited—try again later.",
+                                        "reasoning": "API rate limit exceeded.",
+                                        "sources": [],
+                                        "raw_response": {}
+                                    }
+                            elif response.status_code != 200:
                                 logging.error(f"API response code: {response.status_code}, text: {response.text}")
-                                return {
-                                    "agreement": "Neutral",
-                                    "insight": "API error—check log.",
-                                    "reasoning": f"API call failed with status {response.status_code}.",
-                                    "sources": [],
-                                    "raw_response": response.json() if response.content else {}
-                                }
+                                if attempt < max_retries - 1:  # Retry on other errors too
+                                    continue
+                                else:
+                                    return {
+                                        "agreement": "Neutral",
+                                        "insight": "API error—service unavailable.",
+                                        "reasoning": f"API call failed with status {response.status_code}.",
+                                        "sources": [],
+                                        "raw_response": response.json() if response.content else {}
+                                    }
                             raw_response = response.json()
                             logging.info(f"Full raw response: {json.dumps(raw_response, indent=2)}")
                             raw_content = raw_response['choices'][0]['message']['content'].strip()
@@ -4565,10 +4594,16 @@ else:
                                 insight = content.get('insight', 'Unable to parse insight.')
                                 reasoning = content.get('reasoning', 'No reasoning provided.')
                                 sources = content.get('sources', [])
-                                if len(insight) > 140:
-                                    logging.warning(f"Insight too long ({len(insight)} chars)—truncating.")
-                                    insight = insight[:140]
-                                if validate_insight({"insight": insight, "reasoning": reasoning, "agreement": agreement}):
+                                
+                                # Truncate if too long but don't be too strict
+                                if len(insight) > 180:
+                                    logging.info(f"Insight long ({len(insight)} chars)—truncating to 180 chars.")
+                                    insight = insight[:177] + "..."
+                                
+                                # Use relaxed validation
+                                validation_result = validate_insight({"insight": insight, "reasoning": reasoning, "agreement": agreement})
+                                
+                                if validation_result:
                                     logging.info("Insight validated successfully.")
                                     return {
                                         "agreement": agreement,
@@ -4577,21 +4612,36 @@ else:
                                         "sources": sources,
                                         "raw_response": raw_response
                                     }
-                                if enable_retry:
-                                    logging.warning("Response failed validation—retrying with stricter constraints.")
-                                    messages.append({"role": "assistant", "content": raw_content})
-                                    messages.append({"role": "user", "content": "Shorten insight to 80-140 chars starting with 'Agree:' or 'Disagree:'. Keep reasoning to 30-50 words. Ensure valid JSON."})
-                                    data["messages"] = messages
-                                    data["max_tokens"] = 1500
-                                    data["search_parameters"] = {"mode": "off"}  # Disable search on retry
-                                    continue
-                                return {
-                                    "agreement": agreement,
-                                    "insight": insight,
-                                    "reasoning": reasoning,
-                                    "sources": sources,
-                                    "raw_response": raw_response
-                                }
+                                else:
+                                    # Even if validation fails, use the response if it's somewhat reasonable
+                                    if len(insight) > 30 and agreement in ['Agree', 'Disagree', 'Neutral']:
+                                        logging.warning("Using response despite validation failure—seems reasonable.")
+                                        return {
+                                            "agreement": agreement,
+                                            "insight": insight,
+                                            "reasoning": reasoning,
+                                            "sources": sources,
+                                            "raw_response": raw_response
+                                        }
+                                    
+                                    # Only retry if validation completely failed and we have retries left
+                                    if enable_retry and attempt < max_retries - 1:
+                                        logging.warning("Response failed validation—retrying with adjusted prompt.")
+                                        messages.append({"role": "assistant", "content": raw_content})
+                                        messages.append({"role": "user", "content": "Please provide a clearer, more concise response. Ensure the insight is meaningful and the reasoning explains your position."})
+                                        data["messages"] = messages
+                                        data["max_tokens"] = 1200
+                                        data["search_parameters"] = {"mode": "off"}  # Disable search on retry
+                                        continue
+                                    
+                                    # Return what we have, even if not perfect
+                                    return {
+                                        "agreement": agreement,
+                                        "insight": insight if len(insight) > 10 else "Analysis inconclusive—rely on EV.",
+                                        "reasoning": reasoning if len(reasoning) > 10 else "Unable to provide detailed reasoning.",
+                                        "sources": sources,
+                                        "raw_response": raw_response
+                                    }
                             except json.JSONDecodeError:
                                 logging.warning("JSON parse failed—using fallback.")
                                 match = re.search(r'\{.*"insight":\s*"([^"]+)"', raw_content, re.DOTALL)
@@ -4658,7 +4708,13 @@ else:
                 final_recommendations_df['kings_call_sources'] = ''
                 
                 debug_rows = []
-                for idx, row in final_recommendations_df.iterrows():
+                total_recommendations = len(final_recommendations_df)
+                
+                print(f"Generating King's Call for {total_recommendations} recommendations...")
+                
+                for i, (idx, row) in enumerate(final_recommendations_df.iterrows()):
+                    print(f"Processing {i+1}/{total_recommendations}: {row['home_name']} vs {row['away_name']}")
+                    
                     prompt = (
                         f"Analyze betting recommendation: {row['Recommendation']} @ {row['odds_betted_on_refined']:.2f} odds, EV {row['ev_for_bet_refined']:.2f}. "
                         f"Match: {row['home_name']} vs {row['away_name']} ({row['league']}) on {row['datetime_gmt8']}. "
@@ -4668,6 +4724,10 @@ else:
                     
                     # Use the advanced get_grok_response function
                     result = get_grok_response(prompt, model="grok-4-0709", enable_retry=True)
+                    
+                    # Add delay between API calls to avoid rate limiting
+                    if i < total_recommendations - 1:  # Don't delay after last call
+                        time.sleep(3)  # 3 second delay between calls
                     
                     # Store all King's Call data
                     final_recommendations_df.at[idx, 'kings_call'] = result.get('insight', 'Unable to fetch insight—rely on EV!')

@@ -123,6 +123,60 @@
   box-shadow: var(--shadow-card);
 }
 
+/* ===== DESKTOP NAVIGATION LINKS ===== */
+.nav-links {
+  display: flex;
+  gap: var(--space-lg);
+  align-items: center;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: var(--transition-fast);
+  position: relative;
+}
+
+.nav-link:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.nav-link.active {
+  color: var(--primary);
+  background: rgba(230, 126, 34, 0.1);
+  border: 1px solid rgba(230, 126, 34, 0.3);
+}
+
+.nav-link i {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+}
+
+.nav-link.active i {
+  stroke-width: 2.5;
+}
+
+/* Hide desktop nav on mobile, show on desktop */
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .desktop-only {
+    display: flex;
+  }
+}
+
 /* ===== BOTTOM NAVIGATION (DESKTOP: HIDDEN) ===== */
 .bottom-nav {
   display: none;
