@@ -690,6 +690,21 @@ class ParlayKing {
         window.addEventListener('resize', updateHeaderAndSticky);
     }
 
+    setupDayNavigationListeners() {
+        // Add click event listeners to day navigation tabs
+        const dayTabs = document.querySelectorAll('.day-tab');
+        dayTabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                const dayIndex = tab.dataset.day;
+                if (dayIndex !== undefined) {
+                    this.uiState.currentDay = dayIndex;
+                    this.updateUI();
+                }
+            });
+        });
+    }
+
     setupEventListeners() {
         // Simplified filter controls
         const dr = document.getElementById('date-range');
@@ -1050,11 +1065,14 @@ class ParlayKing {
             // Ensure we have a valid current day with games
             this.ensureValidCurrentDay();
 
-            // Add day navigator if not present
-            const scheduleSection = container.closest('.schedule');
-            if (scheduleSection && !scheduleSection.querySelector('.day-navigator')) {
+            // Add day navigator to dedicated container
+            const dayNavContainer = document.getElementById('day-navigator-container');
+            if (dayNavContainer && !dayNavContainer.querySelector('.day-navigator')) {
                 const dayNavHtml = this.dayNavigator.render();
-                scheduleSection.insertAdjacentHTML('afterbegin', dayNavHtml);
+                dayNavContainer.innerHTML = dayNavHtml;
+                
+                // Add event listeners for day navigation
+                this.setupDayNavigationListeners();
             }
 
             if (!this.data.unifiedGames || this.data.unifiedGames.length === 0) {
