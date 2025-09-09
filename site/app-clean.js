@@ -217,27 +217,63 @@ class DayNavigator {
         this.parlayKing = parlayKing;
     }
     
-    render() {
+    getDaysWithGames() {
+        const games = this.parlayKing.data.unifiedGames || [];
         const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const dayAfter = new Date(today);
-        dayAfter.setDate(dayAfter.getDate() + 2);
+        today.setHours(0, 0, 0, 0);
+        
+        // Get unique days that have games (future only)
+        const daysWithGames = [...new Set(games
+            .filter(game => game.datetime && game.datetime >= today)
+            .map(game => {
+                const gameDate = new Date(game.datetime);
+                gameDate.setHours(0, 0, 0, 0);
+                return gameDate.getTime();
+            })
+        )].sort();
+        
+        // Convert back to Date objects and take first 5 days
+        return daysWithGames.slice(0, 5).map(timestamp => new Date(timestamp));
+    }
+    
+    render() {
+        const daysWithGames = this.getDaysWithGames();
+        
+        if (daysWithGames.length === 0) {
+            return `<div class="day-navigator"><div class="no-upcoming-games">No upcoming games</div></div>`;
+        }
+        
+        // If current day doesn't have games, switch to first available day
+        const currentDayIndex = parseInt(this.parlayKing.uiState.currentDay) || 0;
+        if (currentDayIndex >= daysWithGames.length) {
+            this.parlayKing.uiState.currentDay = '0';
+        }
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
         
         return `
             <div class="day-navigator">
-                <button class="day-tab ${this.parlayKing.uiState.currentDay === 'today' ? 'active' : ''}" 
-                        data-day="today" onclick="window.parlayKing.switchDay('today')">
-                    Today
+                ${daysWithGames.map((day, index) => {
+                    const isToday = day.getTime() === today.getTime();
+                    const isTomorrow = day.getTime() === today.getTime() + (24 * 60 * 60 * 1000);
+                    
+                    let label;
+                    if (isToday) {
+                        label = 'Today';
+                    } else if (isTomorrow) {
+                        label = 'Tomorrow';
+                    } else {
+                        label = day.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                    }
+                    
+                    return `
+                        <button class="day-tab ${this.parlayKing.uiState.currentDay === index.toString() ? 'active' : ''}" 
+                                data-day="${index}" onclick="window.parlayKing.switchDay('${index}')">
+                            ${label}
                 </button>
-                <button class="day-tab ${this.parlayKing.uiState.currentDay === 'tomorrow' ? 'active' : ''}" 
-                        data-day="tomorrow" onclick="window.parlayKing.switchDay('tomorrow')">
-                    Tomorrow
-                </button>
-                <button class="day-tab ${this.parlayKing.uiState.currentDay === 'dayafter' ? 'active' : ''}" 
-                        data-day="dayafter" onclick="window.parlayKing.switchDay('dayafter')">
-                    ${dayAfter.toLocaleDateString('en-US', { weekday: 'short' })}
-                </button>
+                    `;
+                }).join('')}
             </div>
         `;
     }
@@ -264,7 +300,7 @@ class ParlayKing {
             viewMode: window.innerWidth <= 768 ? 'mobile' : 'desktop',
             expandedCards: new Set(),
             activeFilters: this.getFiltersFromURL(),
-            currentDay: 'today',
+            currentDay: '0', // Start with first day that has games
             filtersDrawerOpen: false,
             renderedGames: 20,
             virtualScrollOffset: 0
@@ -1011,6 +1047,9 @@ class ParlayKing {
                 return;
             }
 
+            // Ensure we have a valid current day with games
+            this.ensureValidCurrentDay();
+
             // Add day navigator if not present
             const scheduleSection = container.closest('.schedule');
             if (scheduleSection && !scheduleSection.querySelector('.day-navigator')) {
@@ -1035,6 +1074,16 @@ class ParlayKing {
             this.initGameCardInteractions();
         } catch (error) {
             console.error('Error rendering schedule:', error);
+        }
+    }
+    
+    ensureValidCurrentDay() {
+        const daysWithGames = this.dayNavigator.getDaysWithGames();
+        const currentIndex = parseInt(this.uiState.currentDay) || 0;
+        
+        // If current day index is invalid or no games on that day, reset to first available day
+        if (currentIndex >= daysWithGames.length || daysWithGames.length === 0) {
+            this.uiState.currentDay = '0';
         }
     }
 
@@ -1118,23 +1167,17 @@ class ParlayKing {
         return filtered.sort((a, b) => a.datetime - b.datetime);
     }
     
-    filterByDay(games, day) {
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const dayAfter = new Date(today);
-        dayAfter.setDate(dayAfter.getDate() + 2);
+    filterByDay(games, dayIndex) {
+        const daysWithGames = this.dayNavigator.getDaysWithGames();
         
-        switch (day) {
-            case 'today':
-                return games.filter(g => this.isSameDay(g.datetime, today));
-            case 'tomorrow':
-                return games.filter(g => this.isSameDay(g.datetime, tomorrow));
-            case 'dayafter':
-                return games.filter(g => this.isSameDay(g.datetime, dayAfter));
-            default:
+        // If no specific day selected or invalid index, return all games
+        const index = parseInt(dayIndex);
+        if (isNaN(index) || index < 0 || index >= daysWithGames.length) {
                 return games;
         }
+        
+        const selectedDay = daysWithGames[index];
+        return games.filter(g => this.isSameDay(g.datetime, selectedDay));
     }
 
     groupGamesByLeague(games) {
@@ -1212,11 +1255,11 @@ class ParlayKing {
     }
 
     // Day navigation
-    switchDay(day) {
-        this.uiState.currentDay = day;
+    switchDay(dayIndex) {
+        this.uiState.currentDay = dayIndex.toString();
         
         document.querySelectorAll('.day-tab').forEach(tab => {
-            tab.classList.toggle('active', tab.dataset.day === day);
+            tab.classList.toggle('active', tab.dataset.day === dayIndex.toString());
         });
         
         const container = document.getElementById('unified-games-container');
