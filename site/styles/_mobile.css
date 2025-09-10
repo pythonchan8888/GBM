@@ -598,6 +598,45 @@
   box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.3);
 }
 
+/* Pull-to-refresh styles */
+.pull-refresh { 
+    touch-action: pan-y; 
+    position: relative; 
+}
+
+.pull-refresh::before { 
+    content: ''; 
+    position: absolute; 
+    top: -50px; 
+    left: 0; 
+    width: 100%; 
+    height: 50px; 
+    background: var(--surface); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    transform: translateY(0); 
+    transition: transform 0.3s ease; 
+    color: var(--text-secondary);
+    font-size: 14px;
+    border-radius: 0 0 12px 12px;
+}
+
+.pull-refresh.pulling::before { 
+    content: '↓ Pull to refresh'; 
+    transform: translateY(calc(var(--pull-distance, 0px) - 50px)); 
+}
+
+.pull-refresh.refreshing::before { 
+    content: 'Refreshing...'; 
+    transform: translateY(0); 
+    animation: spin 1s linear infinite; 
+}
+
+@keyframes spin { 
+    to { transform: translateY(0) rotate(360deg); } 
+}
+
 @media (max-width: 768px) {
     .game-card--v4 .game-row { 
         padding: 8px; 

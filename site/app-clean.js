@@ -238,6 +238,29 @@ class DayNavigator {
         return sevenDays;
     }
     
+    setupSwipeGestures(navElement) {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const minSwipeDistance = 50; // Pixels to trigger swipe
+        
+        navElement.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        navElement.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            const swipeDistance = touchStartX - touchEndX;
+            
+            if (Math.abs(swipeDistance) > minSwipeDistance) {
+                const currentIndex = parseInt(this.parlayKing.uiState.currentDay) || 0;
+                const direction = swipeDistance > 0 ? 1 : -1; // Right swipe: next, Left: prev
+                const newIndex = Math.max(0, Math.min(6, currentIndex + direction)); // 0-6 days
+                
+                this.parlayKing.switchDay(newIndex.toString());
+            }
+        }, { passive: true });
+    }
+
     render() {
         const daysWithGames = this.getDaysWithGames();
         
@@ -291,6 +314,16 @@ class DayNavigator {
                 }).join('')}
             </div>
         `;
+        
+        // Setup swipe gestures after rendering
+        setTimeout(() => {
+            const navElement = document.querySelector('.day-navigator');
+            if (navElement) {
+                this.setupSwipeGestures(navElement);
+            }
+        }, 100);
+        
+        return html;
     }
 }
 
@@ -339,6 +372,17 @@ class ParlayKing {
 
     async init() {
         this.showLoading(true);
+        
+        // Register Service Worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            try {
+                await navigator.serviceWorker.register('/sw.js');
+                console.log('Service Worker registered successfully');
+            } catch (error) {
+                console.log('Service Worker registration failed:', error);
+            }
+        }
+        
         await this.loadAllData();
         this.initializeUI();
         this.updateUI();
@@ -638,6 +682,7 @@ class ParlayKing {
         this.setupEventListeners();
         this.setFilterValues();
         this.setupHeaderShrinking();
+        this.setupPullToRefresh();
         
         // Determine the current page context
         const currentPage = this.getCurrentPage();
@@ -653,6 +698,37 @@ class ParlayKing {
         }
     }
     
+    setupPullToRefresh() {
+        const container = document.getElementById('pull-refresh-container');
+        if (container && window.innerWidth <= 768) {
+            let startY = 0, pullDistance = 0;
+            
+            container.addEventListener('touchstart', e => {
+                startY = e.touches[0].pageY;
+            }, { passive: true });
+            
+            container.addEventListener('touchmove', e => {
+                pullDistance = e.touches[0].pageY - startY;
+                if (pullDistance > 0 && window.scrollY === 0) {
+                    e.preventDefault();
+                    container.classList.add('pulling');
+                    container.style.setProperty('--pull-distance', `${Math.min(pullDistance, 100)}px`);
+                }
+            }, { passive: false });
+            
+            container.addEventListener('touchend', async () => {
+                container.classList.remove('pulling');
+                if (pullDistance > 80) {
+                    container.classList.add('refreshing');
+                    await this.loadAllData();
+                    this.updateUI();
+                    setTimeout(() => container.classList.remove('refreshing'), 1000);
+                }
+                pullDistance = 0;
+            });
+        }
+    }
+
     setupHeaderShrinking() {
         const header = document.querySelector('.nav-container');
         // Get the day navigator for sticky activation tracking
@@ -1107,6 +1183,11 @@ class ParlayKing {
                 console.warn('Unified games container not found');
                 return;
             }
+            
+            // Show skeleton loaders while data is loading
+            if (!this.data.unifiedGames || this.data.unifiedGames.length === 0) {
+                container.innerHTML = Array(5).fill('<div class="game-card skeleton"></div>').join('');
+            }
 
             // Ensure we have a valid current day with games
             this.ensureValidCurrentDay();
@@ -1400,26 +1481,25 @@ class ParlayKing {
             expandedDetails.classList.remove('hidden');
             expandBtn.textContent = '▲';
             card.setAttribute('data-expanded', 'true');
+            expandBtn.setAttribute('aria-expanded', 'true');
             
-            // Smooth animation
             expandedDetails.style.maxHeight = '0';
             requestAnimationFrame(() => {
+                expandedDetails.classList.add('fade-in');
                 expandedDetails.style.maxHeight = expandedDetails.scrollHeight + 'px';
-                expandedDetails.classList.add('fade-in');  // Add animation class
             });
-            expandBtn.setAttribute('aria-expanded', 'true');
         } else {
             this.uiState.expandedCards.delete(gameId);
             expandedDetails.style.maxHeight = '0';
             expandBtn.textContent = '▼';
             card.setAttribute('data-expanded', 'false');
+            expandBtn.setAttribute('aria-expanded', 'false');
             
             setTimeout(() => {
                 expandedDetails.classList.add('hidden');
-                expandedDetails.style.maxHeight = '';
                 expandedDetails.classList.remove('fade-in');
-            }, 200);
-            expandBtn.setAttribute('aria-expanded', 'false');
+                expandedDetails.style.maxHeight = '';
+            }, 300);  // Match transition duration
         }
     }
 

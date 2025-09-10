@@ -452,6 +452,20 @@
     border-radius: 8px; 
     background: var(--surface); 
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.game-card--v4 .game-row:active { 
+    animation: tap-feedback 150ms ease; 
+}
+
+.game-card--v4 .expanded-details { 
+    transition: max-height 300ms ease, opacity 200ms ease; 
+}
+
+.game-card--v4 .expanded-details.fade-in { 
+    animation: fade-in 300ms ease; 
 }
 
 .game-matchup-inline { 

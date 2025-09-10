@@ -205,6 +205,9 @@
   transition: box-shadow 0.3s ease;
   overflow-x: auto;
   overflow-y: hidden;
+  touch-action: pan-x;
+  overscroll-behavior-x: none;
+  scroll-snap-type: x mandatory;
 }
 
 .day-navigator.sticky-active {
@@ -217,6 +220,7 @@
   border-radius: var(--radius-md);
   background: transparent;
   color: var(--text-secondary);
+  scroll-snap-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 12px;

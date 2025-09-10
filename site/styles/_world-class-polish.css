@@ -162,6 +162,16 @@
   border-radius: var(--radius-md);
   margin-bottom: 4px;
   padding: 8px;
+}
+
+.skeleton { 
+  background: linear-gradient(90deg, var(--surface) 25%, var(--panel) 50%, var(--surface) 75%); 
+  background-size: 200px 100%;
+  animation: skeleton-shimmer 1.5s infinite; 
+  border-radius: 8px;
+  min-height: 72px;
+  margin-bottom: 8px;
+}
   min-height: 48px;
 }
 
@@ -329,6 +339,23 @@ small i,
 @keyframes pulse-subtle {
   0%, 100% { opacity: 0.9; }
   50% { opacity: 1; }
+}
+
+@keyframes tap-feedback { 
+  0% { transform: scale(1); } 
+  50% { transform: scale(0.98); } 
+  100% { transform: scale(1); } 
+}
+
+@keyframes fade-in { 
+  from { opacity: 0; transform: translateY(10px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+@keyframes pulse-glow { 
+  0% { box-shadow: 0 0 0 0 rgba(255,122,69,0.3); } 
+  70% { box-shadow: 0 0 0 8px rgba(255,122,69,0); } 
+  100% { box-shadow: 0 0 0 0 rgba(255,122,69,0); } 
 }
 
 /* ===== 8. MICRO-INTERACTIONS ===== */
