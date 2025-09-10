@@ -198,6 +198,23 @@
     background: var(--primary);
 }
 
+/* Add or update filter styles */
+.filter-select, 
+.filter-input { 
+    border-radius: 8px; 
+    background: var(--surface); 
+    border: 1px solid var(--text-tertiary); 
+    padding: 8px 12px;
+    transition: all 0.2s ease;
+}
+
+.filter-select:focus,
+.filter-input:focus { 
+    border-color: var(--primary); 
+    box-shadow: 0 0 0 2px rgba(255,122,69,0.2); 
+    outline: none;
+}
+
 /* Mobile Optimization */
 @media (max-width: 768px) {
   .filter-bar--simplified .filter-content {

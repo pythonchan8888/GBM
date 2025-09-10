@@ -28,6 +28,11 @@
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 
+.nav-container.shrunk {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: box-shadow 0.3s ease;
+}
+
 .nav-container.shrunk .brand-subtitle {
   opacity: 0;
   height: 0;
@@ -154,6 +159,7 @@
   color: var(--primary);
   background: rgba(230, 126, 34, 0.1);
   border: 1px solid rgba(230, 126, 34, 0.3);
+  border-bottom: 2px solid var(--primary);
 }
 
 .nav-link i {
@@ -226,12 +232,17 @@
   border-color: var(--primary);
 }
 
-.day-tab.active {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+.day-tab.active { 
+    background: var(--primary); 
+    color: white; 
+    border-radius: 16px; 
+}
+
+.day-tab.today::after { 
+    content: '•'; 
+    color: var(--positive); 
+    margin-left: 4px;
+    font-size: 12px;
 }
 
 .no-upcoming-games {

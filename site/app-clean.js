@@ -89,37 +89,34 @@ class GameCard {
         const { homeChip, awayChip, homeTeamClass, awayTeamClass } = this.renderAhChips();
         const hint = this.renderHint();
         
+        const evPercent = this.game.ev ? (this.game.ev * 100).toFixed(1) : 0;
+        const evClass = this.game.ev > 0.15 ? 'high' : '';
+        
         return `
-            <div class="game-card game-card--v3" 
+            <div class="game-card game-card--v4" 
                  data-game-id="${this.game.datetime.getTime()}"
                  data-expandable="${this.isExpandable}"
                  data-expanded="false">
                 
                 <div class="game-row">
                     <div class="game-time">${timeDisplay}</div>
-                    
-                    <div class="game-matchup">
-                        <div class="team-row">
-                            <span class="${homeTeamClass}">${this.game.home}</span>
-                        </div>
-                        <div class="vs-separator">vs</div>
-                        <div class="team-row">
-                            <span class="${awayTeamClass}">${this.game.away}</span>
-                        </div>
+                    <div class="game-matchup-inline">
+                        <span class="team-home ${homeTeamClass}">
+                            <i data-feather="shield" class="team-icon"></i>
+                            ${this.game.home}
+                        </span>
+                        <span class="vs">vs</span>
+                        <span class="team-away ${awayTeamClass}">
+                            ${this.game.away}
+                            <i data-feather="shield" class="team-icon"></i>
+                        </span>
                     </div>
-                    
-                    <div class="game-data">
-                        <div class="ah-chips">
-                            ${homeChip}
-                            ${awayChip}
-                        </div>
-                        <div class="game-actions">
-                            ${hint}
-                            ${this.isExpandable ? '<div class="expand-btn" role="button" tabindex="0">▼</div>' : ''}
-                        </div>
+                    <div class="game-odds-summary">
+                        ${homeChip} / ${awayChip}
+                        <span class="ev-summary ${evClass}">${evPercent}% EV</span>
+                        ${this.isExpandable ? '<button class="expand-btn" aria-label="Expand details" aria-expanded="false">▼</button>' : ''}
                     </div>
                 </div>
-                
                 ${this.isExpandable ? this.renderExpansion() : ''}
             </div>
         `;
@@ -268,6 +265,13 @@ class DayNavigator {
                     let label;
                     if (day.getTime() === today.getTime()) {
                         label = 'Today';
+                        // Add class for today
+                        return `
+                            <button class="day-tab today ${this.parlayKing.uiState.currentDay === index.toString() ? 'active' : ''}" 
+                                    data-day="${index}" onclick="window.parlayKing.switchDay('${index}')">
+                                ${label}
+                            </button>
+                        `;
                     } else if (day.getTime() === tomorrow.getTime()) {
                         label = 'Tomorrow';
                     } else {
@@ -282,7 +286,7 @@ class DayNavigator {
                         <button class="day-tab ${this.parlayKing.uiState.currentDay === index.toString() ? 'active' : ''}" 
                                 data-day="${index}" onclick="window.parlayKing.switchDay('${index}')">
                             ${label}
-                </button>
+                        </button>
                     `;
                 }).join('')}
             </div>
@@ -1401,7 +1405,9 @@ class ParlayKing {
             expandedDetails.style.maxHeight = '0';
             requestAnimationFrame(() => {
                 expandedDetails.style.maxHeight = expandedDetails.scrollHeight + 'px';
+                expandedDetails.classList.add('fade-in');  // Add animation class
             });
+            expandBtn.setAttribute('aria-expanded', 'true');
         } else {
             this.uiState.expandedCards.delete(gameId);
             expandedDetails.style.maxHeight = '0';
@@ -1411,7 +1417,9 @@ class ParlayKing {
             setTimeout(() => {
                 expandedDetails.classList.add('hidden');
                 expandedDetails.style.maxHeight = '';
+                expandedDetails.classList.remove('fade-in');
             }, 200);
+            expandBtn.setAttribute('aria-expanded', 'false');
         }
     }
 

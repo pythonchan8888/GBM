@@ -442,3 +442,60 @@
   color: var(--text-tertiary);
   font-size: var(--font-size-xs);
 }
+
+.game-card--v4 .game-row { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    padding: 12px; 
+    min-height: 72px; 
+    border-radius: 8px; 
+    background: var(--surface); 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+}
+
+.game-matchup-inline { 
+    flex: 1; 
+    display: flex; 
+    align-items: center; 
+    gap: 4px; 
+    font-size: 14px; 
+}
+
+.team-home, .team-away { 
+    display: flex; 
+    align-items: center; 
+    gap: 4px; 
+}
+
+.team-name { 
+    font-size: 14px; 
+    letter-spacing: 0.2px; 
+    line-height: 1.2;
+}
+
+.team-icon { 
+    width: 16px; 
+    height: 16px; 
+    color: var(--text-secondary); 
+}
+
+.game-odds-summary { 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    font-size: 12px; 
+}
+
+.ev-summary { 
+    padding: 2px 6px; 
+    border-radius: 12px; 
+    background: rgba(255,122,69,0.1); 
+    color: var(--primary); 
+}
+
+.ev-summary.high { 
+    background: rgba(46,204,113,0.15); 
+    color: var(--positive); 
+    animation: pulse-subtle 2s infinite; 
+}

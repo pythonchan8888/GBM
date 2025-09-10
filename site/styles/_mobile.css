@@ -597,3 +597,13 @@
   outline: none;
   box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.3);
 }
+
+@media (max-width: 768px) {
+    .game-card--v4 .game-row { 
+        padding: 8px; 
+        min-height: 64px; 
+    }
+    .game-matchup-inline { 
+        font-size: 13px; 
+    }
+}
