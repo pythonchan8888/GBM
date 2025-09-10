@@ -4627,21 +4627,21 @@ else:
                                     # Only retry if validation completely failed and we have retries left
                                     if enable_retry and attempt < max_retries - 1:
                                         logging.warning("Response failed validation—retrying with adjusted prompt.")
-                                    messages.append({"role": "assistant", "content": raw_content})
+                                        messages.append({"role": "assistant", "content": raw_content})
                                         messages.append({"role": "user", "content": "Please provide a clearer, more concise response. Ensure the insight is meaningful and the reasoning explains your position."})
-                                    data["messages"] = messages
+                                        data["messages"] = messages
                                         data["max_tokens"] = 1200
-                                    data["search_parameters"] = {"mode": "off"}  # Disable search on retry
-                                    continue
+                                        data["search_parameters"] = {"mode": "off"}  # Disable search on retry
+                                        continue
                                     
                                     # Return what we have, even if not perfect
-                                return {
-                                    "agreement": agreement,
+                                    return {
+                                        "agreement": agreement,
                                         "insight": insight if len(insight) > 10 else "Analysis inconclusive—rely on EV.",
                                         "reasoning": reasoning if len(reasoning) > 10 else "Unable to provide detailed reasoning.",
-                                    "sources": sources,
-                                    "raw_response": raw_response
-                                }
+                                        "sources": sources,
+                                        "raw_response": raw_response
+                                    }
                             except json.JSONDecodeError:
                                 logging.warning("JSON parse failed—using fallback.")
                                 match = re.search(r'\{.*"insight":\s*"([^"]+)"', raw_content, re.DOTALL)
