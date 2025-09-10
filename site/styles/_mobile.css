@@ -277,9 +277,9 @@
   }
 
   .game-card--v3 .game-row {
-    padding: 6px;
-    gap: 6px;
-    min-height: 44px;
+    padding: 8px;
+    gap: 8px;
+    min-height: 64px; /* Better touch targets */
   }
   
   .game-card--v3 .game-time {

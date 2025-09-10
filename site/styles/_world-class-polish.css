@@ -6,20 +6,23 @@
 
 /* Game Card Visual Hierarchy (FOTMOB Standard) */
 .team-name.team-favorite {
-  font-weight: 600; /* Bolder weight for the favorite */
+  font-weight: 700; /* Even bolder for clear hierarchy */
   color: var(--text); /* Brightest text color */
+  font-size: 14.5px; /* Slightly larger */
 }
 
 .team-name.team-underdog {
-  /* Keep normal weight but slightly dim the color */
+  font-weight: 400; /* Normal weight */
   color: var(--text-secondary); 
-  opacity: 0.8;
+  opacity: 0.85; /* Slightly less dim for better readability */
+  font-size: 14px;
 }
 
 /* Default state (for PK or when data is missing) */
 .team-name {
-  font-weight: 400;
+  font-weight: 500; /* Medium weight for neutral */
   color: var(--text);
+  font-size: 14px;
 }
 
 /* De-emphasize the "vs" separator */
@@ -296,15 +299,36 @@ small i,
   margin-right: var(--space-xs);
 }
 
-/* Game Hints - More Subtle */
+/* Game Hints - Enhanced for EV */
 .game-hint {
   opacity: 0.9;
   transition: var(--transition-fast);
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-hint--active {
+  color: var(--primary);
+  background: rgba(230, 126, 34, 0.15);
+}
+
+.game-hint--high-ev {
+  color: var(--positive);
+  background: rgba(46, 204, 113, 0.15);
+  animation: pulse-subtle 2s ease-in-out infinite;
 }
 
 .game-hint:hover {
   opacity: 1;
   transform: scale(1.1);
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
 }
 
 /* ===== 8. MICRO-INTERACTIONS ===== */

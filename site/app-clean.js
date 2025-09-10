@@ -158,8 +158,11 @@ class GameCard {
         }
 
         const formatLine = (line) => {
-            if (line === 0) return 'PK';
-            return line > 0 ? `+${line}` : `${line}`.replace('-', '−');
+            if (line === 0) return '0.0';
+            // Ensure accurate formatting for decimals
+            const decimalPlaces = Math.abs(line) % 0.5 === 0 ? 1 : 2;
+            const formatted = line.toFixed(decimalPlaces);
+            return line > 0 ? `+${formatted}` : `${formatted}`.replace('-', '−');
         };
 
         const isHomeRecommended = this.game.hasRecommendation && this.game.recommendedTeam === this.game.home;
@@ -194,9 +197,11 @@ class GameCard {
     }
     
     renderHint() {
-        // Single diamond for any recommendation
+        // Enhanced visual cues for positive EV picks
         if (this.game.hasRecommendation && this.game.ev > 0) {
-            return '<span class="game-hint" title="Recommendation available"><i data-feather="zap"></i></span>';
+            const evPercent = (this.game.ev * 100).toFixed(1);
+            const hintClass = this.game.ev > 0.15 ? 'game-hint--high-ev' : 'game-hint--active';
+            return `<span class="game-hint ${hintClass}" title="Positive EV Pick: ${evPercent}%"><i data-feather="zap"></i></span>`;
         }
         return '';
     }
@@ -1106,6 +1111,9 @@ class ParlayKing {
                 
                 // Add event listeners for day navigation
                 this.setupDayNavigationListeners();
+                
+                // Center the active tab on mobile
+                this.centerActiveDayTab();
             }
 
             if (!this.data.unifiedGames || this.data.unifiedGames.length === 0) {
@@ -1313,6 +1321,9 @@ class ParlayKing {
             tab.classList.toggle('active', tab.dataset.day === dayIndex.toString());
         });
         
+        // Center the active tab on mobile
+        this.centerActiveDayTab();
+        
         const container = document.getElementById('unified-games-container');
         if (container) {
             container.style.opacity = '0.5';
@@ -1323,6 +1334,20 @@ class ParlayKing {
                 container.style.opacity = '1';
                 container.style.transform = 'translateY(0)';
             }, 150);
+        }
+    }
+    
+    centerActiveDayTab() {
+        // Center the active day tab on mobile for better UX
+        const activeTab = document.querySelector('.day-tab.active');
+        if (activeTab && window.innerWidth <= 768) {
+            setTimeout(() => {
+                activeTab.scrollIntoView({
+                    behavior: 'smooth',
+                    inline: 'center',
+                    block: 'nearest'
+                });
+            }, 100);
         }
     }
     
