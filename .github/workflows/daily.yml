@@ -241,7 +241,7 @@ jobs:
           
           echo "Minifying JavaScript..."
           if command -v uglifyjs &> /dev/null; then
-            uglifyjs site/app.js -c -m -o site/app.min.js
+            uglifyjs site/app-clean.js -c -m -o site/app.min.js
             sed -i 's/app.js/app.min.js/g' site/*.html
             echo "✅ JavaScript minified successfully"
           else
