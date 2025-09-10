@@ -101,18 +101,22 @@ class GameCard {
                     <div class="game-matchup">
                         <div class="team-row">
                             <span class="${homeTeamClass}">${this.game.home}</span>
-                            ${homeChip}
                         </div>
                         <div class="vs-separator">vs</div>
                         <div class="team-row">
                             <span class="${awayTeamClass}">${this.game.away}</span>
-                            ${awayChip}
                         </div>
                     </div>
                     
-                    <div class="game-actions">
-                        ${hint}
-                        ${this.isExpandable ? '<div class="expand-btn" role="button" tabindex="0">▼</div>' : ''}
+                    <div class="game-data">
+                        <div class="ah-chips">
+                            ${homeChip}
+                            ${awayChip}
+                        </div>
+                        <div class="game-actions">
+                            ${hint}
+                            ${this.isExpandable ? '<div class="expand-btn" role="button" tabindex="0">▼</div>' : ''}
+                        </div>
                     </div>
                 </div>
                 

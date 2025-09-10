@@ -8,8 +8,8 @@
   --bg-rgb: 11, 18, 32; /* RGB values for rgba() usage */
   --bg-secondary: #121A2A;
   --text: #F5F7FA; /* soft white-blue */
-  --text-secondary: #E6EBF2;
-  --text-tertiary: #A3AEC0;
+  --text-secondary: #B0B8C8; /* Improved contrast for accessibility */
+  --text-tertiary: #8A95AC; /* Better WCAG compliance */
   --text-on-primary: #FFFFFF; /* White text on primary color */
   --panel: rgba(18, 26, 42, 0.85);
   --panel-elevated: rgba(22, 32, 52, 0.92);
