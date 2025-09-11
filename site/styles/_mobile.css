@@ -14,7 +14,7 @@
 
   /* ===== MAIN CONTAINER MOBILE (CONSOLIDATED & FIXED) ===== */
   .main-container {
-    padding-top: var(--space-xs); /* Minimal top padding (4px) */
+    padding-top: var(--space-sm); /* Increased top padding (8px) for better spacing */
     padding-left: var(--space-md); /* Side padding (16px) */
     padding-right: var(--space-md); /* Side padding (16px) */
     

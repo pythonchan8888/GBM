@@ -512,7 +512,7 @@ body.page-overview .filter-bar,
 }
 
 .day-tab.today::after { 
-    content: '•'; 
+    content: ''; 
     color: var(--positive); 
     margin-left: 4px;
     font-size: 12px;
@@ -2968,7 +2968,7 @@ body.page-overview .filters-icon,
 
   /* ===== MAIN CONTAINER MOBILE (CONSOLIDATED & FIXED) ===== */
   .main-container {
-    padding-top: var(--space-xs); /* Minimal top padding (4px) */
+    padding-top: var(--space-lg); /* Increased top padding (24px) for better spacing */
     padding-left: var(--space-md); /* Side padding (16px) */
     padding-right: var(--space-md); /* Side padding (16px) */
     
