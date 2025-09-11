@@ -4627,12 +4627,12 @@ else:
                                     # Only retry if validation completely failed and we have retries left
                                     if enable_retry and attempt < max_retries - 1:
                                         logging.warning("Response failed validation—retrying with adjusted prompt.")
-                                    messages.append({"role": "assistant", "content": raw_content})
+                                        messages.append({"role": "assistant", "content": raw_content})
                                         messages.append({"role": "user", "content": "Please provide a clearer, more concise response. Ensure the insight is meaningful and the reasoning explains your position."})
-                                    data["messages"] = messages
+                                        data["messages"] = messages
                                         data["max_tokens"] = 1200
-                                    data["search_parameters"] = {"mode": "off"}  # Disable search on retry
-                                    continue
+                                        data["search_parameters"] = {"mode": "off"}  # Disable search on retry
+                                        continue
                                     
                                     # Return what we have, even if not perfect
                                 return {
