@@ -2664,7 +2664,7 @@ else:
     # --- Define the AH lines you are interested in for the Home team ---
     # (Negative means home team gives handicap, positive means home team receives handicap)
     # We will calculate P(Home team covers this line)
-    ah_lines_to_calculate = [-1.5, -1.25, -1.0, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5]
+    ah_lines_to_calculate = [-2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5, -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
     # You mentioned you're not keen on >2 goals, so this range is reasonable.
 
     # Collect all new columns in a dict to concat at once (avoids fragmentation)
@@ -4367,7 +4367,7 @@ else:
 
         # Step 4: Calculate AH Probabilities
         print("  Calculating AH outcome probabilities...")
-        ah_lines_to_calculate = [-1.5, -1.25, -1.0, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5]
+        ah_lines_to_calculate = [-2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5, -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
         new_ah_prob_cols = {}
         for line in ah_lines_to_calculate:
             line_str = str(line).replace(".", "p").replace("-", "neg")
@@ -5035,7 +5035,6 @@ def determine_signal_type(rec_data):
     secondary = 'value' if primary and ev > 0.08 else ''
     
     return {'primary': primary, 'secondary': secondary}
-
 def export_unified_games_schedule():
     """Export unified schedule leveraging existing all_data_unified"""
     try:
