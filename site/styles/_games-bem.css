@@ -137,8 +137,8 @@
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  padding: 8px;
-  min-height: 80px; /* Increased for better touch targets */
+  /* padding: 8px;  // Comment out to avoid mobile conflict */
+  /* min-height: 80px; // Moved to mobile */
 }
 
 .game-card__row {

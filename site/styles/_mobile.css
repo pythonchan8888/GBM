@@ -246,16 +246,23 @@
 
   /* ===== DAY NAVIGATOR MOBILE ===== */
   .day-navigator {
-    padding: 4px var(--space-sm);
-    gap: 2px;
-    margin-bottom: 2px;
+        padding: 8px var(--space-md); /* Increased padding for bigger feel */
+        gap: 6px; /* More breathing room between tabs */
+        margin-bottom: 4px;
     margin-top: 0;
+        justify-content: flex-start !important;
+        overflow-x: scroll !important;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory; /* More aggressive snap for magnetic feel */
   }
   
   .day-tab {
-    padding: 4px 12px;
-    font-size: 12px;
-    min-width: 60px;
+        padding: 8px 16px; /* Bigger tap targets */
+        font-size: 13px; /* Slightly larger text */
+        min-width: 80px; /* Wider tabs for better visibility */
+        flex-shrink: 0 !important;
+        scroll-snap-align: center;
+        border-radius: 20px; /* More rounded for modern feel */
   }
 
   /* ===== SCHEDULE HEADER MOBILE ===== */
@@ -265,15 +272,81 @@
 
   /* ===== GAME CARDS MOBILE ===== */
   .tier-group {
-    margin-bottom: var(--space-sm);
+        margin-bottom: 16px; /* Breathing room between leagues */
+    }
+    
+    .game-card--v4 {
+        margin-bottom: 12px; /* Spacing between individual cards */
+        background: var(--panel-elevated);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    /* Shine effect for cards with recommendations */
+    .game-card--v4[data-expandable="true"] {
+        background: linear-gradient(135deg, var(--panel-elevated) 0%, rgba(230, 126, 34, 0.05) 100%);
+        border: 1px solid rgba(230, 126, 34, 0.2);
+        box-shadow: 0 4px 16px rgba(230, 126, 34, 0.1);
+    }
+    
+    /* High-EV card highlighting */
+    .game-card--v4[data-high-ev="true"] {
+        border: 1px solid rgba(230, 126, 34, 0.4);
+        box-shadow: 0 0 12px rgba(230, 126, 34, 0.15);
+    }
+    
+    /* Low-EV card dimming */
+    .game-card--v4[data-low-ev="true"] {
+        opacity: 0.7;
+    }
+
+    /* Picked team shading */
+    .team-picked {
+        background: rgba(230, 126, 34, 0.1);
+        border-radius: 4px;
+        padding: 2px 4px;
+    }
+
+    /* EV icon styling */
+    .ev-icon {
+        color: var(--primary);
+        width: 16px;
+        height: 16px;
+    }
+
+    .ev-icon.high {
+        color: var(--positive);
+        animation: pulse-subtle 2s infinite;
+    }
+
+    /* Expansion balance */
+    .flex-balanced {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .right-aligned {
+        text-align: right;
+        flex-shrink: 0;
   }
   
   .tier-group-header {
     padding: 6px var(--space-md);
+        justify-content: space-between; /* Reinforce space-between */
   }
   
   .tier-group-header h4 {
     font-size: var(--font-size-sm);
+        flex-shrink: 1; /* Allow shrinking if needed */
+        max-width: calc(100% - 80px); /* Leave space for count (adjust if needed) */
+    }
+
+    .game-count {
+        flex-shrink: 0; /* Prevent shrinking */
   }
 
   .game-card--v3 .game-row {
@@ -425,40 +498,27 @@
 
   /* ===== ROI HEATMAP MOBILE OPTIMIZATIONS ===== */
   .chart-container {
-    /* FIX: Use max-height and allow height to adjust if content is less */
-    /* Use 60vh (60% of viewport height) as reasonable maximum before scrolling */
     max-height: 60vh;
     height: auto;
-
-    /* CRITICAL FIX: Enable vertical scrolling when content overflows */
     overflow-y: auto;
-    
-    /* Improve scrolling smoothness on iOS devices */
     -webkit-overflow-scrolling: touch;
-
-    /* Optional: Add slight padding for the scrollbar area */
     padding-right: var(--space-xs);
   }
 
   .heatmap-chart {
-    /* Let content dictate height */
     min-height: auto;
   }
 
-  /* Force override JavaScript-generated inline styles */
   #roi-heatmap .heatmap-grid,
   .heatmap-chart .heatmap-grid,
   .chart-container .heatmap-grid {
-    /* Stack heatmap cells vertically on mobile for better readability */
     grid-template-columns: 1fr !important;
     gap: var(--space-sm) !important;
   }
 
   .heatmap-cell {
-    /* Reduced padding for compact mobile layout */
     padding: var(--space-md);
-    min-height: 60px; /* Compact height since they're stacked */
-    /* Horizontal layout for mobile cells */
+        min-height: 60px;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
@@ -466,37 +526,33 @@
   }
 
   .heatmap-value {
-    /* Slightly smaller font size for the main value */
     font-size: var(--font-size-lg);
-    margin-bottom: 0; /* Remove bottom margin in horizontal layout */
+        margin-bottom: 0;
   }
 
   .heatmap-meta {
     font-size: var(--font-size-xs);
-    line-height: 1.2; /* Tighter line height for mobile */
-    text-align: right; /* Right-align metadata in horizontal layout */
-    flex-shrink: 0; /* Prevent metadata from shrinking */
-  }
+        line-height: 1.2;
+        text-align: right;
+        flex-shrink: 0;
+    }
 
-  /* Create a mobile-specific layout structure for heatmap cells */
   #roi-heatmap .heatmap-cell,
   .heatmap-chart .heatmap-cell,
   .chart-container .heatmap-cell {
-    display: flex !important; /* Override desktop column layout */
+        display: flex !important;
     flex-direction: row !important;
     justify-content: space-between !important;
     align-items: center !important;
-    text-align: left !important; /* Override center alignment for horizontal layout */
+        text-align: left !important;
   }
 
   .heatmap-value {
-    /* Left side: ROI percentage */
     flex-shrink: 0;
     font-weight: 700;
   }
 
   .heatmap-meta {
-    /* Right side: Line and bet count */
     flex-shrink: 0;
     text-align: right;
   }
@@ -504,7 +560,7 @@
   /* ===== SMALL TEXT ICONS MOBILE ===== */
   small i,
   .responsible-betting i {
-    width: 8px; /* Even smaller on mobile for better proportion */
+        width: 8px;
     height: 8px;
     stroke-width: 1.5;
     margin-right: 2px;
@@ -598,51 +654,272 @@
   box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.3);
 }
 
-/* Pull-to-refresh styles */
-.pull-refresh { 
-    touch-action: pan-y; 
-    position: relative; 
-}
+/* Pull-to-refresh styles - MOBILE ONLY */
+@media (max-width: 768px) {
+    .pull-refresh { 
+        touch-action: pan-y; 
+        position: relative; 
+    }
 
-.pull-refresh::before { 
-    content: ''; 
-    position: absolute; 
-    top: -50px; 
-    left: 0; 
-    width: 100%; 
-    height: 50px; 
-    background: var(--surface); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    transform: translateY(0); 
-    transition: transform 0.3s ease; 
-    color: var(--text-secondary);
-    font-size: 14px;
-    border-radius: 0 0 12px 12px;
-}
+    .pull-refresh::before { 
+        content: ''; 
+        position: fixed; 
+        top: -100px; 
+        left: 50%; 
+        transform: translateX(-50%); 
+        width: 40px; 
+        height: 40px; 
+        background: var(--panel-elevated); 
+        border: 2px solid var(--primary);
+        border-radius: 50%; 
+        display: none !important; /* Force completely hidden by default */
+        align-items: center; 
+        justify-content: center; 
+        transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1); 
+        color: var(--primary);
+        font-size: 18px;
+        box-shadow: 0 4px 12px rgba(230, 126, 34, 0.2);
+        z-index: 1001; /* Above game cards */
+        opacity: 0;
+        visibility: hidden; /* Additional hiding */
+    }
 
-.pull-refresh.pulling::before { 
-    content: '↓ Pull to refresh'; 
-    transform: translateY(calc(var(--pull-distance, 0px) - 50px)); 
-}
+    .pull-refresh.pulling::before { 
+        content: '↓'; 
+        display: flex !important; /* Force show when pulling */
+        opacity: 1;
+        visibility: visible; /* Override hidden state */
+        transform: translateX(-50%) translateY(calc(var(--pull-distance, 0px) - 60px)); 
+        border-color: var(--primary);
+        color: var(--primary);
+    }
 
-.pull-refresh.refreshing::before { 
-    content: 'Refreshing...'; 
-    transform: translateY(0); 
-    animation: spin 1s linear infinite; 
-}
+    .pull-refresh.refreshing::before { 
+        content: '⟳'; 
+        display: flex !important; /* Force show when refreshing */
+        opacity: 1;
+        visibility: visible; /* Override hidden state */
+        transform: translateX(-50%) translateY(0); 
+        animation: refresh-spin 1s linear infinite; 
+        border-color: var(--positive);
+        color: var(--positive);
+        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
 
-@keyframes spin { 
-    to { transform: translateY(0) rotate(360deg); } 
+    @keyframes refresh-spin { 
+        0% { transform: translateX(-50%) rotate(0deg); }
+        100% { transform: translateX(-50%) rotate(360deg); }
+    }
 }
 
 @media (max-width: 768px) {
     .game-card--v4 .game-row { 
-        padding: 8px; 
-        min-height: 64px; 
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 12px !important; 
+        min-height: 72px !important;
+        gap: 12px !important;
     }
+    
     .game-matchup-inline { 
-        font-size: 13px; 
+        font-size: 13px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex: 1 !important;
+        gap: 8px !important;
     }
+    
+    .game-meta-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+    
+    .team-home {
+        text-align: right;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 4px; /* Tighter gap between AH line and team name */
+    }
+    
+    .team-away {
+        text-align: left;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 4px; /* Tighter gap between team name and AH line */
+    }
+    
+    .vs-fixed {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        font-weight: 500;
+        min-width: 40px !important;
+        text-align: center !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .team-name {
+        font-size: 14px !important; /* Increased from 13px for better readability */
+        font-weight: 500;
+        white-space: nowrap !important; /* Force single line */
+        overflow: hidden !important; /* Hide overflow */
+        text-overflow: ellipsis !important; /* Add ... if needed */
+        max-width: 120px !important; /* Limit width to prevent wrapping */
+    }
+    
+    .team-ah-inline {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        opacity: 0.7;
+        font-weight: 500;
+    }
+    
+    /* Hide the old AH chips in game-odds-summary */
+    .game-card--v4 .game-odds-summary .ah-chip {
+        display: none !important;
+    }
+    
+    /* Show EV hint instead of chips */
+    .game-card--v4 .game-odds-summary {
+        justify-content: flex-end;
+        gap: 8px;
+    }
+    
+    .ev-display {
+        background: var(--primary);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        font-family: var(--font-mono);
+    }
+    
+    .ev-display.high {
+        background: var(--positive);
+        animation: pulse-subtle 2s infinite;
+    }
+    
+    .expand-icon {
+        background: transparent;
+        border: none;
+        color: var(--primary);
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .expand-icon:hover {
+        background: rgba(230, 126, 34, 0.1);
+    }
+    
+    .expand-icon i {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+    }
+    
+    .game-card--v4[data-expanded="true"] .expand-icon i {
+        transform: rotate(180deg);
+    }
+
+    /* EV icon styling */
+    .ev-icon {
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+    }
+}
+
+@media (prefers-contrast: high) {
+    .ah-chip--selected {
+        border-width: 3px;
+    }
+    .team-favorite {
+        font-weight: 700;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .kpi-card,
+    .rec-card,
+    .day-tab,
+    .expand-btn {
+        transition: none;
+    }
+}
+
+/* Skeleton loaders */
+.skeleton-group {
+    opacity: 0.7;
+    margin-bottom: 16px;
+}
+
+.skeleton-header {
+    height: 24px;
+    background: var(--border);
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.skeleton-card {
+    height: 72px;
+    background: linear-gradient(90deg, var(--border) 25%, var(--panel) 50%, var(--border) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.expanded-details {
+    padding: 16px !important;
+    min-height: 120px;
+    background: var(--panel-elevated);
+    border-top: 1px solid var(--border);
+}
+
+.pick-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.team-name {
+    color: var(--text-primary) !important; /* Offwhite for both teams */
+    font-weight: normal;
+}
+
+.team-picked {
+    font-weight: bold !important;
+}
+
+.analysis-content {
+    margin-top: 16px; /* Increased spacing from rec/EV line */
+    padding-top: 12px; /* Additional padding */
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Subtle separator */
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: 1.4;
 }

@@ -87,41 +87,42 @@ class GameCard {
     render() {
         const timeDisplay = this.formatTime(this.game.datetime);
         const { homeChip, awayChip, homeTeamClass, awayTeamClass } = this.renderAhChips();
-        const hint = this.renderHint();
         
         const evPercent = this.game.ev ? (this.game.ev * 100).toFixed(1) : 0;
         const evClass = this.game.ev > 0.15 ? 'high' : '';
         
         const homeShort = this.shortenTeamName(this.game.home);
         const awayShort = this.shortenTeamName(this.game.away);
-        const homeAh = this.formatLine(this.game.homeLine);
-        const awayAh = this.formatLine(this.game.awayLine);
+        const homeAh = this.formatAh(this.game.homeLine);
+        const awayAh = this.formatAh(this.game.awayLine);
+        
+        // Fix: Only bold the actual recommended team, not based on AH favorite
+        const homePicked = this.game.hasRecommendation && this.game.recommendedTeam === this.game.home ? 'team-picked' : '';
+        const awayPicked = this.game.hasRecommendation && this.game.recommendedTeam === this.game.away ? 'team-picked' : '';
 
         return `
             <div class="game-card game-card--v4" 
                  data-game-id="${this.game.datetime.getTime()}"
                  data-expandable="${this.isExpandable}"
-                 data-expanded="false">
+                 data-expanded="false"
+                 data-high-ev="${this.game.ev && this.game.ev > 0.15 ? 'true' : 'false'}"
+                 data-low-ev="${this.game.ev && this.game.ev < 0.05 ? 'true' : 'false'}">
                 
                 <div class="game-row">
                     <div class="game-time">${timeDisplay}</div>
                     <div class="game-matchup-inline">
-                        <span class="team-home ${homeTeamClass}">
-                            <span class="team-ah">${homeAh}</span>
-                            <i data-feather="shield" class="team-icon"></i>
-                            ${homeShort}
-                        </span>
-                        <span class="vs">vs</span>
-                        <span class="team-away ${awayTeamClass}">
-                            ${awayShort}
-                            <i data-feather="shield" class="team-icon"></i>
-                            <span class="team-ah">${awayAh}</span>
-                        </span>
+                        <div class="team-home">
+                            <span class="team-ah-inline">${homeAh}</span>
+                            <span class="team-name ${homePicked}">${homeShort}</span>
                     </div>
-                    <div class="game-odds-summary">
-                        ${homeChip} / ${awayChip}
-                        ${hint}
-                        ${this.isExpandable ? '<button class="expand-btn" aria-label="Expand details" aria-expanded="false">▼</button>' : ''}
+                        <span class="vs-fixed">vs</span>
+                        <div class="team-away">
+                            <span class="team-name ${awayPicked}">${awayShort}</span>
+                            <span class="team-ah-inline">${awayAh}</span>
+                        </div>
+                    </div>
+                    <div class="game-meta-right">
+                        ${this.game.hasRecommendation && this.game.ev ? `<i data-feather="zap" class="ev-icon ${evClass}" title="EV ${evPercent}%"></i>` : ''}
                     </div>
                 </div>
                 ${this.isExpandable ? this.renderExpansion() : ''}
@@ -133,23 +134,23 @@ class GameCard {
         const confidenceIcon = this.game.confidence === 'High' ? '<i data-feather="award"></i>' : 
                               this.game.confidence === 'Medium' ? '<i data-feather="star"></i>' : '<i data-feather="circle"></i>';
         
+        // Add local calculations for evPercent and evClass
+        const evPercent = this.game.ev ? (this.game.ev * 100).toFixed(1) : 0;
+        const evClass = this.game.ev > 0.15 ? 'high' : '';
+        
         return `
             <div class="expanded-details hidden">
-                <div class="pick-section">
-                    <div class="pick-main">
-                        <strong>${this.game.recText}</strong> @ ${this.game.recOdds.toFixed(2)}
+                <div class="pick-section flex-balanced">
+                    <div class="pick-main flex-grow">
+                        <strong>${this.game.recText}</strong>
                     </div>
-                    <div class="pick-meta">
+                    <div class="pick-meta right-aligned">
                         <span class="ev-badge ${evClass}">EV ${evPercent}%</span>
-                        <span class="confidence-icon" title="${this.game.confidence}">${confidenceIcon}</span>
                     </div>
                 </div>
                 
                 ${this.game.kingsCall ? `
-                    <button class="analysis-toggle" onclick="window.parlayKing.toggleAnalysis(this)" aria-expanded="false">
-                        Show Analysis ▼
-                    </button>
-                    <div class="analysis-content hidden">
+                <div class="analysis-content">
                         <p class="analysis-text">${this.game.kingsCall}</p>
                     </div>
                 ` : ''}
@@ -164,14 +165,6 @@ class GameCard {
                 awayChip: '<span class="ah-chip ah-chip--empty">—</span>'
             };
         }
-
-        const formatLine = (line) => {
-            if (line === 0) return '0.0';
-            // Ensure accurate formatting for decimals
-            const decimalPlaces = Math.abs(line) % 0.5 === 0 ? 1 : 2;
-            const formatted = line.toFixed(decimalPlaces);
-            return line > 0 ? `+${formatted}` : `${formatted}`.replace('-', '−');
-        };
 
         const isHomeRecommended = this.game.hasRecommendation && this.game.recommendedTeam === this.game.home;
         const isAwayRecommended = this.game.hasRecommendation && this.game.recommendedTeam === this.game.away;
@@ -197,8 +190,8 @@ class GameCard {
         const awayTeamClass = isAwayFavorite ? 'team-name team-favorite' : 'team-name team-underdog';
 
         return {
-            homeChip: `<span class="${homeChipClass}">${formatLine(this.game.homeLine)}</span>`,
-            awayChip: `<span class="${awayChipClass}">${formatLine(this.game.awayLine)}</span>`,
+            homeChip: `<span class="${homeChipClass}">${this.formatAh(this.game.homeLine)}</span>`,
+            awayChip: `<span class="${awayChipClass}">${this.formatAh(this.game.awayLine)}</span>`,
             homeTeamClass: homeTeamClass,
             awayTeamClass: awayTeamClass
         };
@@ -223,17 +216,26 @@ class GameCard {
         });
     }
 
+    formatAh(line) {
+        if (line === 0) return '0.0';
+        // Ensure accurate formatting for decimals
+        const decimalPlaces = Math.abs(line) % 0.5 === 0 ? 1 : 2;
+        const formatted = line.toFixed(decimalPlaces);
+        return line > 0 ? `+${formatted}` : `${formatted}`.replace('-', '−');
+    }
+
     shortenTeamName(name) {
         const tier1Mappings = {
+            // Premier League
             'Brighton & Hove Albion': 'Brighton',
             'Manchester United': 'Man Utd',
             'Manchester City': 'Man City',
             'Tottenham Hotspur': 'Tottenham',
             'West Ham United': 'West Ham',
-            'Aston Villa': 'Aston Villa',
+            'Aston Villa': 'Villa',
             'Newcastle United': 'Newcastle',
-            'Crystal Palace': 'Crystal Palace',
-            'Nottingham Forest': 'Nottm Forest',
+            'Crystal Palace': 'Palace',
+            'Nottingham Forest': 'Forest',
             'Bournemouth': 'Bournemouth',
             'Wolverhampton Wanderers': 'Wolves',
             'Leicester City': 'Leicester',
@@ -248,39 +250,120 @@ class GameCard {
             // La Liga
             'Real Madrid': 'Real Madrid',
             'Barcelona': 'Barcelona',
-            'Atletico Madrid': 'Atletico Madrid',
-            'Athletic Bilbao': 'Athletic Bilbao',
-            'Real Sociedad': 'Real Sociedad',
+            'Atletico Madrid': 'Atletico',
+            'Athletic Bilbao': 'Athletic',
+            'Real Sociedad': 'Sociedad',
             'Valencia': 'Valencia',
             'Villarreal': 'Villarreal',
             'Sevilla': 'Sevilla',
+            'Real Betis': 'Betis',
+            'Celta Vigo': 'Celta',
+            'Rayo Vallecano': 'Rayo',
+            'Deportivo Alaves': 'Alaves',
+            'Las Palmas': 'Las Palmas',
+            'RCD Espanyol': 'Espanyol',
+            'RCD Mallorca': 'Mallorca',
             // Bundesliga
-            'Bayern Munich': 'Bayern Munich',
+            'Bayern Munich': 'Bayern',
             'Borussia Dortmund': 'Dortmund',
-            'RB Leipzig': 'RB Leipzig',
+            'RB Leipzig': 'Leipzig',
             'Bayer Leverkusen': 'Leverkusen',
-            'Borussia Monchengladbach': 'Monchengladbach',
+            'Borussia Monchengladbach': 'Gladbach',
+            'Eintracht Frankfurt': 'Frankfurt',
+            'VfB Stuttgart': 'Stuttgart',
+            'SC Freiburg': 'Freiburg',
+            'TSG Hoffenheim': 'Hoffenheim',
+            'FC Augsburg': 'Augsburg',
+            'Werder Bremen': 'Bremen',
             // Serie A
             'Inter Milan': 'Inter',
-            'AC Milan': 'AC Milan',
+            'AC Milan': 'Milan',
             'Juventus': 'Juventus',
             'Napoli': 'Napoli',
             'Roma': 'Roma',
             'Lazio': 'Lazio',
+            'Atalanta': 'Atalanta',
+            'Fiorentina': 'Fiorentina',
+            'Hellas Verona': 'Verona',
+            'Udinese': 'Udinese',
+            'Bologna': 'Bologna',
+            'Torino': 'Torino',
+            'Genoa': 'Genoa',
+            'Como': 'Como',
+            'Empoli': 'Empoli',
+            'Parma': 'Parma',
+            'Cagliari': 'Cagliari',
+            'Lecce': 'Lecce',
+            'Venezia': 'Venezia',
+            'Monza': 'Monza',
             // Ligue 1
             'Paris Saint-Germain': 'PSG',
             'Monaco': 'Monaco',
             'Lyon': 'Lyon',
             'Marseille': 'Marseille',
             'Lille': 'Lille',
-            // Add more as needed
+            'Olympique Marseille': 'Marseille',
+            'Olympique Lyonnais': 'Lyon',
+            'AS Saint-Etienne': 'Saint-Etienne',
+            'FC Nantes': 'Nantes',
+            'Stade Rennais': 'Rennes',
+            'RC Lens': 'Lens',
+            'Montpellier': 'Montpellier',
+            'OGC Nice': 'Nice',
+            'RC Strasbourg': 'Strasbourg',
+            'Toulouse': 'Toulouse',
+            'Lorient': 'Lorient',
+            'Angers': 'Angers',
+            'Brest': 'Brest',
+            'Clermont': 'Clermont',
+            'Troyes': 'Troyes',
+            // Japan J1
+            'Machida Zelvia': 'Machida',
+            'Yokohama F. Marinos': 'Yokohama',
+            'Kashiwa Reysol': 'Kashiwa',
+            'Vissel Kobe': 'Vissel',
+            'Sanfrecce Hiroshima': 'Hiroshima',
+            'Kyoto Sanga': 'Kyoto',
+            'FC Tokyo': 'FC Tokyo',
+            'Kawasaki Frontale': 'Kawasaki',
+            'Cerezo Osaka': 'Cerezo',
+            'Gamba Osaka': 'Gamba',
+            'Urawa Red Diamonds': 'Urawa',
+            'Nagoya Grampus': 'Nagoya',
+            'Avispa Fukuoka': 'Fukuoka',
+            'Shonan Bellmare': 'Shonan',
+            'Albirex Niigata': 'Niigata',
+            'Consadole Sapporo': 'Sapporo',
+            'Jubilo Iwata': 'Iwata',
+            'Kashima Antlers': 'Kashima'
         };
 
-        return tier1Mappings[name] || name
+        const lowerName = name.toLowerCase();
+        for (let key in tier1Mappings) {
+            if (key.toLowerCase() === lowerName) {
+                return tier1Mappings[key];
+            }
+        }
+
+        // Aggressive fallback shortening for any remaining long names
+        return name
             .replace(/ & Hove Albion/g, '')
             .replace(/ United/g, ' Utd')
             .replace(/ City/g, ' City')
             .replace(/ Hotspur/g, '')
+            .replace(/ F\. Marinos/g, '')
+            .replace(/ Saint-Germain/g, '')
+            .replace(/ Marseille/g, '')
+            .replace(/Olympique /g, '')
+            .replace(/FC /g, '')
+            .replace(/AS /g, '')
+            .replace(/RC /g, '')
+            .replace(/OGC /g, '')
+            .replace(/Stade /g, '')
+            .replace(/ Zelvia/g, '')
+            .replace(/ Reysol/g, '')
+            .replace(/ Hiroshima/g, '')
+            .replace(/ Sanga/g, '')
             .trim();
     }
 }
@@ -295,36 +378,113 @@ class DayNavigator {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
-        // Generate 7 consecutive days starting from today (FOTMOB style)
-        const sevenDays = [];
-        for (let i = 0; i < 7; i++) {
+        // Generate 4 consecutive days starting from today (cleaner mobile UI)
+        const fourDays = [];
+        for (let i = 0; i < 4; i++) {
             const day = new Date(today);
             day.setDate(today.getDate() + i);
-            sevenDays.push(day);
+            fourDays.push(day);
         }
         
-        return sevenDays;
+        return fourDays;
     }
     
     setupSwipeGestures(navElement) {
-        let touchStartX = 0;
-        let touchEndX = 0;
-        const minSwipeDistance = 50; // Pixels to trigger swipe
-        
-        navElement.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
+        // Check if Hammer.js is available
+        if (typeof Hammer === 'undefined') {
+            console.warn('Hammer.js not loaded, falling back to touch events');
+            this.setupFallbackSwipeGestures(navElement);
+            return;
+        }
+
+        const hammer = new Hammer(navElement);
+        hammer.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL, threshold: 10 });
+
+        let startScroll = 0;
+        hammer.on('panstart', (e) => {
+            startScroll = navElement.scrollLeft;
+        });
+
+        hammer.on('pan', (e) => {
+            // Smooth scrolling during pan - invert deltaX for natural feel
+            navElement.scrollLeft = startScroll - e.deltaX;
+        });
+
+        hammer.on('panend', (e) => {
+            const currentDay = parseInt(this.parlayKing.uiState.currentDay) || 0;
+            const velocity = e.velocityX;
+            const deltaX = e.deltaX;
+            
+            // Determine direction: left swipe (negative deltaX) = next day, right swipe = previous day
+            let targetDay = currentDay;
+            
+             if (Math.abs(deltaX) > 50 || Math.abs(velocity) > 0.3) {
+                 if (deltaX < 0) {
+                     // Swiped left = next day
+                     targetDay = Math.min(3, currentDay + 1);
+                 } else {
+                     // Swiped right = previous day  
+                     targetDay = Math.max(0, currentDay - 1);
+                 }
+            } else {
+                // Small swipe - find closest tab to center
+                const tabs = navElement.querySelectorAll('.day-tab');
+                let closestTab = null;
+                let minDistance = Infinity;
+                
+                tabs.forEach((tab) => {
+                    const tabRect = tab.getBoundingClientRect();
+                    const navRect = navElement.getBoundingClientRect();
+                    const tabCenter = tabRect.left + tabRect.width / 2;
+                    const navCenter = navRect.left + navRect.width / 2;
+                    const distance = Math.abs(tabCenter - navCenter);
+                    
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestTab = tab;
+                    }
+                });
+                
+                if (closestTab) {
+                    targetDay = parseInt(closestTab.dataset.day);
+                }
+            }
+            
+            // Switch to the target day (this will center it and apply orange background)
+            this.parlayKing.switchDay(targetDay.toString());
+        });
+    }
+
+    setupFallbackSwipeGestures(navElement) {
+        let startX = 0;
+        let startScrollLeft = 0;
+
+        navElement.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].pageX;
+            startScrollLeft = navElement.scrollLeft;
         }, { passive: true });
         
-        navElement.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            const swipeDistance = touchStartX - touchEndX;
+        navElement.addEventListener('touchmove', (e) => {
+            const deltaX = e.touches[0].pageX - startX;
+            navElement.scrollLeft = startScrollLeft - deltaX;
+        }, { passive: true });
+
+        navElement.addEventListener('touchend', (e) => {
+            const endX = e.changedTouches[0].pageX;
+            const deltaX = startX - endX;
+            const currentDay = parseInt(this.parlayKing.uiState.currentDay) || 0;
             
-            if (Math.abs(swipeDistance) > minSwipeDistance) {
-                const currentIndex = parseInt(this.parlayKing.uiState.currentDay) || 0;
-                const direction = swipeDistance > 0 ? -1 : 1; // Left swipe (positive): prev, Right (negative): next
-                const newIndex = Math.max(0, Math.min(6, currentIndex + direction)); // 0-6 days
-                
-                this.parlayKing.switchDay(newIndex.toString());
+             // If significant swipe, change day
+             if (Math.abs(deltaX) > 50) {
+                 let targetDay = currentDay;
+                 if (deltaX > 0) {
+                     // Swiped left = next day
+                     targetDay = Math.min(3, currentDay + 1);
+                 } else {
+                     // Swiped right = previous day
+                     targetDay = Math.max(0, currentDay - 1);
+                 }
+                this.parlayKing.switchDay(targetDay.toString());
             }
         }, { passive: true });
     }
@@ -345,7 +505,7 @@ class DayNavigator {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
-        return `
+        const html = `
             <div class="day-navigator">
                 ${daysWithGames.map((day, index) => {
                     const today = new Date();
@@ -388,8 +548,10 @@ class DayNavigator {
             const navElement = document.querySelector('.day-navigator');
             if (navElement) {
                 this.setupSwipeGestures(navElement);
+                // Force immediate centering after DOM is ready
+                setTimeout(() => this.parlayKing.centerActiveDayTab(), 100);
             }
-        }, 100);
+        }, 50); // Reduced delay for faster initialization
         
         return html;
     }
@@ -416,7 +578,7 @@ class ParlayKing {
             viewMode: window.innerWidth <= 768 ? 'mobile' : 'desktop',
             expandedCards: new Set(),
             activeFilters: this.getFiltersFromURL(),
-            currentDay: '0', // Start with first day that has games
+            currentDay: '0', // Always start with TODAY (index 0)
             filtersDrawerOpen: false,
             renderedGames: 20,
             virtualScrollOffset: 0
@@ -513,6 +675,7 @@ class ParlayKing {
                 this.loadCSV('top_segments.csv').catch(() => []), // ADDED
                 this.loadCSV('parlay_wins.csv').catch(() => []) // ADDED
             ]);
+
 
             this.data = {
                 ...this.data,
@@ -633,14 +796,18 @@ class ParlayKing {
         if ((homeLine === null || awayLine === null) && game.hasRecommendation && game.recText) {
             const recMatch = game.recText.match(/^(.+?)\s+([-+]?\d*\.?\d+)$/);
             if (recMatch) {
-                const parsedTeam = recMatch[1].trim();
+                const parsedTeam = recMatch[1].trim().toLowerCase();
                 const parsedLine = parseFloat(recMatch[2]);
                 
-                if (parsedTeam === game.home || game.home.includes(parsedTeam)) {
+                const homeLower = game.home.toLowerCase();
+                const awayLower = game.away.toLowerCase();
+                
+                // Better matching: check both directions and use includes for partial matches
+                if (parsedTeam === homeLower || homeLower.includes(parsedTeam) || parsedTeam.includes(homeLower.split(' ')[0])) {
                     recommendedTeam = game.home;
                     homeLine = parsedLine;
                     awayLine = -parsedLine;
-                } else if (parsedTeam === game.away || game.away.includes(parsedTeam)) {
+                } else if (parsedTeam === awayLower || awayLower.includes(parsedTeam) || parsedTeam.includes(awayLower.split(' ')[0])) {
                     recommendedTeam = game.away;
                     awayLine = parsedLine;
                     homeLine = -parsedLine;
@@ -722,7 +889,11 @@ class ParlayKing {
     }
 
     isSameDay(date1, date2) {
-        return date1.toDateString() === date2.toDateString();
+        return (
+            date1.getUTCFullYear() === date2.getUTCFullYear() &&
+            date1.getUTCMonth() === date2.getUTCMonth() &&
+            date1.getUTCDate() === date2.getUTCDate()
+        );
     }
 
     getFiltersFromURL() {
@@ -733,6 +904,17 @@ class ParlayKing {
             minEV: parseFloat(params.get('minEV')) || 0,
             confidence: params.get('confidence') || 'all'
         };
+    }
+
+    updateURLParams() {
+        const params = new URLSearchParams(window.location.search);
+        params.set('day', this.uiState.currentDay);
+        params.set('dateRange', this.uiState.activeFilters.dateRange);
+        params.set('league', this.uiState.activeFilters.league);
+        params.set('minEV', this.uiState.activeFilters.minEV.toString());
+        params.set('confidence', this.uiState.activeFilters.confidence);
+        
+        history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
     }
 
     // Helper to determine the current page
@@ -1206,19 +1388,21 @@ class ParlayKing {
     updateUI() {
         this.updateKPIs();
         this.renderUnifiedSchedule();
-        this.renderRecommendations(); // Add recommendations rendering
+        this.renderRecommendations();
         this.updateLastRunStatus();
         
-        // Populate filter options if data is available
         this.populateFilterOptions();
         this.populateLeagueOptions('league-filter-recs');
         
-        // Initialize Feather icons after DOM updates
-        setTimeout(() => {
-            if (typeof feather !== 'undefined') {
-                feather.replace();
-            }
-        }, 100);
+        // Fallback load for Feather if not present
+        if (typeof feather === 'undefined') {
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/feather-icons';
+            script.onload = () => feather.replace();
+            document.head.appendChild(script);
+        } else {
+            setTimeout(() => feather.replace(), 200);
+        }
 
         this.switchDay(this.uiState.currentDay || '0');
     }
@@ -1254,12 +1438,23 @@ class ParlayKing {
                 return;
             }
             
-            // Show skeleton loaders while data is loading
+            // Show skeleton loaders while data is loading or empty
             if (!this.data.unifiedGames || this.data.unifiedGames.length === 0) {
-                container.innerHTML = Array(5).fill('<div class="game-card skeleton"></div>').join('');
+                let skeletonHtml = '';
+                for (let i = 0; i < 3; i++) { // 3 skeleton leagues
+                    skeletonHtml += `
+                        <div class="tier-group skeleton-group">
+                            <div class="tier-group-header skeleton-header"></div>
+                            <div class="games-list">
+                                ${Array(4).fill(0).map(() => '<div class="game-card skeleton-card"></div>').join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                container.innerHTML = skeletonHtml;
+                return;
             }
-
-            // Ensure we have a valid current day with games
+            
             this.ensureValidCurrentDay();
 
             // Add day navigator to dedicated container
@@ -1289,6 +1484,15 @@ class ParlayKing {
 
             const groupedGames = this.groupGamesByLeague(games);
             container.innerHTML = this.renderLeagueGroups(groupedGames);
+            
+            // Ensure Feather icons are replaced after DOM update
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+                console.log('Feather icons replaced after rendering schedule');
+            } else {
+                console.warn('Feather not loaded');
+            }
+            
             this.initGameCardInteractions();
         } catch (error) {
             console.error('Error rendering schedule:', error);
@@ -1388,6 +1592,14 @@ class ParlayKing {
     filterByDay(games, dayIndex) {
         const daysWithGames = this.dayNavigator.getDaysWithGames();
         
+        // Debug logging
+        console.log('DEBUG: filterByDay called with dayIndex:', dayIndex);
+        console.log('DEBUG: daysWithGames:', daysWithGames.map(d => d.toISOString()));
+        console.log('DEBUG: games count:', games.length);
+        if (games.length > 0) {
+            console.log('DEBUG: first game datetime:', games[0].datetime?.toISOString());
+        }
+        
         // If no specific day selected or invalid index, return all games
         const index = parseInt(dayIndex);
         if (isNaN(index) || index < 0 || index >= daysWithGames.length) {
@@ -1395,7 +1607,18 @@ class ParlayKing {
         }
         
         const selectedDay = daysWithGames[index];
-        return games.filter(g => this.isSameDay(g.datetime, selectedDay));
+        console.log('DEBUG: selectedDay:', selectedDay.toISOString());
+        
+        const filtered = games.filter(g => {
+            const matches = this.isSameDay(g.datetime, selectedDay);
+            if (!matches && games.indexOf(g) < 3) { // Log first few mismatches
+                console.log('DEBUG: Game mismatch - game:', g.datetime?.toISOString(), 'vs selectedDay:', selectedDay.toISOString());
+            }
+            return matches;
+        });
+        
+        console.log('DEBUG: filtered games count:', filtered.length);
+        return filtered;
     }
 
     groupGamesByLeague(games) {
@@ -1475,39 +1698,61 @@ class ParlayKing {
     // Day navigation
     switchDay(dayIndex) {
         this.uiState.currentDay = dayIndex.toString();
+        this.updateURLParams();
         
+        // Update active tab classes first
         document.querySelectorAll('.day-tab').forEach(tab => {
             tab.classList.toggle('active', tab.dataset.day === dayIndex.toString());
         });
         
-        // Center the active tab on mobile
-        this.centerActiveDayTab();
-        
-        const container = document.getElementById('unified-games-container');
-        if (container) {
-            container.style.opacity = '0.5';
-            container.style.transform = 'translateY(10px)';
-            
-            setTimeout(() => {
                 this.renderUnifiedSchedule();
-                container.style.opacity = '1';
-                container.style.transform = 'translateY(0)';
-            }, 150);
-        }
+        this.centerActiveDayTab();
     }
     
     centerActiveDayTab() {
-        // Center the active day tab on mobile for better UX
-        const activeTab = document.querySelector('.day-tab.active');
-        if (activeTab && window.innerWidth <= 768) {
-            setTimeout(() => {
-                activeTab.scrollIntoView({
-                    behavior: 'smooth',
-                    inline: 'center',
-                    block: 'nearest'
+        // Force immediate centering without delay for better responsiveness
+        requestAnimationFrame(() => {
+            const activeTab = document.querySelector('.day-tab.active');
+            const navigator = document.querySelector('.day-navigator');
+            
+            if (activeTab && navigator) {
+                console.log('Centering tab:', activeTab.textContent, 'Current scroll:', navigator.scrollLeft);
+                
+                // Force layout recalculation
+                navigator.offsetHeight;
+                activeTab.offsetLeft;
+                
+                // Calculate the position to center the active tab with magnetic precision
+                const tabLeft = activeTab.offsetLeft;
+                const tabWidth = activeTab.offsetWidth;
+                const navWidth = navigator.offsetWidth;
+                
+                // Perfect center calculation
+                const scrollPosition = tabLeft - (navWidth / 2) + (tabWidth / 2);
+                
+                console.log('Scroll calculation:', {
+                    tabLeft,
+                    tabWidth,
+                    navWidth,
+                    scrollPosition,
+                    finalPosition: Math.max(0, scrollPosition)
                 });
-            }, 100);
-        }
+                
+                // Add magnetic easing for smooth snap-to-center feel
+                navigator.scrollTo({
+                    left: Math.max(0, scrollPosition),
+                    behavior: 'smooth'
+                });
+                
+                // Add a subtle scale effect for magnetic feedback
+                activeTab.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    activeTab.style.transform = '';
+                }, 200);
+            } else {
+                console.warn('centerActiveDayTab: Missing elements', { activeTab: !!activeTab, navigator: !!navigator });
+            }
+        });
     }
     
     // Analysis toggle for expanded cards
@@ -1518,7 +1763,7 @@ class ParlayKing {
         // Toggle visibility (removes/adds display: none via .hidden class)
         content.classList.toggle('hidden', isExpanded);
         button.setAttribute('aria-expanded', !isExpanded);
-        button.innerHTML = isExpanded ? 'Show Analysis ▼' : 'Hide Analysis ▲';
+        // Analysis toggle removed - using chevron icon instead
 
         // FIX: Recalculate the parent container's height.
         const expandedDetails = button.closest('.expanded-details');
@@ -1540,18 +1785,15 @@ class ParlayKing {
     toggleGameExpansion(card) {
         const gameId = card.dataset.gameId;
         const expandedDetails = card.querySelector('.expanded-details');
-        const expandBtn = card.querySelector('.expand-btn');
         
-        if (!expandedDetails || !expandBtn) return;
+        if (!expandedDetails) return;
         
         const isCurrentlyExpanded = this.uiState.expandedCards.has(gameId);
         
         if (!isCurrentlyExpanded) {
             this.uiState.expandedCards.add(gameId);
             expandedDetails.classList.remove('hidden');
-            expandBtn.textContent = '▲';
             card.setAttribute('data-expanded', 'true');
-            expandBtn.setAttribute('aria-expanded', 'true');
             
             expandedDetails.style.maxHeight = '0';
             requestAnimationFrame(() => {
@@ -1561,9 +1803,7 @@ class ParlayKing {
         } else {
             this.uiState.expandedCards.delete(gameId);
             expandedDetails.style.maxHeight = '0';
-            expandBtn.textContent = '▼';
             card.setAttribute('data-expanded', 'false');
-            expandBtn.setAttribute('aria-expanded', 'false');
             
             setTimeout(() => {
                 expandedDetails.classList.add('hidden');
@@ -1576,27 +1816,32 @@ class ParlayKing {
     initGameCardInteractions() {
         setTimeout(() => {
             document.querySelectorAll('.game-card--v4[data-expandable="true"]').forEach(card => {
-                // Make entire game row tappable for better UX
-                const gameRow = card.querySelector('.game-row');
-                if (gameRow) {
-                    gameRow.addEventListener('click', (e) => {
+                console.log('Adding listener to expandable card'); // Debug
+                
+                // Remove any existing listeners to prevent conflicts
+                const newCard = card.cloneNode(true);
+                card.parentNode.replaceChild(newCard, card);
+                
+                // Add single click listener to the entire card (since no expand icon)
+                newCard.addEventListener('click', (e) => {
                         // Prevent expansion when clicking on interactive elements
                         if (e.target.closest('.ah-chip') || 
                             e.target.closest('.game-hint') ||
-                            e.target.closest('.analysis-toggle')) return;
-                        
-                        this.toggleGameExpansion(card);
-                    });
-                }
-                
-                // Keep original card click as fallback
-                card.addEventListener('click', (e) => {
-                    if (e.target.closest('.ah-chip') || 
-                        e.target.closest('.game-hint') ||
-                        e.target.closest('.analysis-toggle') ||
-                        e.target.closest('.game-row')) return; // Avoid double-triggering
+                        e.target.closest('.analysis-toggle')) {
+                        return;
+                    }
                     
-                    this.toggleGameExpansion(card);
+                    console.log('Card clicked, toggling expansion'); // Debug
+                    this.toggleGameExpansion(newCard);
+                });
+
+                // Add keyboard support for accessibility
+                newCard.setAttribute('tabindex', '0');
+                newCard.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.toggleGameExpansion(newCard);
+                    }
                 });
             });
         }, 100);
