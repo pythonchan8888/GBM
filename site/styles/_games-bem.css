@@ -138,7 +138,7 @@
   align-items: center;
   gap: var(--space-sm);
   padding: 8px;
-  min-height: 64px; /* Increased for better touch targets */
+  min-height: 80px; /* Increased for better touch targets */
 }
 
 .game-card__row {
@@ -544,4 +544,18 @@
     padding: var(--space-xs) var(--space-sm); 
     border-radius: var(--radius-sm);
     white-space: nowrap; /* Keep count inline */
+}
+
+.team-ah { 
+    opacity: 0.7; 
+    color: var(--text-tertiary); 
+    font-size: 12px; 
+    font-weight: 500; 
+    margin-right: 4px; 
+}
+
+.pick-hint { 
+    color: var(--primary); 
+    width: 16px; 
+    height: 16px; 
 }

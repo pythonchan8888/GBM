@@ -92,6 +92,11 @@ class GameCard {
         const evPercent = this.game.ev ? (this.game.ev * 100).toFixed(1) : 0;
         const evClass = this.game.ev > 0.15 ? 'high' : '';
         
+        const homeShort = this.shortenTeamName(this.game.home);
+        const awayShort = this.shortenTeamName(this.game.away);
+        const homeAh = this.formatLine(this.game.homeLine);
+        const awayAh = this.formatLine(this.game.awayLine);
+
         return `
             <div class="game-card game-card--v4" 
                  data-game-id="${this.game.datetime.getTime()}"
@@ -102,18 +107,20 @@ class GameCard {
                     <div class="game-time">${timeDisplay}</div>
                     <div class="game-matchup-inline">
                         <span class="team-home ${homeTeamClass}">
+                            <span class="team-ah">${homeAh}</span>
                             <i data-feather="shield" class="team-icon"></i>
-                            ${this.game.home}
+                            ${homeShort}
                         </span>
                         <span class="vs">vs</span>
                         <span class="team-away ${awayTeamClass}">
-                            ${this.game.away}
+                            ${awayShort}
                             <i data-feather="shield" class="team-icon"></i>
+                            <span class="team-ah">${awayAh}</span>
                         </span>
                     </div>
                     <div class="game-odds-summary">
                         ${homeChip} / ${awayChip}
-                        <span class="ev-summary ${evClass}">${evPercent}% EV</span>
+                        ${hint}
                         ${this.isExpandable ? '<button class="expand-btn" aria-label="Expand details" aria-expanded="false">▼</button>' : ''}
                     </div>
                 </div>
@@ -133,7 +140,7 @@ class GameCard {
                         <strong>${this.game.recText}</strong> @ ${this.game.recOdds.toFixed(2)}
                     </div>
                     <div class="pick-meta">
-                        <span class="ev-badge">EV ${(this.game.ev * 100).toFixed(1)}%</span>
+                        <span class="ev-badge ${evClass}">EV ${evPercent}%</span>
                         <span class="confidence-icon" title="${this.game.confidence}">${confidenceIcon}</span>
                     </div>
                 </div>
@@ -214,6 +221,67 @@ class GameCard {
             minute: '2-digit',
             hour12: false 
         });
+    }
+
+    shortenTeamName(name) {
+        const tier1Mappings = {
+            'Brighton & Hove Albion': 'Brighton',
+            'Manchester United': 'Man Utd',
+            'Manchester City': 'Man City',
+            'Tottenham Hotspur': 'Tottenham',
+            'West Ham United': 'West Ham',
+            'Aston Villa': 'Aston Villa',
+            'Newcastle United': 'Newcastle',
+            'Crystal Palace': 'Crystal Palace',
+            'Nottingham Forest': 'Nottm Forest',
+            'Bournemouth': 'Bournemouth',
+            'Wolverhampton Wanderers': 'Wolves',
+            'Leicester City': 'Leicester',
+            'Ipswich Town': 'Ipswich',
+            'Southampton': 'Southampton',
+            'Everton': 'Everton',
+            'Fulham': 'Fulham',
+            'Brentford': 'Brentford',
+            'Liverpool': 'Liverpool',
+            'Chelsea': 'Chelsea',
+            'Arsenal': 'Arsenal',
+            // La Liga
+            'Real Madrid': 'Real Madrid',
+            'Barcelona': 'Barcelona',
+            'Atletico Madrid': 'Atletico Madrid',
+            'Athletic Bilbao': 'Athletic Bilbao',
+            'Real Sociedad': 'Real Sociedad',
+            'Valencia': 'Valencia',
+            'Villarreal': 'Villarreal',
+            'Sevilla': 'Sevilla',
+            // Bundesliga
+            'Bayern Munich': 'Bayern Munich',
+            'Borussia Dortmund': 'Dortmund',
+            'RB Leipzig': 'RB Leipzig',
+            'Bayer Leverkusen': 'Leverkusen',
+            'Borussia Monchengladbach': 'Monchengladbach',
+            // Serie A
+            'Inter Milan': 'Inter',
+            'AC Milan': 'AC Milan',
+            'Juventus': 'Juventus',
+            'Napoli': 'Napoli',
+            'Roma': 'Roma',
+            'Lazio': 'Lazio',
+            // Ligue 1
+            'Paris Saint-Germain': 'PSG',
+            'Monaco': 'Monaco',
+            'Lyon': 'Lyon',
+            'Marseille': 'Marseille',
+            'Lille': 'Lille',
+            // Add more as needed
+        };
+
+        return tier1Mappings[name] || name
+            .replace(/ & Hove Albion/g, '')
+            .replace(/ United/g, ' Utd')
+            .replace(/ City/g, ' City')
+            .replace(/ Hotspur/g, '')
+            .trim();
     }
 }
 
