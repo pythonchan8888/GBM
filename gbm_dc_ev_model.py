@@ -4565,13 +4565,13 @@ else:
                                 if attempt < max_retries - 1:  # Retry on other errors too
                                     continue
                                 else:
-                                return {
-                                    "agreement": "Neutral",
+                                    return {
+                                        "agreement": "Neutral",
                                         "insight": "API error—service unavailable.",
-                                    "reasoning": f"API call failed with status {response.status_code}.",
-                                    "sources": [],
-                                    "raw_response": response.json() if response.content else {}
-                                }
+                                        "reasoning": f"API call failed with status {response.status_code}.",
+                                        "sources": [],
+                                        "raw_response": response.json() if response.content else {}
+                                    }
                             raw_response = response.json()
                             logging.info(f"Full raw response: {json.dumps(raw_response, indent=2)}")
                             raw_content = raw_response['choices'][0]['message']['content'].strip()
