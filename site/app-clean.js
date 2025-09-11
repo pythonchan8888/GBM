@@ -253,7 +253,7 @@ class DayNavigator {
             
             if (Math.abs(swipeDistance) > minSwipeDistance) {
                 const currentIndex = parseInt(this.parlayKing.uiState.currentDay) || 0;
-                const direction = swipeDistance > 0 ? 1 : -1; // Right swipe: next, Left: prev
+                const direction = swipeDistance > 0 ? -1 : 1; // Left swipe (positive): prev, Right (negative): next
                 const newIndex = Math.max(0, Math.min(6, currentIndex + direction)); // 0-6 days
                 
                 this.parlayKing.switchDay(newIndex.toString());
@@ -1151,6 +1151,8 @@ class ParlayKing {
                 feather.replace();
             }
         }, 100);
+
+        this.switchDay(this.uiState.currentDay || '0');
     }
 
     updateKPIs() {
@@ -1505,7 +1507,7 @@ class ParlayKing {
 
     initGameCardInteractions() {
         setTimeout(() => {
-            document.querySelectorAll('.game-card--v3[data-expandable="true"]').forEach(card => {
+            document.querySelectorAll('.game-card--v4[data-expandable="true"]').forEach(card => {
                 // Make entire game row tappable for better UX
                 const gameRow = card.querySelector('.game-row');
                 if (gameRow) {

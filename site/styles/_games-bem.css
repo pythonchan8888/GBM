@@ -513,3 +513,35 @@
     color: var(--positive); 
     animation: pulse-subtle 2s infinite; 
 }
+
+.tier-group-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: var(--space-sm) var(--space-lg); 
+    background: var(--bg-secondary); 
+    border-bottom: 1px solid var(--border); 
+    font-weight: 600; 
+    color: var(--text); 
+    position: relative; 
+    z-index: 1;
+    flex-wrap: nowrap; /* Prevent wrapping */
+    gap: var(--space-sm); /* Add small gap */
+}
+
+.tier-group-header h4 { 
+    margin: 0; 
+    font-size: var(--font-size-lg);
+    white-space: nowrap; /* Prevent league name wrapping */
+    overflow: hidden; 
+    text-overflow: ellipsis; /* Ellipsis if too long */
+}
+
+.game-count { 
+    font-size: var(--font-size-sm); 
+    color: var(--text-tertiary); 
+    background: var(--border); 
+    padding: var(--space-xs) var(--space-sm); 
+    border-radius: var(--radius-sm);
+    white-space: nowrap; /* Keep count inline */
+}
