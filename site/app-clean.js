@@ -375,18 +375,17 @@ class DayNavigator {
     }
     
     getDaysWithGames() {
-        // Create day boundaries in GMT+8 timezone to match the game scheduling
+        // Create day boundaries in user's local timezone
         const today = new Date();
         
-        // Convert current time to GMT+8
-        const gmt8Today = new Date(today.getTime() + (8 * 60 * 60 * 1000));
-        const gmt8DayStart = new Date(Date.UTC(gmt8Today.getUTCFullYear(), gmt8Today.getUTCMonth(), gmt8Today.getUTCDate()));
+        // Get start of today in local timezone
+        const localDayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         
-        // Generate 4 consecutive days starting from today in GMT+8
+        // Generate 4 consecutive days starting from today in local timezone
         const fourDays = [];
         for (let i = 0; i < 4; i++) {
-            const day = new Date(gmt8DayStart);
-            day.setUTCDate(gmt8DayStart.getUTCDate() + i);
+            const day = new Date(localDayStart);
+            day.setDate(localDayStart.getDate() + i);
             fourDays.push(day);
         }
         
@@ -512,15 +511,14 @@ class DayNavigator {
         const html = `
             <div class="day-navigator">
                 ${daysWithGames.map((day, index) => {
-                    // Use GMT+8 for consistent comparison with game times
+                    // Use local time for consistent comparison with game times
                     const today = new Date();
-                    const gmt8Today = new Date(today.getTime() + (8 * 60 * 60 * 1000));
-                    const gmt8DayStart = new Date(Date.UTC(gmt8Today.getUTCFullYear(), gmt8Today.getUTCMonth(), gmt8Today.getUTCDate()));
-                    const gmt8Tomorrow = new Date(gmt8DayStart);
-                    gmt8Tomorrow.setUTCDate(gmt8DayStart.getUTCDate() + 1);
+                    const localDayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                    const localTomorrow = new Date(localDayStart);
+                    localTomorrow.setDate(localDayStart.getDate() + 1);
                     
                     let label;
-                    if (day.getTime() === gmt8DayStart.getTime()) {
+                    if (day.getTime() === localDayStart.getTime()) {
                         label = 'Today';
                         // Add class for today
                         return `
@@ -529,12 +527,12 @@ class DayNavigator {
                                 ${label}
                             </button>
                         `;
-                    } else if (day.getTime() === gmt8Tomorrow.getTime()) {
+                    } else if (day.getTime() === localTomorrow.getTime()) {
                         label = 'Tomorrow';
                     } else {
                         // FOTMOB style: "Thu 12 Sep"
                         const dayName = day.toLocaleDateString('en-US', { weekday: 'short' });
-                        const dayNum = day.getUTCDate();
+                        const dayNum = day.getDate();
                         const month = day.toLocaleDateString('en-US', { month: 'short' });
                         label = `${dayName} ${dayNum} ${month}`;
                     }
@@ -896,9 +894,9 @@ class ParlayKing {
 
     isSameDay(date1, date2) {
         return (
-            date1.getUTCFullYear() === date2.getUTCFullYear() &&
-            date1.getUTCMonth() === date2.getUTCMonth() &&
-            date1.getUTCDate() === date2.getUTCDate()
+            date1.getFullYear() === date2.getFullYear() &&
+            date1.getMonth() === date2.getMonth() &&
+            date1.getDate() === date2.getDate()
         );
     }
 

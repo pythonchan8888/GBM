@@ -139,7 +139,7 @@ LEAGUES_TO_FETCH = [
 import os as _os
 if _os.environ.get('GBM_QUICK', '').strip() == '1':
     print("Quick mode ON: limiting leagues for smoke run.")
-    LEAGUES_TO_FETCH = ['England Premier League', 'Italy Serie A', 'Spain La Liga', 'Germany Bundesliga', 'France Ligue 1', 'Japan J1 League']
+    LEAGUES_TO_FETCH = ['England Premier League', 'Italy Serie A', 'Spain La Liga', 'Germany Bundesliga', 'France Ligue 1', 'Japan J1 League', 'Portugal Liga NOS', 'Netherlands Eredivisie', 'England Championship', 'Scotland Premiership', 'Denmark Superliga', 'Saudi Arabia Professional League']
 
 # --- Mappings for Competition Type and Tier (ensure these are complete for LEAGUES_TO_FETCH) ---
 COMPETITION_TYPES = {
@@ -4478,15 +4478,17 @@ else:
             if xai_api_key:
                 # System prompt for betting analysis
                 SYSTEM_PROMPT = """
-                You are 'The King', a cynical, sharp-tongued betting analyst known for brutal honesty and sarcastic puns. Your insights are called the "King's Call".
+                You are 'The King', a sharp, data-driven betting analyst known for balanced insights and subtle wit. Your analysis is called the "King's Call".
 
-                Your task is to critically analyze a betting recommendation using live search for real-time data (injuries, form, motivation, etc.) and respond ONLY with a JSON object with the following structure:
+                Your task is to critically analyze a betting recommendation using live search for real-time data and respond ONLY with a JSON object with the following structure:
                 {
                 "agreement": "Agree", "Disagree", or "Neutral",
-                "insight": "Your King's Call. A single, punchy sentence, 80-140 chars. Start with 'Agree:' or 'Disagree:'. Infuse with sarcasm/puns, but absolutely NO royal/king-themed references or words (e.g., king, crown, royal, throne).",
-                "reasoning": "Your detailed analysis (30-50 words) explaining why you agree/disagree. Be critical, use sarcasm and puns, but absolutely NO royal/king-themed references or words (e.g., king, crown, royal, throne).",
+                "insight": "Your King's Call. A single, punchy sentence, 80-140 chars. Start with 'Agree:' or 'Disagree:'. Focus on key statistical factors, form trends, and tactical considerations. Use subtle wit but avoid over-reliance on injury narratives.",
+                "reasoning": "Your detailed analysis (30-50 words) explaining why you agree/disagree. Balance statistical evidence, recent form, tactical matchups, and situational factors. Avoid repetitive injury-focused narratives unless truly decisive.",
                 "sources": ["A list of 1-3 key sources used."]
                 }
+
+                Focus on: statistical trends, recent form, tactical matchups, motivation factors, and situational context. Only mention injuries when they're genuinely game-changing, not as a default narrative.
 
                 Do NOT add any text outside of this JSON structure.
                 """
@@ -4712,13 +4714,23 @@ else:
                 
                 # Filter for Tier 1 games only to optimize API usage
                 tier1_recommendations = final_recommendations_df[final_recommendations_df['league_tier'] == 1].copy()
+                
+                # Further filter to only today's games to save API costs
+                from datetime import datetime, timezone, timedelta
+                today_gmt8 = datetime.now(timezone(timedelta(hours=8))).date()
+                
+                # Convert datetime_gmt8 to date for comparison
+                tier1_recommendations['game_date'] = pd.to_datetime(tier1_recommendations['datetime_gmt8']).dt.date
+                today_recommendations = tier1_recommendations[tier1_recommendations['game_date'] == today_gmt8].copy()
+                
                 total_tier1 = len(tier1_recommendations)
+                total_today = len(today_recommendations)
                 total_all = len(final_recommendations_df)
                 
-                print(f"Generating King's Call for {total_tier1} Tier 1 recommendations (out of {total_all} total)...")
+                print(f"Generating King's Call for {total_today} Tier 1 games happening today (out of {total_tier1} Tier 1 total, {total_all} overall)...")
                 
-                for i, (idx, row) in enumerate(tier1_recommendations.iterrows()):
-                    print(f"Processing {i+1}/{total_tier1}: {row['home_name']} vs {row['away_name']} ({row['league']})")
+                for i, (idx, row) in enumerate(today_recommendations.iterrows()):
+                    print(f"Processing {i+1}/{total_today}: {row['home_name']} vs {row['away_name']} ({row['league']})")
                     
                     prompt = (
                         f"Analyze betting recommendation: {row['Recommendation']} @ {row['odds_betted_on_refined']:.2f} odds, EV {row['ev_for_bet_refined']:.2f}. "
@@ -4731,7 +4743,7 @@ else:
                     result = get_grok_response(prompt, model="grok-4-0709", enable_retry=True)
                     
                     # Add delay between API calls to avoid rate limiting
-                    if i < total_tier1 - 1:  # Don't delay after last call
+                    if i < total_today - 1:  # Don't delay after last call
                         time.sleep(3)  # 3 second delay between calls
                     
                     # Store all King's Call data
