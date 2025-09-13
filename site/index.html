@@ -42,7 +42,7 @@
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#FF7A45">
     <link rel="canonical" href="https://parlayking.ai/">
-    <link rel="stylesheet" href="styles.min.css?v=2574d5d">
+    <link rel="stylesheet" href="styles.min.css?v=LAYOUT_RESTRUCTURE_V4">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -51,12 +51,14 @@
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
     <style>
-        /* Override minified CSS for navigation background */
-        .nav-container {
+        /* Strong overrides for consistent UI across navigation */
+        .nav-container, .nav-container.shrunk {
             background: rgba(15, 23, 42, 0.9) !important;
         }
-        .nav-container.shrunk {
-            background: rgba(15, 23, 42, 0.95) !important;
+        .brand-subtitle {
+            display: block !important;
+            opacity: 1 !important;
+            height: auto !important;
         }
     </style>
 </head>

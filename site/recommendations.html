@@ -50,12 +50,14 @@
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
     <style>
-        /* Override minified CSS for navigation background */
-        .nav-container {
+        /* Strong overrides for consistent UI across navigation */
+        .nav-container, .nav-container.shrunk {
             background: rgba(15, 23, 42, 0.9) !important;
         }
-        .nav-container.shrunk {
-            background: rgba(15, 23, 42, 0.95) !important;
+        .brand-subtitle {
+            display: block !important;
+            opacity: 1 !important;
+            height: auto !important;
         }
     </style>
 </head>
@@ -180,7 +182,7 @@
         </a>
     </nav>
 
-    <script src="app.min.js?v=UI_ELEVATION_V1"></script>
+    <script src="app-clean.js"><!-- TEMP: Use non-minified for local debugging --></script>
     <script>
         // Initialize recommendations page
         document.addEventListener('DOMContentLoaded', () => {
