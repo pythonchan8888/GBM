@@ -1675,7 +1675,7 @@ class ParlayKing {
             'Netherlands Eredivisie': '🇳🇱',
             'Portugal Primeira Liga': '🇵🇹',
             'Belgium Pro League': '🇧🇪',
-            'Scotland Premiership': '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+            'Scotland Premiership': '🇬🇧',
             'Turkey Super Lig': '🇹🇷',
             'Brazil Serie A': '🇧🇷',
             'Argentina Primera Division': '🇦🇷',
@@ -1683,7 +1683,11 @@ class ParlayKing {
             'USA MLS': '🇺🇸',
             'Japan J1 League': '🇯🇵',
             'South Korea K League 1': '🇰🇷',
-            'Australia A-League': '🇦🇺'
+            'Australia A-League': '🇦🇺',
+            'England Championship': '🇬🇧',
+            'Denmark Superliga': '🇩🇰',
+            'Saudi Arabia Professional League': '🇸🇦',
+            'Portugal Liga NOS': '🇵🇹'
         };
         return flags[league] || '⚽';
     }

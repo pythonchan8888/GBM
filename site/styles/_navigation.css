@@ -6,7 +6,7 @@
 .nav-container {
   position: sticky;
   top: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(15, 23, 42, 0.9) !important;
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
   z-index: 1000;
@@ -24,7 +24,7 @@
 }
 
 .nav-container.shrunk {
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(15, 23, 42, 0.95) !important;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 

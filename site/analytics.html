@@ -49,9 +49,19 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <style>
+        /* Override minified CSS for navigation background */
+        .nav-container {
+            background: rgba(15, 23, 42, 0.9) !important;
+        }
+        .nav-container.shrunk {
+            background: rgba(15, 23, 42, 0.95) !important;
+        }
+    </style>
 </head>
 <body class="analytics-page">
-    <div class="hero-background"></div>
+    <div class="hero-background" style="z-index: -1;"></div>
     <!-- Navigation -->
     <nav class="nav-container">
         <div class="nav-content">
@@ -60,7 +70,7 @@
                     <img src="PK_logologo.png" alt="ParlayKing Crown" class="brand-crown">
                     <img src="PK_namename.png" alt="ParlayKing" class="brand-text">
                 </div>
-                <span class="brand-subtitle">ML Football Analytics</span>
+                <span class="brand-subtitle">Bet Smarter, Win Bigger</span>
             </div>
             
             <!-- Desktop Navigation Links -->
@@ -107,55 +117,70 @@
 
     <!-- Main Content -->
     <main class="main-container">
-        <!-- Parlay Wins Showcase (Moved from Overview) -->
-        <section class="parlay-wins-section">
-            <div class="parlay-wins-card">
-                <div class="parlay-wins-header">
-                    <div class="header-content">
-                        <h3><i data-feather="trophy"></i> Parlay Wins This Week</h3>
-                        <p class="header-subtitle">If you followed our recommendations...</p>
+        <!-- Bankroll at top -->
+        <section class="kpi-section">
+            <div class="kpi-card hero-card" style="padding: var(--space-2xl); margin: var(--space-2xl) 0;">
+                <div class="kpi-header">
+                    <h3><i data-feather="dollar-sign"></i> Bankroll Performance Over Time (USD)</h3>
+                    <div class="kpi-trend positive"><i data-feather="trending-up"></i> Growing</div>
+                </div>
+                <div class="chart-container" style="padding: var(--space-lg) 0; margin-bottom: var(--space-md); min-height: 300px;">
+                    <canvas id="bankroll-chart" style="min-height: 250px; width: 100%;"></canvas>
+                </div>
+                <div class="kpi-subtitle">
+                    💡 Based on historical recommendations with flat staking. Not financial advice.
+                </div>
+            </div>
+        </section>
+
+        <!-- Parlay Wins below -->
+        <section class="kpi-section">
+            <div class="kpi-card" style="padding: var(--space-2xl); margin: var(--space-2xl) 0;">
+                <div class="kpi-header">
+                    <h3><i data-feather="trophy"></i> Parlay Wins This Week</h3>
+                    <div class="kpi-trend positive"><i data-feather="award"></i> Hot</div>
+                </div>
+                <div class="parlay-stats" style="display: flex; gap: var(--space-lg); margin: var(--space-md) 0;">
+                    <div class="stat-item">
+                        <span class="kpi-value" id="total-parlays">--</span>
+                        <span class="kpi-subtitle">Winning Parlays</span>
                     </div>
-                    <div class="parlay-stats">
-                        <div class="stat-item">
-                            <span class="stat-value" id="total-parlays">--</span>
-                            <span class="stat-label">Winning Parlays</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value" id="max-payout">--</span>
-                            <span class="stat-label">Biggest Win</span>
-                        </div>
+                    <div class="stat-item">
+                        <span class="kpi-value" id="max-payout">--</span>
+                        <span class="kpi-subtitle">Biggest Win</span>
                     </div>
                 </div>
-                <div class="parlay-grid" id="parlay-grid">
+                <div class="parlay-grid" id="parlay-grid" style="margin: var(--space-lg) 0;">
                     <!-- Populated by JavaScript -->
                 </div>
-                <div class="parlay-disclaimer">
-                    <small>💡 Based on settled results from our recommendations. Past performance doesn't guarantee future results.</small>
+                <div class="kpi-subtitle">
+                    💡 Based on settled results from our recommendations. Past performance doesn't guarantee future results.
                 </div>
             </div>
         </section>
 
         <!-- ROI Heatmap -->
-        <section class="chart-section">
-            <div class="chart-card glass-panel">
-                <div class="chart-header">
-                    <h3>ROI Heatmap (Tier × Asian Handicap Line)</h3>
-                    <div class="chart-controls" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-                        <label style="color:var(--muted);font-size:0.9rem;">Tier
-                            <select id="tier-select" class="filter-select" style="margin-left:8px;">
-                                <option value="1" selected>1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                            </select>
-                        </label>
-                        <div class="range-controls">
-                            <button class="range-btn" data-min-bets="10">Min 10 bets</button>
-                            <button class="range-btn active" data-min-bets="30">Min 30 bets</button>
-                            <button class="range-btn" data-min-bets="50">Min 50 bets</button>
-                        </div>
+        <section class="kpi-section">
+            <div class="kpi-card" style="padding: var(--space-2xl); margin: var(--space-2xl) 0;">
+                <div class="kpi-header">
+                    <h3><i data-feather="bar-chart-2"></i> ROI Heatmap (Tier × Asian Handicap Line)</h3>
+                    <div class="kpi-trend positive"><i data-feather="target"></i> Optimized</div>
+                </div>
+                <div class="chart-controls" style="display:flex;gap:var(--space-md);align-items:center;flex-wrap:wrap;margin:var(--space-md) 0;">
+                    <label style="color:var(--text-tertiary);font-size:0.9rem;">Tier
+                        <select id="tier-select" class="filter-select" style="margin-left:8px;">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </label>
+                    <div class="range-controls">
+                        <button class="range-btn" data-min-bets="10">Min 10 bets</button>
+                        <button class="range-btn active" data-min-bets="30">Min 30 bets</button>
+                        <button class="range-btn" data-min-bets="50">Min 50 bets</button>
                     </div>
                 </div>
-                <div class="chart-container lazy-load">
+                <div class="chart-container" style="padding: var(--space-lg) 0; margin-bottom: var(--space-md);">
                     <div id="roi-heatmap" class="heatmap-chart"></div>
                 </div>
             </div>
@@ -208,5 +233,171 @@
             }
         });
     </script>
+    <script>
+        // Load and process CSV data using PapaParse
+        async function loadBankrollData() {
+            try {
+                const response = await fetch('bankroll_series_90d.csv');
+                const csvText = await response.text();
+                const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+                const data = parsed.data
+                    .map(row => ({ date: new Date(row.dt_gmt8 || row.date), value: parseFloat(row.cum_bankroll || row.value) / 1000000 }))  // Divide by 1e6
+                    .filter(d => d.date && !isNaN(d.value))
+                    .sort((a, b) => a.date - b.date);
+
+                // Resample to daily max for smoothness
+                const dailyData = [];
+                let currentDate = null;
+                let maxValue = 0;
+                data.forEach(point => {
+                    const dateKey = point.date.toISOString().split('T')[0];
+                    if (dateKey !== currentDate) {
+                        if (currentDate) dailyData.push({ date: new Date(currentDate), value: maxValue });
+                        currentDate = dateKey;
+                        maxValue = point.value;
+                    } else {
+                        maxValue = Math.max(maxValue, point.value);
+                    }
+                });
+                if (currentDate) dailyData.push({ date: new Date(currentDate), value: maxValue });
+
+                return dailyData;
+            } catch (error) {
+                console.error('Error loading/parsing CSV:', error);
+                return [];
+            }
+        }
+
+        // Render chart
+        async function renderBankrollChart() {
+            const canvas = document.getElementById('bankroll-chart');
+            if (!canvas) {
+                console.error('Canvas element not found');
+                return;
+            }
+            
+            // Set canvas size explicitly
+            canvas.width = canvas.offsetWidth;
+            canvas.height = 250;
+            
+            const ctx = canvas.getContext('2d');
+            const dataPoints = await loadBankrollData();
+
+            console.log('Data points loaded:', dataPoints.length);
+
+            if (dataPoints.length === 0) {
+                ctx.font = '16px Inter';
+                ctx.fillStyle = '#9ca3af';
+                ctx.textAlign = 'center';
+                ctx.fillText('No bankroll data available', canvas.width / 2, canvas.height / 2);
+                return;
+            }
+
+            console.log('Sample data points:', dataPoints.slice(0, 3));
+
+            // Auto-detect date range for subtitle
+            const startDate = dataPoints[0].date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const endDate = dataPoints[dataPoints.length - 1].date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            
+            const subtitleEl = document.querySelector('.header-subtitle');
+            if (subtitleEl) {
+                subtitleEl.textContent = `Cumulative growth since ${startDate}`;
+            }
+
+            const labels = dataPoints.map(d => d.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            const values = dataPoints.map(d => d.value);
+
+            // Global Chart.js config for dark theme
+            Chart.defaults.color = '#f5f5f5';
+            Chart.defaults.borderColor = '#374151';
+            Chart.defaults.font.family = 'Inter';
+
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Bankroll',
+                         data: values,
+                         borderColor: '#FF7A45', // Brand orange
+                         tension: 0.4, // Smoother curves
+                         borderWidth: 3, // Consistent line width
+                         fill: false, // No fill for clean line
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#FF5722' // Darker orange on hover
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeInOutQuart'
+                    },
+                     scales: {
+                         x: {
+                             grid: { color: 'rgba(55, 65, 81, 0.2)' },
+                             ticks: { 
+                                 maxTicksLimit: window.innerWidth < 768 ? 4 : 8,
+                                 maxRotation: 45,
+                                 minRotation: 0
+                             }
+                         },
+                         y: {
+                             type: 'linear',
+                             title: { display: true, text: ' ', color: '#f5f5f5' },
+                             grid: { color: 'rgba(55, 65, 81, 0.2)' },
+                             ticks: {
+                                 stepSize: 10000,
+                                 callback: function(value) {
+                                     return value.toLocaleString('en-US', { maximumFractionDigits: 0 });
+                                 }
+                             }
+                         }
+                     },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#f5f5f5',
+                            bodyColor: '#f5f5f5',
+                            callbacks: {
+                                label: function(context) {
+                                    const val = context.parsed.y;
+                                    return val.toLocaleString('en-US', { maximumFractionDigits: 0 });
+                                }
+                            }
+                        }
+                    },
+                    interaction: { intersect: false, mode: 'index' }
+                }
+            });
+
+            console.log('Chart rendered successfully with', values.length, 'data points');
+        }
+
+        // Init on load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(renderBankrollChart, 100);
+        });
+    </script>
+    <style>
+        @media (max-width: 768px) {
+            #bankroll-chart canvas {
+                height: 250px !important;
+            }
+            .chart-header h3 {
+                font-size: 1.2rem;
+            }
+            .header-subtitle, .chart-disclaimer small {
+                font-size: 0.75rem;
+            }
+            .chart-card {
+                padding: 1rem !important;
+                margin: 1rem 0 !important;
+            }
+        }
+    </style>
 </body>
 </html>
