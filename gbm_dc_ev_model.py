@@ -4703,8 +4703,8 @@ else:
                     }
 
 
-                # Initialize King's Call columns  
-                final_recommendations_df['kings_call'] = ''
+                # Initialize King's Call columns using correct database column names
+                final_recommendations_df['kings_call_insight'] = ''
                 final_recommendations_df['kings_call_agreement'] = ''
                 final_recommendations_df['kings_call_reasoning'] = ''
                 final_recommendations_df['kings_call_sources'] = ''
@@ -4755,8 +4755,8 @@ else:
                     if i < total_today - 1:  # Don't delay after last call
                         time.sleep(3)  # 3 second delay between calls
                     
-                    # Store all King's Call data
-                    final_recommendations_df.at[idx, 'kings_call'] = result.get('insight', 'Unable to fetch insight—rely on EV!')
+                    # Store all King's Call data using correct database column names
+                    final_recommendations_df.at[idx, 'kings_call_insight'] = result.get('insight', 'Unable to fetch insight—rely on EV!')
                     final_recommendations_df.at[idx, 'kings_call_agreement'] = result.get('agreement', 'Neutral')
                     final_recommendations_df.at[idx, 'kings_call_reasoning'] = result.get('reasoning', 'No reasoning available')
                     final_recommendations_df.at[idx, 'kings_call_sources'] = ', '.join(result.get('sources', []))
@@ -5190,7 +5190,7 @@ def export_unified_games_schedule():
                 'rec_odds': rec_match.get('odds_betted_on_refined', 0) if rec_match else 0,
                 'ev': rec_match.get('ev_for_bet_refined', 0) if rec_match else 0,
                 'confidence': rec_match.get('confidence_level', '') if rec_match else '',
-                'kings_call': rec_match.get('kings_call', '') if rec_match else '',
+                'kings_call': rec_match.get('kings_call_insight', '') if rec_match else '',
                 'kings_call_agreement': rec_match.get('kings_call_agreement', '') if rec_match else '',
                 
                 # Signal data
