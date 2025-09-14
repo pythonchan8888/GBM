@@ -4715,19 +4715,28 @@ else:
                 # Filter for Tier 1 games only to optimize API usage
                 tier1_recommendations = final_recommendations_df[final_recommendations_df['league_tier'] == 1].copy()
                 
-                # Further filter to only today's games to save API costs
+                # Further filter to today's games with buffer to save API costs
                 from datetime import datetime, timezone, timedelta
-                today_gmt8 = datetime.now(timezone(timedelta(hours=8))).date()
+                now_gmt8 = datetime.now(timezone(timedelta(hours=8)))
                 
-                # Convert datetime_gmt8 to date for comparison
-                tier1_recommendations['game_date'] = pd.to_datetime(tier1_recommendations['datetime_gmt8']).dt.date
-                today_recommendations = tier1_recommendations[tier1_recommendations['game_date'] == today_gmt8].copy()
+                # Create a more inclusive time window for "today's games"
+                # Start from 6 hours ago to catch games that started recently
+                # End at tomorrow 6 AM to catch late night games
+                today_start = now_gmt8.replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(hours=6)
+                today_end = now_gmt8.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1, hours=6)
+                
+                # Filter using datetime range instead of date equality
+                today_recommendations = tier1_recommendations[
+                    (pd.to_datetime(tier1_recommendations['datetime_gmt8']) >= today_start.replace(tzinfo=None)) &
+                    (pd.to_datetime(tier1_recommendations['datetime_gmt8']) <= today_end.replace(tzinfo=None))
+                ].copy()
                 
                 total_tier1 = len(tier1_recommendations)
                 total_today = len(today_recommendations)
                 total_all = len(final_recommendations_df)
                 
-                print(f"Generating King's Call for {total_today} Tier 1 games happening today (out of {total_tier1} Tier 1 total, {total_all} overall)...")
+                print(f"Generating King's Call for {total_today} Tier 1 games in today's window (6hrs ago to 6hrs into tomorrow) (out of {total_tier1} Tier 1 total, {total_all} overall)...")
+                print(f"Time window: {today_start.strftime('%Y-%m-%d %H:%M')} to {today_end.strftime('%Y-%m-%d %H:%M')} GMT+8")
                 
                 for i, (idx, row) in enumerate(today_recommendations.iterrows()):
                     print(f"Processing {i+1}/{total_today}: {row['home_name']} vs {row['away_name']} ({row['league']})")
