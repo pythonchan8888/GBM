@@ -42,7 +42,7 @@
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#FF7A45">
     <link rel="canonical" href="https://parlayking.ai/recommendations.html">
-    <link rel="stylesheet" href="styles.min.css?v=20250913">
+    <link rel="stylesheet" href="styles.min.css?v=V10_SECTION_TITLES_FIXED">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -58,6 +58,11 @@
             display: block !important;
             opacity: 1 !important;
             height: auto !important;
+        }
+        /* Ensure consistent branding across pages */
+        .brand-crown, .brand-text {
+            filter: none !important;
+            opacity: 1 !important;
         }
     </style>
 </head>
@@ -182,7 +187,7 @@
         </a>
     </nav>
 
-    <script src="app.min.js?v=20250913"></script>
+    <script src="app.min.js?v=V9_UNIFIED_SYNC"></script>
     <script>
         // Initialize recommendations page
         document.addEventListener('DOMContentLoaded', () => {

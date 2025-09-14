@@ -3877,10 +3877,3 @@ body.page-overview .filters-icon,
     font-size: var(--font-size-sm);
     line-height: 1.4;
 }
-
-h3, .chart-header, .parlay-wins-header {
-    background-color: #001f3f !important;
-    color: #f5f5f5;
-    padding: 1rem;
-    border-radius: 8px;
-}

@@ -42,7 +42,7 @@
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#FF7A45">
     <link rel="canonical" href="https://parlayking.ai/analytics.html">
-    <link rel="stylesheet" href="styles.min.css?v=20250913">
+    <link rel="stylesheet" href="styles.min.css?v=V10_SECTION_TITLES_FIXED">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -59,6 +59,11 @@
             display: block !important;
             opacity: 1 !important;
             height: auto !important;
+        }
+        /* Ensure consistent branding across pages */
+        .brand-crown, .brand-text {
+            filter: none !important;
+            opacity: 1 !important;
         }
         /* Ensure chart container is visible */
         #bankroll-chart {
@@ -230,7 +235,7 @@
         </a>
     </nav>
 
-    <script src="app.min.js?v=20250913"></script>
+    <script src="app.min.js?v=V9_UNIFIED_SYNC"></script>
     <script>
         // Initialize analytics page
         document.addEventListener('DOMContentLoaded', () => {
@@ -244,10 +249,46 @@
         });
     </script>
     <script>
+        // Smoothing function to reduce chart volatility
+        function applySmoothingFilter(data) {
+            if (data.length <= 3) return data;
+            
+            const smoothed = [];
+            const windowSize = 3; // 3-day moving average for smoothness
+            
+            // Keep first point as-is
+            smoothed.push(data[0]);
+            
+            // Apply moving average to middle points
+            for (let i = 1; i < data.length - 1; i++) {
+                const start = Math.max(0, i - Math.floor(windowSize / 2));
+                const end = Math.min(data.length - 1, i + Math.floor(windowSize / 2));
+                
+                let sum = 0;
+                let count = 0;
+                for (let j = start; j <= end; j++) {
+                    sum += data[j].value;
+                    count++;
+                }
+                
+                smoothed.push({
+                    date: data[i].date,
+                    value: sum / count
+                });
+            }
+            
+            // Keep last point as-is
+            if (data.length > 1) {
+                smoothed.push(data[data.length - 1]);
+            }
+            
+            return smoothed;
+        }
+
         // Load and process CSV data using PapaParse
         async function loadBankrollData() {
             try {
-                const response = await fetch('bankroll_series_90d.csv?v=20250913');
+                const response = await fetch('bankroll_series_90d.csv?v=V10_SECTION_TITLES_FIXED');
                 const csvText = await response.text();
                 const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
                 const data = parsed.data
@@ -271,7 +312,9 @@
                 });
                 if (currentDate) dailyData.push({ date: new Date(currentDate), value: maxValue });
 
-                return dailyData;
+                // Apply smoothing to reduce chart volatility
+                const smoothedData = applySmoothingFilter(dailyData);
+                return smoothedData;
             } catch (error) {
                 console.error('Error loading/parsing CSV:', error);
                 return [];
