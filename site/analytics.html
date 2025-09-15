@@ -148,28 +148,30 @@
             </div>
         </section>
 
-        <!-- Parlay Wins below -->
-        <section class="kpi-section">
-            <div class="kpi-card" style="padding: var(--space-2xl); margin: var(--space-2xl) 0;">
-                <div class="kpi-header">
-                    <h3><i data-feather="trophy"></i> Parlay Wins This Week</h3>
-                    <div class="kpi-trend positive"><i data-feather="award"></i> Hot</div>
-                </div>
-                <div class="parlay-stats" style="display: flex; gap: var(--space-lg); margin: var(--space-md) 0;">
-                    <div class="stat-item">
-                        <span class="kpi-value" id="total-parlays">--</span>
-                        <span class="kpi-subtitle">Winning Parlays</span>
+        <!-- Parlay Wins Section -->
+        <section class="chart-section">
+            <div class="parlay-wins-card">
+                <div class="parlay-wins-header">
+                    <div class="header-content">
+                        <h3><i data-feather="trophy"></i> Parlay Wins Archive</h3>
+                        <p class="header-subtitle">Historical winning combinations from our recommendations</p>
                     </div>
-                    <div class="stat-item">
-                        <span class="kpi-value" id="max-payout">--</span>
-                        <span class="kpi-subtitle">Biggest Win</span>
+                    <div class="parlay-stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="total-parlays">--</span>
+                            <span class="stat-label">Winning Parlays</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="max-payout">--</span>
+                            <span class="stat-label">Biggest Win</span>
+                        </div>
                     </div>
                 </div>
-                <div class="parlay-grid" id="parlay-grid" style="margin: var(--space-lg) 0;">
+                <div class="parlay-grid" id="parlay-grid">
                     <!-- Populated by JavaScript -->
                 </div>
-                <div class="kpi-subtitle">
-                    💡 Based on settled results from our recommendations. Past performance doesn't guarantee future results.
+                <div class="parlay-disclaimer">
+                    <small>💡 These are actual winning parlays constructed from our historical recommendations. Results are based on real settled bets and demonstrate the potential of our parlay construction strategy.</small>
                 </div>
             </div>
         </section>

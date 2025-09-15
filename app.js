@@ -669,31 +669,35 @@ class ParlayKing {
         
         parlays.forEach(parlay => {
             const parlayItem = document.createElement('div');
-            parlayItem.className = 'parlay-item';
-            
+            parlayItem.className = 'rec-card parlay-card'; // Match recommendation card styling
+
+            // Calculate multiplier (total payout / stake)
+            const multiplier = (parlay.totalPayout / parlay.stake).toFixed(1);
+
             parlayItem.innerHTML = `
-                <div class="parlay-header">
-                    <span class="parlay-type">${parlay.legCount}-Leg Parlay</span>
-                    <span class="parlay-date">${parlay.dateRange}</span>
+                <div class="rec-header">
+                    <div class="rec-time">${parlay.legCount}-Leg Parlay</div>
+                    <div class="rec-confidence high">${multiplier}x</div>
                 </div>
-                <div class="parlay-legs">
-                    ${parlay.legs.map(leg => `
-                        <div class="parlay-leg">
-                            <div class="leg-result">✓</div>
-                            <div class="leg-details">
-                                <div class="leg-match">${leg.home} vs ${leg.away}</div>
-                                <div class="leg-bet">${leg.recommendation}</div>
-                            </div>
-                            <div class="leg-odds">@${leg.odds.toFixed(2)}</div>
+                <div class="rec-matchup">
+                    <h4>$${parlay.stake} Stake</h4>
+                    <div class="rec-league">${parlay.dateRange}</div>
+                </div>
+                <div class="parlay-pick-stack">
+                    ${parlay.legs.map((leg, index) => `
+                        <div class="parlay-leg-card" style="--stack-index: ${index};">
+                            <div class="leg-match">${leg.home} vs ${leg.away}</div>
+                            <div class="leg-pick">${leg.recommendation} @${leg.odds.toFixed(2)}</div>
+                            <div class="leg-checkmark">✓</div>
                         </div>
                     `).join('')}
                 </div>
-                <div class="parlay-payout">
-                    <div class="payout-calculation">$${parlay.stake} → $${parlay.totalPayout.toFixed(0)}</div>
-                    <div class="payout-return">+${parlay.returnPercent.toFixed(0)}%</div>
+                <div class="rec-footer">
+                    <div class="payout-multiplier">${multiplier}x payout</div>
+                    <div class="payout-amount">$${parlay.totalPayout.toFixed(0)}</div>
                 </div>
             `;
-            
+
             grid.appendChild(parlayItem);
         });
     }

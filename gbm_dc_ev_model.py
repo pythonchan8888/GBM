@@ -4092,14 +4092,14 @@ def settle_open_bets(footystats_api_key: str, db_url: str, hours_buffer: int = 2
                     if 'awayGoalCount' not in league_df.columns:
                         if 'away_goals' in league_df.columns:
                             league_df['awayGoalCount'] = pd.to_numeric(league_df['away_goals'], errors='coerce')
-                    # unify datetime
+                    # unify datetime - ensure timezone-naive
                     dt_col = None
                     for c in ['datetime_gmt8','date_unix','date']:
                         if c in league_df.columns:
                             dt_col = c; break
                     if dt_col is not None:
                         try:
-                            league_df['dt'] = pd.to_datetime(league_df[dt_col], errors='coerce')
+                            league_df['dt'] = pd.to_datetime(league_df[dt_col], errors='coerce', utc=True).tz_localize(None)
                         except Exception:
                             league_df['dt'] = pd.NaT
                 league_to_matches[league_name] = league_df
@@ -4118,7 +4118,7 @@ def settle_open_bets(footystats_api_key: str, db_url: str, hours_buffer: int = 2
             line = r['line_val']
             odds = r['odds_val']
             stake = r['stake_val']
-            dt_bet = pd.to_datetime(r['dt_gmt8'], errors='coerce')
+            dt_bet = pd.to_datetime(r['dt_gmt8'], errors='coerce', utc=True).tz_localize(None)
 
             if bet_id is None or league not in league_to_matches or side is None:
                 continue
@@ -5182,6 +5182,20 @@ def export_unified_games_schedule():
                 'ah_line_away': ah_line_away,
                 'ah_odds_home': ah_odds_home,
                 'ah_odds_away': ah_odds_away,
+
+                # CRITICAL: Include actual scores for parlay evaluation
+                home_score = game.get('homeGoalCount')
+                away_score = game.get('awayGoalCount')
+
+                # Debug: Check scores for completed games
+                if game.get('status') == 'complete':
+                    if home_score is None or away_score is None:
+                        print(f"⚠️ Missing scores for completed game: {game.get('home_name')} vs {game.get('away_name')} (homeGoalCount={home_score}, awayGoalCount={away_score})")
+                    else:
+                        print(f"✅ Found scores for {game.get('home_name')} vs {game.get('away_name')}: {home_score}-{away_score}")
+
+                'home_score': home_score if home_score is not None else '',
+                'away_score': away_score if away_score is not None else '',
                 
                 # Recommendation data
                 'has_recommendation': rec_match is not None,

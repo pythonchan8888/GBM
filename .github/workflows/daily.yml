@@ -395,6 +395,121 @@ jobs:
                   print("⚠️ unified_games.csv not found in artifacts, creating empty fallback")
                   with open('site/unified_games.csv','w', newline='', encoding='utf-8') as f:
                       w = csv.writer(f); w.writerow(["datetime_gmt8","league","league_short","league_flag","home_name","away_name","odds_1","odds_x","odds_2","league_tier","is_future","has_recommendation","rec_text","ev","confidence","kings_call","primary_signal","secondary_signal"])
+
+              # --- NEW: Process yesterday's recommendations to create settled bets ---
+              print("🔄 Processing yesterday's recommendations for parlay wins...")
+              import pandas as pd
+              from datetime import datetime, timedelta
+
+              # Load current unified_games.csv (today's recommendations)
+              current_games_df = pd.read_csv('site/unified_games.csv')
+
+              # Load yesterday's unified_games.csv if it exists (past recommendations)
+              yesterday_recs = []
+              try:
+                  if os.path.exists('site/unified_games_yesterday.csv'):
+                      yesterday_df = pd.read_csv('site/unified_games_yesterday.csv')
+                      # Filter for completed games with recommendations
+                      completed_yesterday = yesterday_df[
+                          (yesterday_df['status'] == 'complete') &
+                          (yesterday_df['has_recommendation'] == True)
+                      ].copy()
+                      yesterday_recs = completed_yesterday.to_dict('records')
+                      print(f"📊 Found {len(yesterday_recs)} completed recommendations from yesterday")
+                  else:
+                      print("ℹ️ No yesterday's recommendations file found (first run)")
+              except Exception as e:
+                  print(f"⚠️ Error loading yesterday's recommendations: {e}")
+
+              # Save current recommendations for tomorrow's processing
+              if not current_games_df.empty:
+                  current_games_df.to_csv('site/unified_games_yesterday.csv', index=False)
+                  print("💾 Saved today's recommendations for tomorrow's evaluation")
+
+              # Create lookup dictionary for today's games (with fresh scores)
+              current_games_dict = {}
+              for _, game in current_games_df.iterrows():
+                  game_key = f"{game['datetime_gmt8']}_{game['home_name']}_{game['away_name']}"
+                  current_games_dict[game_key] = game.to_dict()
+
+              # Process yesterday's recommendations into settled bets
+              settled_bets = []
+              for rec in yesterday_recs:
+                  try:
+                      # Get actual result - try yesterday's data first, then fetch fresh results if needed
+                      home_score = rec.get('home_score', rec.get('homeGoalCount'))
+                      away_score = rec.get('away_score', rec.get('awayGoalCount'))
+
+                      # If scores are missing, try to fetch them from today's unified_games.csv
+                      if home_score is None or away_score is None or str(home_score).strip() == '' or str(away_score).strip() == '':
+                          game_key = f"{rec['datetime_gmt8']}_{rec['home_name']}_{rec['away_name']}"
+                          if game_key in current_games_dict:
+                              fresh_game = current_games_dict[game_key]
+                              home_score = fresh_game.get('home_score', fresh_game.get('homeGoalCount'))
+                              away_score = fresh_game.get('away_score', fresh_game.get('awayGoalCount'))
+                              print(f"📊 Fetched fresh scores for {rec['home_name']} vs {rec['away_name']}: {home_score}-{away_score}")
+
+                      if home_score is None or away_score is None or str(home_score).strip() == '' or str(away_score).strip() == '':
+                          print(f"⚠️ Still no scores for {rec['home_name']} vs {rec['away_name']}, skipping")
+                          continue  # Skip if no scores available
+
+                      home_score = float(home_score)
+                      away_score = float(away_score)
+
+                      # Parse recommendation
+                      rec_text = rec.get('rec_text', '')
+                      line = float(rec.get('line', 0))
+                      odds = float(rec.get('rec_odds', 1.925))
+
+                      # Determine bet side and evaluate
+                      is_home_bet = 'home' in rec_text.lower() or rec['home_name'].lower() in rec_text.lower()
+                      is_away_bet = 'away' in rec_text.lower() or rec['away_name'].lower() in rec_text.lower()
+
+                      if is_home_bet:
+                          # Home team bet with Asian handicap
+                          effective_home_score = home_score + line
+                          won = effective_home_score > away_score
+                      elif is_away_bet:
+                          # Away team bet with Asian handicap
+                          effective_away_score = away_score - line  # Note: line is already negated for away bets
+                          won = effective_away_score > home_score
+                      else:
+                          continue  # Skip unclear bets
+
+                      # Calculate P&L
+                      stake = 1.0  # Standard stake
+                      if won:
+                          pl = (odds - 1.0) * stake
+                      else:
+                          pl = -stake
+
+                      settled_bets.append({
+                          'fixture_id': f"{rec['datetime_gmt8']}_{rec['home_name']}_{rec['away_name']}",
+                          'league': rec.get('league', ''),
+                          'home': rec.get('home_name', ''),
+                          'away': rec.get('away_name', ''),
+                          'home_score': int(home_score),
+                          'away_score': int(away_score),
+                          'line_betted_on_refined': line,
+                          'bet_type_refined_ah': 'bet_home_refined_ah' if is_home_bet else 'bet_away_refined_ah',
+                          'odds_betted_on_refined': odds,
+                          'stake': stake,
+                          'pl': pl,
+                          'status': 'settled',
+                          'dt_gmt8': rec.get('datetime_gmt8', '')
+                      })
+
+                  except Exception as e:
+                      print(f"⚠️ Error processing recommendation {rec.get('home_name', '')} vs {rec.get('away_name', '')}: {e}")
+                      continue
+
+              # Save settled bets
+              if settled_bets:
+                  settled_df = pd.DataFrame(settled_bets)
+                  settled_df.to_csv('site/settled_bets.csv', index=False)
+                  print(f"✅ Created settled_bets.csv with {len(settled_bets)} records")
+              else:
+                  print("ℹ️ No settled bets to create (no completed recommendations found)")
               # Settled bets for parlay calculation (retention days)
               cur.execute(f"""
               select fixture_id, league, home, away, home_score, away_score,
@@ -510,6 +625,18 @@ jobs:
           import itertools, os
           os.makedirs('site', exist_ok=True)
           retention_days = int(os.environ.get('PARLAY_RETENTION_DAYS','180'))
+
+          # League tier mapping for prioritization
+          LEAGUE_TIERS = {
+              'England Premier League': 1, 'Spain La Liga': 1, 'Germany Bundesliga': 1,
+              'Italy Serie A': 1, 'France Ligue 1': 1,
+              'England Championship': 2, 'Netherlands Eredivisie': 2, 'Portugal Liga NOS': 2,
+              'Belgium Pro League': 2, 'Scotland Premiership': 2,
+              'Turkey Süper Lig': 3, 'Austria Bundesliga': 3, 'Denmark Superliga': 3,
+              'USA MLS': 3, 'Brazil Serie A': 3, 'Japan J1 League': 3,
+              'Saudi Arabia Professional League': 3
+          }
+
           bets = []
           try:
               with open('site/settled_bets.csv', newline='', encoding='utf-8') as f:
@@ -530,13 +657,14 @@ jobs:
                       except Exception:
                           pass
                       pl = float(row.get('pl') or 0)
-                      if pl < 0:
+                      if pl <= 0:  # Only winning bets
                           continue
                       odds = float(row.get('odds_betted_on_refined') or row.get('odds') or 1.0)
                       if abs(pl) < 1e-9:
                           odds = 1.0  # push
                       home = row.get('home','')
                       away = row.get('away','')
+                      league = row.get('league', '')
                       line = row.get('line_betted_on_refined') or row.get('line') or '0'
                       try:
                           line = float(line)
@@ -549,63 +677,153 @@ jobs:
                           rec = f"{home} {'+' if line>=0 else ''}{line:.2f}"
                       else:
                           rec = f"AH {'+' if line>=0 else ''}{line:.2f}"
-                      bets.append({'dt': dt_obj, 'home': home, 'away': away, 'odds': max(1.0, odds), 'rec': rec})
+
+                      tier = LEAGUE_TIERS.get(league, 4)  # Default to tier 4 for unknown leagues
+                      bets.append({
+                          'dt': dt_obj, 'home': home, 'away': away, 'odds': max(1.0, odds),
+                          'rec': rec, 'league': league, 'tier': tier
+                      })
           except FileNotFoundError:
               pass
 
-          # Group by 12-hour windows anchored at 05:00 and 17:00 GMT+8
-          buckets = defaultdict(list)
-          def to_gmt8(dt):
-              return dt + timedelta(hours=8)
-          def from_gmt8(y, m, d, hh):
-              # return naive datetime in local (same representation as inputs)
-              return datetime(y, m, d, hh) - timedelta(hours=8)
-          def anchor_for(dt):
-              g8 = to_gmt8(dt)
-              y, m, d, h = g8.year, g8.month, g8.day, g8.hour
-              if 5 <= h < 17:
-                  return from_gmt8(y, m, d, 5)
-              elif h >= 17:
-                  return from_gmt8(y, m, d, 17)
-              else:
-                  prev = g8 - timedelta(days=1)
-                  return from_gmt8(prev.year, prev.month, prev.day, 17)
-          for b in bets:
-              key = anchor_for(b['dt'])
-              buckets[key].append(b)
+          print(f"📊 Processing {len(bets)} winning bets for parlay construction")
 
-          def legs_str(legs):
-              return ' || '.join([f"{l['home']} vs {l['away']} | {l['rec']}@{float(l['odds']):.2f}" for l in legs])
+          # Smart parlay construction with league/tier prioritization
+          def build_prioritized_parlays(winning_bets):
+              """Build parlays with league/tier prioritization as requested by user"""
+              results = []
 
-          results = []
-          for key, legs in buckets.items():
-              legs = sorted(legs, key=lambda x: x['dt'])[:10]
-              for size in range(3, min(6, len(legs)) + 1):
-                  scored = []
-                  for combo in itertools.combinations(legs, size):
-                      prod = 1.0
-                      for lg in combo:
-                          prod *= float(lg['odds'] or 1.0)
-                      scored.append((prod, combo))
-                  scored.sort(key=lambda x: x[0], reverse=True)
-                  for prod, combo in scored[:2]:
-                      stake = 100.0
-                      payout = stake * prod
-                      profit = payout - stake
-                      start = min(l['dt'] for l in combo)
-                      end = max(l['dt'] for l in combo)
-                      results.append([
-                          start.isoformat(sep=' '), end.isoformat(sep=' '), len(combo),
-                          round(prod, 4), stake, round(payout, 2), round(profit, 2),
-                          legs_str(combo)
-                      ])
+              # Group by 6-hour windows for better temporal grouping
+              buckets = defaultdict(list)
+              def to_gmt8(dt):
+                  return dt + timedelta(hours=8)
+              def from_gmt8(y, m, d, hh):
+                  return datetime(y, m, d, hh) - timedelta(hours=8)
+              def anchor_for(dt):
+                  g8 = to_gmt8(dt)
+                  y, m, d, h = g8.year, g8.month, g8.day, g8.hour
+                  # 6-hour windows: 00:00, 06:00, 12:00, 18:00 GMT+8
+                  if h < 6:
+                      return from_gmt8(y, m, d, 0)
+                  elif h < 12:
+                      return from_gmt8(y, m, d, 6)
+                  elif h < 18:
+                      return from_gmt8(y, m, d, 12)
+                  else:
+                      return from_gmt8(y, m, d, 18)
 
+              for bet in winning_bets:
+                  key = anchor_for(bet['dt'])
+                  buckets[key].append(bet)
+
+              def legs_str(legs):
+                  return ' || '.join([f"{l['home']} vs {l['away']} | {l['rec']}@{float(l['odds']):.2f}" for l in legs])
+
+              # Process each time window
+              for window_start, legs in buckets.items():
+                  if len(legs) < 3:  # Need at least 3 legs for a parlay
+                      continue
+
+                  legs = sorted(legs, key=lambda x: x['dt'])[:12]  # Limit to 12 legs max per window
+
+                  # PRIORITY 1: Same-league parlays (3-5 legs)
+                  league_groups = defaultdict(list)
+                  for leg in legs:
+                      league_groups[leg['league']].append(leg)
+
+                  for league, league_legs in league_groups.items():
+                      if len(league_legs) >= 3:
+                          # Create same-league parlays
+                          for size in range(3, min(6, len(league_legs) + 1)):
+                              scored = []
+                              for combo in itertools.combinations(league_legs, size):
+                                  prod = 1.0
+                                  for lg in combo:
+                                      prod *= float(lg['odds'] or 1.0)
+                                  # Bonus for same-league combos
+                                  same_league_bonus = 1.05 if size >= 4 else 1.0
+                                  adjusted_prod = prod * same_league_bonus
+                                  scored.append((adjusted_prod, combo))
+                              scored.sort(key=lambda x: x[0], reverse=True)
+                              for prod, combo in scored[:1]:  # Take top 1 per size per league
+                                  stake = 100.0
+                                  payout = stake * prod
+                                  profit = payout - stake
+                                  start = min(l['dt'] for l in combo)
+                                  end = max(l['dt'] for l in combo)
+                                  results.append([
+                                      start.isoformat(sep=' '), end.isoformat(sep=' '), len(combo),
+                                      round(prod, 4), stake, round(payout, 2), round(profit, 2),
+                                      f"[SAME LEAGUE - {league}] " + legs_str(combo)
+                                  ])
+
+                  # PRIORITY 2: Same-tier cross-league parlays (3-4 legs)
+                  tier_groups = defaultdict(list)
+                  for leg in legs:
+                      tier_groups[leg['tier']].append(leg)
+
+                  for tier, tier_legs in tier_groups.items():
+                      # Remove legs already used in same-league parlays
+                      available_legs = [leg for leg in tier_legs if len([r for r in results if leg['home'] in r[-1] and leg['away'] in r[-1]]) == 0]
+                      if len(available_legs) >= 3:
+                          for size in range(3, min(5, len(available_legs) + 1)):
+                              scored = []
+                              for combo in itertools.combinations(available_legs, size):
+                                  prod = 1.0
+                                  for lg in combo:
+                                      prod *= float(lg['odds'] or 1.0)
+                                  scored.append((prod, combo))
+                              scored.sort(key=lambda x: x[0], reverse=True)
+                              for prod, combo in scored[:1]:  # Take top 1 per size per tier
+                                  stake = 100.0
+                                  payout = stake * prod
+                                  profit = payout - stake
+                                  start = min(l['dt'] for l in combo)
+                                  end = max(l['dt'] for l in combo)
+                                  results.append([
+                                      start.isoformat(sep=' '), end.isoformat(sep=' '), len(combo),
+                                      round(prod, 4), stake, round(payout, 2), round(profit, 2),
+                                      f"[TIER {tier}] " + legs_str(combo)
+                                  ])
+
+                  # PRIORITY 3: Mixed-tier parlays (3 legs only, as fallback)
+                  available_legs = [leg for leg in legs if len([r for r in results if leg['home'] in r[-1] and leg['away'] in r[-1]]) == 0]
+                  if len(available_legs) >= 3:
+                      scored = []
+                      for combo in itertools.combinations(available_legs, 3):
+                          prod = 1.0
+                          for lg in combo:
+                              prod *= float(lg['odds'] or 1.0)
+                          scored.append((prod, combo))
+                      scored.sort(key=lambda x: x[0], reverse=True)
+                      for prod, combo in scored[:1]:  # Take top 1 mixed parlay
+                          stake = 100.0
+                          payout = stake * prod
+                          profit = payout - stake
+                          start = min(l['dt'] for l in combo)
+                          end = max(l['dt'] for l in combo)
+                          results.append([
+                              start.isoformat(sep=' '), end.isoformat(sep=' '), len(combo),
+                              round(prod, 4), stake, round(payout, 2), round(profit, 2),
+                              "[MIXED] " + legs_str(combo)
+                          ])
+
+              return results
+
+          # Build parlays using the new prioritization logic
+          results = build_prioritized_parlays(bets)
+
+          # Save results
           with open('site/parlay_wins.csv','w', newline='', encoding='utf-8') as f:
               w = csv.writer(f)
               w.writerow(['window_start','window_end','leg_count','total_odds','stake','payout','profit','legs'])
-              for row in sorted(results, key=lambda r: r[6], reverse=True)[:20]:
+              for row in sorted(results, key=lambda r: r[6], reverse=True)[:30]:  # Top 30 parlays
                   w.writerow(row)
-          print('Built parlay_wins.csv')
+
+          print(f"✅ Built parlay_wins.csv with {len(results)} parlay combinations")
+          if results:
+              print(f"💰 Best parlay payout: ${max(r[5] for r in results):.0f}")
+              print(f"🏆 Parlay types created: {len(set(r[7].split(']')[0] + ']' for r in results))}")
           PY
 
       - name: Validate King's Call (non-blocking)
