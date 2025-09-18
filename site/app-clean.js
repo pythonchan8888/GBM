@@ -1687,7 +1687,8 @@ class ParlayKing {
             'England Championship': '🇬🇧',
             'Denmark Superliga': '🇩🇰',
             'Saudi Arabia Professional League': '🇸🇦',
-            'Portugal Liga NOS': '🇵🇹'
+            'Portugal Liga NOS': '🇵🇹',
+            'Europe UEFA Champions League': '🇪🇺'
         };
         return flags[league] || '⚽';
     }
