@@ -5257,6 +5257,6 @@ def export_unified_games_schedule():
         print(f"Error exporting unified schedule: {e}")
         logging.error(f"Unified schedule export failed: {e}")
 
-# Execute the export
-if __name__ == "__main__" or 'final_recommendations_df' in globals():
+# Execute the export only when run directly, not when imported
+if __name__ == "__main__":
     export_unified_games_schedule()
