@@ -4067,32 +4067,19 @@ def settle_open_bets(footystats_api_key: str, db_url: str, hours_buffer: int = 2
             'bet_key','dt_gmt8','league','home','away','line_val','odds_val','stake_val','side_val'
         ])
 
-        print(f"Found {len(rows)} open bets to settle across {len(open_df['league'].dropna().unique())} leagues")
-
         # Build a cache of recent matches per league using existing FootyStats fetcher
         league_to_matches = {}
         unique_leagues = sorted([l for l in open_df['league'].dropna().unique()])
-        print(f"Processing leagues: {unique_leagues}")
 
-        for i, league_name in enumerate(unique_leagues):
-            print(f"[{i+1}/{len(unique_leagues)}] Processing league: {league_name}")
+        for league_name in unique_leagues:
             try:
-                print(f"  Fetching season IDs for {league_name}...")
                 season_ids = get_season_ids_for_league(footystats_api_key, league_name, past_seasons=1)
-                print(f"  Found {len(season_ids)} season IDs: {season_ids}")
-
                 league_matches = []
-                for j, s_id in enumerate(season_ids):
-                    print(f"    Fetching match data for season {s_id} ({j+1}/{len(season_ids)})...")
+                for s_id in season_ids:
                     m = get_league_match_data(footystats_api_key, s_id, league_name)
                     if m is not None and not m.empty:
                         league_matches.append(m)
-                        print(f"    Got {len(m)} matches for season {s_id}")
-                    else:
-                        print(f"    No matches found for season {s_id}")
-
                 league_df = pd.concat(league_matches, ignore_index=True) if league_matches else pd.DataFrame()
-                print(f"  Total matches fetched for {league_name}: {len(league_df)}")
                 # Normalize names and timestamps for matching
                 if not league_df.empty:
                     for col in ['home_name','away_name','homeTeam','awayTeam','home','away']:
@@ -4116,17 +4103,12 @@ def settle_open_bets(footystats_api_key: str, db_url: str, hours_buffer: int = 2
                         except Exception:
                             league_df['dt'] = pd.NaT
                 league_to_matches[league_name] = league_df
-                print(f"  Completed processing league: {league_name}")
             except Exception as e:
                 print(f"Settlement warning: failed to fetch league '{league_name}': {e}")
                 league_to_matches[league_name] = pd.DataFrame()
 
-        print(f"All league data fetched. Starting bet settlement for {len(open_df)} bets...")
         settled = 0
-        total_bets = len(open_df)
-        for idx, r in open_df.iterrows():
-            if idx % 10 == 0:  # Progress every 10 bets
-                print(f"Processing bet {idx+1}/{total_bets}...")
+        for _, r in open_df.iterrows():
             bet_id = r['bet_key']
             league = r['league']
             home = _normalize_team_name(r['home'])
