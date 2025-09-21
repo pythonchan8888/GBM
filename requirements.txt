@@ -8,6 +8,6 @@ seaborn>=0.12.0
 matplotlib>=3.6.0
 optuna>=3.4.0
 psycopg2-binary==2.9.9  # PostgreSQL driver (binary for Windows compatibility)
-shap==0.46.0  # For model explanations
+shap>=0.45.0  # For model explanations
 pytz>=2023.3
 google-auth==2.35.0  # For service account credentials
