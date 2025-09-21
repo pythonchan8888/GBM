@@ -139,7 +139,7 @@ LEAGUES_TO_FETCH = [
 import os as _os
 if _os.environ.get('GBM_QUICK', '').strip() == '1':
     print("Quick mode ON: limiting leagues for smoke run.")
-    LEAGUES_TO_FETCH = ['England Premier League', 'Italy Serie A', 'Spain La Liga', 'Germany Bundesliga', 'France Ligue 1', 'Japan J1 League', 'Portugal Liga NOS', 'Netherlands Eredivisie', 'England Championship', 'Scotland Premiership', 'Denmark Superliga', 'Saudi Arabia Professional League']
+    LEAGUES_TO_FETCH = ['England Premier League', 'Italy Serie A', 'Spain La Liga', 'Germany Bundesliga', 'France Ligue 1', 'Japan J1 League', 'Portugal Liga NOS', 'Netherlands Eredivisie', 'England Championship', 'Scotland Premiership', 'Denmark Superliga', 'Saudi Arabia Professional League', 'Europe UEFA Champions League']
 
 # --- Mappings for Competition Type and Tier (ensure these are complete for LEAGUES_TO_FETCH) ---
 COMPETITION_TYPES = {
@@ -4523,7 +4523,7 @@ else:
                     return True
 
                 # Function to get Grok response with live search and structured output
-                def get_grok_response(prompt: str, model="grok-4-0709", enable_retry=False):
+                def get_grok_response(prompt: str, model="grok-4-fast-reasoning", enable_retry=False):
                     url = "https://api.x.ai/v1/chat/completions"
                     headers = {"Authorization": f"Bearer {xai_api_key}", "Content-Type": "application/json"}
                     messages = [
@@ -4749,7 +4749,7 @@ else:
                     )
                     
                     # Use the advanced get_grok_response function
-                    result = get_grok_response(prompt, model="grok-4-0709", enable_retry=True)
+                    result = get_grok_response(prompt, model="grok-4-fast-reasoning", enable_retry=True)
                     
                     # Add delay between API calls to avoid rate limiting
                     if i < total_today - 1:  # Don't delay after last call
@@ -4770,7 +4770,7 @@ else:
                         'odds': row.get('odds_betted_on_refined'),
                         'ev': row.get('ev_for_bet_refined'),
                         'prompt_used': prompt,
-                        'model': 'grok-4-0709',
+                        'model': 'grok-4-fast-reasoning',
                         'agreement': result.get('agreement', 'Neutral'),
                         'insight': result.get('insight', 'Unable to fetch insight'),
                         'reasoning': result.get('reasoning', 'No reasoning available'),
@@ -5161,6 +5161,17 @@ def export_unified_games_schedule():
                 ah_line_home = 0.0
                 ah_line_away = 0.0
             
+            # CRITICAL: Include actual scores for parlay evaluation
+            home_score = game.get('homeGoalCount')
+            away_score = game.get('awayGoalCount')
+
+            # Debug: Check scores for completed games
+            if game.get('status') == 'complete':
+                if home_score is None or away_score is None:
+                    print(f"⚠️ Missing scores for completed game: {game.get('home_name')} vs {game.get('away_name')} (homeGoalCount={home_score}, awayGoalCount={away_score})")
+                else:
+                    print(f"✅ Found scores for {game.get('home_name')} vs {game.get('away_name')}: {home_score}-{away_score}")
+
             unified_schedule.append({
                 'datetime_gmt8': game['datetime_gmt8'],
                 'league': game['league'],
@@ -5170,29 +5181,18 @@ def export_unified_games_schedule():
                 'home_name': game['home_name'],
                 'away_name': game['away_name'],
                 'odds_1': game.get('odds_ft_1', ''),
-                'odds_x': game.get('odds_ft_x', ''), 
+                'odds_x': game.get('odds_ft_x', ''),
                 'odds_2': game.get('odds_ft_2', ''),
                 'league_tier': game['league_tier'],
                 'competition_type': game['competition_type'],
                 'is_future': game['is_future'],
                 'status': game.get('status', ''),
-                
+
                 # Authoritative Asian Handicap data
                 'ah_line_home': ah_line_home,
                 'ah_line_away': ah_line_away,
                 'ah_odds_home': ah_odds_home,
                 'ah_odds_away': ah_odds_away,
-
-                # CRITICAL: Include actual scores for parlay evaluation
-                home_score = game.get('homeGoalCount')
-                away_score = game.get('awayGoalCount')
-
-                # Debug: Check scores for completed games
-                if game.get('status') == 'complete':
-                    if home_score is None or away_score is None:
-                        print(f"⚠️ Missing scores for completed game: {game.get('home_name')} vs {game.get('away_name')} (homeGoalCount={home_score}, awayGoalCount={away_score})")
-                    else:
-                        print(f"✅ Found scores for {game.get('home_name')} vs {game.get('away_name')}: {home_score}-{away_score}")
 
                 'home_score': home_score if home_score is not None else '',
                 'away_score': away_score if away_score is not None else '',
