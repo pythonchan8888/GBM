@@ -19,6 +19,7 @@ jobs:
       PARLAY_RETENTION_DAYS: ${{ vars.PARLAY_RETENTION_DAYS || '180' }}
       XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
       FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}  # If needed for daily runs
+      MAX_BETS_TO_SETTLE: ${{ vars.MAX_BETS_TO_SETTLE || '10000' }}
 
     steps:
       - name: Checkout
@@ -167,7 +168,8 @@ jobs:
         env:
           FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        timeout-minutes: 15  # Prevent infinite hangs
+          MAX_BETS_TO_SETTLE: ${{ vars.MAX_BETS_TO_SETTLE || '10000' }}
+        timeout-minutes: 60  # Extended timeout for large bet volumes
         run: |
           python settle_bets.py
 

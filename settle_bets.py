@@ -135,7 +135,7 @@ def resolve_ah_bet_profit(home_goals, away_goals, line_betted_on_team, side_bett
     else: 
         return -stake
 
-def settle_open_bets(footystats_api_key: str, db_url: str, hours_buffer: int = 2) -> None:
+def settle_open_bets(footystats_api_key: str, db_url: str, days_back: int = 2) -> None:
     """Settle open bets in the Postgres `bets` table using FootyStats final scores."""
     print("🔄 Starting bet settlement process...")
     
@@ -150,7 +150,7 @@ def settle_open_bets(footystats_api_key: str, db_url: str, hours_buffer: int = 2
         conn = psycopg2.connect(db_url)
         cur = conn.cursor()
         
-        # Fetch open bets older than buffer window
+        # Fetch open bets for yesterday's games only (much more targeted)
         cur.execute(
             """
             SELECT 
@@ -162,10 +162,10 @@ def settle_open_bets(footystats_api_key: str, db_url: str, hours_buffer: int = 2
               COALESCE(bet_type_refined_ah, side) AS side_val
             FROM bets
             WHERE (status IS NULL OR status = 'open')
-              AND dt_gmt8 < NOW() - INTERVAL '%s hours'
+              AND dt_gmt8 >= CURRENT_DATE - INTERVAL '2 days'
+              AND dt_gmt8 < CURRENT_DATE
             ORDER BY dt_gmt8 ASC
-            """,
-            (hours_buffer,)
+            """
         )
         rows = cur.fetchall()
         
@@ -174,8 +174,14 @@ def settle_open_bets(footystats_api_key: str, db_url: str, hours_buffer: int = 2
             cur.close(); conn.close()
             return
 
-        print(f"Found {len(rows)} open bets to settle")
-        
+        print(f"Found {len(rows)} open bets from yesterday/day before to settle")
+
+        # With date filtering, we shouldn't need volume limits, but keep as safety
+        max_bets_to_process = int(os.environ.get('MAX_BETS_TO_SETTLE', '50000'))  # Increased limit
+        if len(rows) > max_bets_to_process:
+            print(f"⚠️ Still large volume after date filtering: {len(rows)} bets. Limiting to {max_bets_to_process}.")
+            rows = rows[:max_bets_to_process]
+
         open_df = pd.DataFrame(rows, columns=[
             'bet_key','dt_gmt8','league','home','away','line_val','odds_val','stake_val','side_val'
         ])
@@ -230,77 +236,115 @@ def settle_open_bets(footystats_api_key: str, db_url: str, hours_buffer: int = 2
                 print(f"  ❌ {league_name}: {e}")
                 league_to_matches[league_name] = pd.DataFrame()
 
-        # Process individual bets
+        # Process individual bets in batches for better performance
         print(f"Processing {len(open_df)} individual bets...")
+
+        batch_size = 1000  # Process in batches to avoid memory issues
         settled = 0
-        
-        for idx, r in open_df.iterrows():
-            if idx % 50 == 0:
-                print(f"  Progress: {idx+1}/{len(open_df)} bets processed...")
-                
-            bet_id = r['bet_key']
-            league = r['league']
-            home = _normalize_team_name(r['home'])
-            away = _normalize_team_name(r['away'])
-            side_raw = str(r['side_val'] or '').lower()
-            side = 'home' if 'home' in side_raw else ('away' if 'away' in side_raw else None)
-            line = r['line_val']
-            odds = r['odds_val']
-            stake = r['stake_val']
-            dt_bet = pd.to_datetime(r['dt_gmt8'], errors='coerce', utc=True).tz_localize(None)
+        total_batches = (len(open_df) + batch_size - 1) // batch_size
 
-            if bet_id is None or league not in league_to_matches or side is None:
-                continue
+        for batch_idx in range(0, len(open_df), batch_size):
+            batch_start = batch_idx
+            batch_end = min(batch_idx + batch_size, len(open_df))
+            current_batch = open_df.iloc[batch_start:batch_end]
 
-            league_df = league_to_matches.get(league, pd.DataFrame())
-            if league_df is None or league_df.empty:
-                continue
+            print(f"  Processing batch {batch_idx//batch_size + 1}/{total_batches} (bets {batch_start+1}-{batch_end})...")
 
-            # Find closest match by date and team names
-            candidates = league_df.copy()
-            home_cols = [c for c in candidates.columns if c.endswith('_norm') and c.startswith('home')]
-            away_cols = [c for c in candidates.columns if c.endswith('_norm') and c.startswith('away')]
-            
-            match_found = False
-            match_row = None
-            
-            for hc in home_cols:
-                for ac in away_cols:
-                    mask = (candidates[hc] == home) & (candidates[ac] == away)
-                    if mask.any():
-                        sub = candidates.loc[mask].copy()
-                        if 'dt' in sub.columns and pd.notna(dt_bet):
-                            sub['abs_dt_diff'] = (sub['dt'] - dt_bet).abs()
-                            sub = sub.sort_values('abs_dt_diff')
-                        match_row = sub.iloc[0]
-                        match_found = True
-                        break
-                if match_found:
-                    break
-                    
-            if not match_found or match_row is None:
-                continue
+            batch_updates = []
 
-            try:
-                hg = float(match_row.get('homeGoalCount', np.nan))
-                ag = float(match_row.get('awayGoalCount', np.nan))
-                if not np.isfinite(hg) or not np.isfinite(ag):
+            for idx, r in current_batch.iterrows():
+                bet_id = r['bet_key']
+                league = r['league']
+                home = _normalize_team_name(r['home'])
+                away = _normalize_team_name(r['away'])
+                side_raw = str(r['side_val'] or '').lower()
+                side = 'home' if 'home' in side_raw else ('away' if 'away' in side_raw else None)
+                line = r['line_val']
+                odds = r['odds_val']
+                stake = r['stake_val']
+                dt_bet = pd.to_datetime(r['dt_gmt8'], errors='coerce', utc=True).tz_localize(None)
+
+                if bet_id is None or league not in league_to_matches or side is None:
                     continue
-                    
-                profit = resolve_ah_bet_profit(int(hg), int(ag), float(line), side, float(odds), float(stake))
-                
-                cur.execute(
+
+                league_df = league_to_matches.get(league, pd.DataFrame())
+                if league_df is None or league_df.empty:
+                    continue
+
+                # Find closest match by date and team names (optimized)
+                candidates = league_df.copy()
+                home_cols = [c for c in candidates.columns if c.endswith('_norm') and c.startswith('home')]
+                away_cols = [c for c in candidates.columns if c.endswith('_norm') and c.startswith('away')]
+
+                match_found = False
+                match_row = None
+
+                # Try most common column combinations first
+                common_combinations = [
+                    ('home_name_norm', 'away_name_norm'),
+                    ('homeTeam_norm', 'awayTeam_norm'),
+                    ('home_norm', 'away_norm')
+                ]
+
+                for hc, ac in common_combinations:
+                    if hc in candidates.columns and ac in candidates.columns:
+                        mask = (candidates[hc] == home) & (candidates[ac] == away)
+                        if mask.any():
+                            sub = candidates.loc[mask].copy()
+                            if 'dt' in sub.columns and pd.notna(dt_bet):
+                                sub['abs_dt_diff'] = (sub['dt'] - dt_bet).abs()
+                                sub = sub.sort_values('abs_dt_diff')
+                            match_row = sub.iloc[0]
+                            match_found = True
+                            break
+
+                if not match_found:
+                    # Fallback to all combinations
+                    for hc in home_cols:
+                        for ac in away_cols:
+                            mask = (candidates[hc] == home) & (candidates[ac] == away)
+                            if mask.any():
+                                sub = candidates.loc[mask].copy()
+                                if 'dt' in sub.columns and pd.notna(dt_bet):
+                                    sub['abs_dt_diff'] = (sub['dt'] - dt_bet).abs()
+                                    sub = sub.sort_values('abs_dt_diff')
+                                match_row = sub.iloc[0]
+                                match_found = True
+                                break
+                        if match_found:
+                            break
+
+                if not match_found or match_row is None:
+                    continue
+
+                try:
+                    hg = float(match_row.get('homeGoalCount', np.nan))
+                    ag = float(match_row.get('awayGoalCount', np.nan))
+                    if not np.isfinite(hg) or not np.isfinite(ag):
+                        continue
+
+                    profit = resolve_ah_bet_profit(int(hg), int(ag), float(line), side, float(odds), float(stake))
+                    batch_updates.append((profit, str(bet_id)))
+
+                except Exception as e:
+                    print(f"Settlement warning: bet {bet_id} update failed: {e}")
+
+            # Execute batch update
+            if batch_updates:
+                cur.executemany(
                     """
                     UPDATE bets
                     SET pl = %s, status = 'settled', settled_at = NOW()
                     WHERE CAST(bet_id AS TEXT) = %s
                     """,
-                    (profit, str(bet_id))
+                    batch_updates
                 )
-                settled += 1
-                
-            except Exception as e:
-                print(f"Settlement warning: bet {bet_id} update failed: {e}")
+                settled += len(batch_updates)
+
+            # Commit every few batches to prevent memory buildup
+            if (batch_idx // batch_size) % 5 == 0:
+                conn.commit()
+                print(f"    Committed batch {batch_idx//batch_size + 1}, settled {settled} bets so far")
 
         conn.commit()
         cur.close(); conn.close()

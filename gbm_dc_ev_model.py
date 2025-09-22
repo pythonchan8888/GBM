@@ -5171,7 +5171,7 @@ def export_unified_games_schedule():
                     print(f"⚠️ Missing scores for completed game: {game.get('home_name')} vs {game.get('away_name')} (homeGoalCount={home_score}, awayGoalCount={away_score})")
                 else:
                     print(f"✅ Found scores for {game.get('home_name')} vs {game.get('away_name')}: {home_score}-{away_score}")
-
+            
             unified_schedule.append({
                 'datetime_gmt8': game['datetime_gmt8'],
                 'league': game['league'],
@@ -5181,13 +5181,13 @@ def export_unified_games_schedule():
                 'home_name': game['home_name'],
                 'away_name': game['away_name'],
                 'odds_1': game.get('odds_ft_1', ''),
-                'odds_x': game.get('odds_ft_x', ''),
+                'odds_x': game.get('odds_ft_x', ''), 
                 'odds_2': game.get('odds_ft_2', ''),
                 'league_tier': game['league_tier'],
                 'competition_type': game['competition_type'],
                 'is_future': game['is_future'],
                 'status': game.get('status', ''),
-
+                
                 # Authoritative Asian Handicap data
                 'ah_line_home': ah_line_home,
                 'ah_line_away': ah_line_away,
