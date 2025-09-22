@@ -167,14 +167,9 @@ jobs:
         env:
           FOOTYSTATS_API_KEY: ${{ secrets.FOOTYSTATS_API_KEY }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        timeout-minutes: 15  # Prevent infinite hangs
         run: |
-          python - <<'PY'
-          import os
-          from gbm_dc_ev_model import settle_open_bets
-          api_key = os.environ.get('FOOTYSTATS_API_KEY', '')
-          db = os.environ.get('DATABASE_URL', '')
-          settle_open_bets(api_key, db)
-          PY
+          python settle_bets.py
 
       - name: Prepare site folder
         run: |
