@@ -1,15 +1,3 @@
 metric,value
-run_id,20251005_063158
-started_at,2025-10-05 07:02:21.626908+00:00
-finished_at,2025-10-05 07:02:21.626908+00:00
-train_rows,16364
-test_rows,3273
-poisson_home_loss,
-poisson_away_loss,
-pnl_30d,28641275227130.9460074579540
-stake_30d,156750794575978.1840429449335
-bets_30d,4165
-roi_30d_pct,18.271853297208214
-win_rate_30d_pct,57.38295318127251
-non_losing_rate_30d_pct,67.01080432172868
-avg_win_return_30d_pct,85.93985355648536
+status,DB_unavailable
+generated_at,2025-10-07T07:05:30.121633
