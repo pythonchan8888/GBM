@@ -1,1 +1,9 @@
-
+datetime_gmt8,league,league_short,league_flag,league_color,home_name,away_name,odds_1,odds_x,odds_2,league_tier,competition_type,is_future,status,ah_line_home,ah_line_away,ah_odds_home,ah_odds_away,home_score,away_score,has_recommendation,rec_text,line,rec_odds,ev,confidence,kings_call,kings_call_agreement,primary_signal,secondary_signal
+2025-10-17 23:05:00,Saudi Arabia Professional League,Saudi Pro,🇸🇦,#006c35,Al Feiha,Al Ittihad,0.0,0.0,0.0,3,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-10-17 23:10:00,Saudi Arabia Professional League,Saudi Pro,🇸🇦,#006c35,Al Kholood,Al Najma,0.0,0.0,0.0,3,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-10-18 01:00:00,Denmark Superliga,Superliga,🇩🇰,#c8102e,Silkeborg,København,4.8,3.97,1.51,3,league,True,incomplete,1.0,-1.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-10-18 02:00:00,Saudi Arabia Professional League,Saudi Pro,🇸🇦,#006c35,Al Ahli,Al Shabab,0.0,0.0,0.0,3,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-10-18 02:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Union Berlin,Borussia M'gladbach,2.19,3.45,3.09,1,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-10-18 02:45:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,PSG,Strasbourg,1.27,5.9,8.9,1,league,True,incomplete,-1.75,1.75,1.925,1.925,0,0,True,Strasbourg +1.75,1.75,1.925,0.49061553402699265,High,,,kings-call,value
+2025-10-18 03:00:00,Spain La Liga,La Liga,🇪🇸,#ee8900,Real Oviedo,RCD Espanyol,0.0,0.0,0.0,1,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-10-18 03:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Middlesbrough,Ipswich Town,2.79,3.23,2.49,2,league,True,incomplete,0.0,-0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
