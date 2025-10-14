@@ -1,4 +1,10 @@
 fixture_id,league,home,away,home_score,away_score,line_betted_on_refined,bet_type_refined_ah,odds_betted_on_refined,stake,pl,status,dt_gmt8
+,USA MLS,Austin,Los Angeles FC,,,-0.25,bet_away_refined_ah,1.925,52713518582.6992,-52713518582.6992,settled,2025-10-13 07:00:00+00:00
+,USA MLS,Austin,Los Angeles FC,,,0.25,bet_home_refined_ah,1.925,483783231.37528145,447499489.0221354,settled,2025-10-13 06:00:00+00:00
+,USA MLS,LA Galaxy,FC Dallas,,,0.0,bet_home_refined_ah,1.925,46675074026.208755,43174443474.2431,settled,2025-10-12 10:30:00+00:00
+,USA MLS,Seattle Sounders,Real Salt Lake,,,0.75,bet_away_refined_ah,1.925,32127578068.74429,-16063789034.372145,settled,2025-10-12 09:30:00+00:00
+,USA MLS,Orlando City,Vancouver Whitecaps,,,0.25,bet_away_refined_ah,1.925,53847076493.26193,49808545756.26729,settled,2025-10-12 07:30:00+00:00
+,Brazil Serie A,Palmeiras,Juventude,,,-1.5,bet_home_refined_ah,1.925,33493587996.96908,30981568897.1964,settled,2025-10-12 06:00:00+00:00
 ,Brazil Serie A,Mirassol,Fluminense,,,0.0,bet_away_refined_ah,1.925,291136856784.11316,-291136856784.11316,settled,2025-10-09 08:00:00+00:00
 ,Brazil Serie A,Atlético Mineiro,Sport Recife,,,1.25,bet_away_refined_ah,1.925,401616129532.629,-401616129532.629,settled,2025-10-09 06:30:00+00:00
 ,Brazil Serie A,Ceará,Santos,,,0.25,bet_away_refined_ah,1.925,112599821558.11629,-112599821558.11629,settled,2025-10-06 07:30:00+00:00
@@ -10,23 +16,23 @@ fixture_id,league,home,away,home_score,away_score,line_betted_on_refined,bet_typ
 ,Spain La Liga,Celta de Vigo,Atlético Madrid,,,0.75,bet_home_refined_ah,1.925,119485.93327969272,110524.48828371576,settled,2025-10-06 03:00:00+00:00
 ,Spain La Liga,Celta de Vigo,Atlético Madrid,,,0.75,bet_home_refined_ah,1.925,251363.93054387785,232511.63575308703,settled,2025-10-06 03:00:00+00:00
 ,France Ligue 1,Lille,PSG,,,-0.75,bet_away_refined_ah,1.925,54239.56838445442,-54239.56838445442,settled,2025-10-06 02:45:00+00:00
-,Portugal Liga NOS,Sporting CP,Sporting Braga,,,1.25,bet_away_refined_ah,1.925,114203.99835573975,105638.69847905927,settled,2025-10-06 02:15:00+00:00
-,Portugal Liga NOS,Sporting CP,Sporting Braga,,,1.25,bet_away_refined_ah,1.925,242844.3574318763,224631.03062448557,settled,2025-10-06 02:15:00+00:00
-,Portugal Liga NOS,Sporting CP,Sporting Braga,,,1.25,bet_away_refined_ah,1.925,165884889347.42685,153443522646.36984,settled,2025-10-06 02:15:00+00:00
 ,Portugal Liga NOS,Sporting CP,Sporting Braga,,,1.25,bet_away_refined_ah,1.925,123595.12883131485,114325.49416896625,settled,2025-10-06 02:15:00+00:00
-,Netherlands Eredivisie,Go Ahead Eagles,NEC,,,0.0,bet_away_refined_ah,1.925,123595.12883131485,0.0,settled,2025-10-06 02:00:00+00:00
+,Portugal Liga NOS,Sporting CP,Sporting Braga,,,1.25,bet_away_refined_ah,1.925,242844.3574318763,224631.03062448557,settled,2025-10-06 02:15:00+00:00
+,Portugal Liga NOS,Sporting CP,Sporting Braga,,,1.25,bet_away_refined_ah,1.925,114203.99835573975,105638.69847905927,settled,2025-10-06 02:15:00+00:00
+,Portugal Liga NOS,Sporting CP,Sporting Braga,,,1.25,bet_away_refined_ah,1.925,165884889347.42685,153443522646.36984,settled,2025-10-06 02:15:00+00:00
 ,Denmark Superliga,Fredericia,Brøndby,,,-1.0,bet_away_refined_ah,1.925,112765253691.32321,104307859664.47397,settled,2025-10-06 02:00:00+00:00
+,Netherlands Eredivisie,Go Ahead Eagles,NEC,,,0.0,bet_away_refined_ah,1.925,123595.12883131485,0.0,settled,2025-10-06 02:00:00+00:00
 ,Netherlands Eredivisie,Go Ahead Eagles,NEC,,,0.0,bet_away_refined_ah,1.925,242844.3574318763,0.0,settled,2025-10-06 02:00:00+00:00
 ,Germany Bundesliga,Borussia M'gladbach,Freiburg,,,0.0,bet_away_refined_ah,1.925,104985.55902381978,0.0,settled,2025-10-06 01:30:00+00:00
 ,Germany Bundesliga,Borussia M'gladbach,Freiburg,,,0.0,bet_away_refined_ah,1.925,64978615442.20128,0.0,settled,2025-10-06 01:30:00+00:00
-,Turkey Süper Lig,Samsunspor,Fenerbahçe,,,1.0,bet_home_refined_ah,1.925,153567021614.53107,142049494993.44122,settled,2025-10-06 01:00:00+00:00
 ,Turkey Süper Lig,Göztepe,İstanbul Başakşehir,,,0.5,bet_away_refined_ah,1.925,138704068313.77533,-138704068313.77533,settled,2025-10-06 01:00:00+00:00
+,Turkey Süper Lig,Samsunspor,Fenerbahçe,,,1.0,bet_home_refined_ah,1.925,153567021614.53107,142049494993.44122,settled,2025-10-06 01:00:00+00:00
+,Portugal Liga NOS,Rio Ave FC,CD Tondela,,,0.25,bet_away_refined_ah,1.925,255625.63940197506,-255625.63940197506,settled,2025-10-06 00:30:00+00:00
 ,Portugal Liga NOS,Rio Ave FC,CD Tondela,,,0.25,bet_away_refined_ah,1.925,68519.4181085454,-68519.4181085454,settled,2025-10-06 00:30:00+00:00
 ,Spain La Liga,Real Sociedad,Rayo Vallecano,,,-0.25,bet_home_refined_ah,1.925,69516.55449837507,-69516.55449837507,settled,2025-10-06 00:30:00+00:00
-,Portugal Liga NOS,Rio Ave FC,CD Tondela,,,0.25,bet_away_refined_ah,1.925,255625.63940197506,-255625.63940197506,settled,2025-10-06 00:30:00+00:00
 ,Portugal Liga NOS,Rio Ave FC,CD Tondela,,,0.25,bet_away_refined_ah,1.925,104143.68699118435,-104143.68699118435,settled,2025-10-06 00:30:00+00:00
-,England Premier League,Brentford,Manchester City,,,-0.75,bet_away_refined_ah,1.925,58217.0553995068,26925.388122271896,settled,2025-10-05 23:30:00+00:00
 ,England Premier League,Brentford,Manchester City,,,-0.75,bet_away_refined_ah,1.925,60084.26478125373,27788.972461329853,settled,2025-10-05 23:30:00+00:00
+,England Premier League,Brentford,Manchester City,,,-0.75,bet_away_refined_ah,1.925,58217.0553995068,26925.388122271896,settled,2025-10-05 23:30:00+00:00
 ,France Ligue 1,Strasbourg,Angers SCO,,,-0.75,bet_home_refined_ah,1.925,118741.60506292648,109835.984683207,settled,2025-10-05 23:15:00+00:00
 ,France Ligue 1,Strasbourg,Angers SCO,,,-0.75,bet_home_refined_ah,1.925,255745.94932249782,236565.0031233105,settled,2025-10-05 23:15:00+00:00
 ,France Ligue 1,Monaco,Nice,,,-0.5,bet_home_refined_ah,1.925,267662.4947324858,-267662.4947324858,settled,2025-10-05 23:15:00+00:00
@@ -37,41 +43,41 @@ fixture_id,league,home,away,home_score,away_score,line_betted_on_refined,bet_typ
 ,Netherlands Eredivisie,Go Ahead Eagles,NEC,,,0.0,bet_away_refined_ah,1.925,114653489290.2501,0.0,settled,2025-10-05 22:45:00+00:00
 ,Netherlands Eredivisie,Go Ahead Eagles,NEC,,,0.0,bet_away_refined_ah,1.925,118741.60506292648,0.0,settled,2025-10-05 22:45:00+00:00
 ,Netherlands Eredivisie,AZ,Telstar,,,1.5,bet_away_refined_ah,1.925,70212.22640598325,64946.30942553452,settled,2025-10-05 22:45:00+00:00
-,Portugal Liga NOS,FC Arouca,Famalicão,,,0.0,bet_away_refined_ah,1.925,115494.28959164974,0.0,settled,2025-10-05 22:30:00+00:00
 ,Portugal Liga NOS,FC Arouca,Famalicão,,,0.0,bet_away_refined_ah,1.925,255834.24457632026,0.0,settled,2025-10-05 22:30:00+00:00
+,Portugal Liga NOS,FC Arouca,Famalicão,,,0.0,bet_away_refined_ah,1.925,115494.28959164974,0.0,settled,2025-10-05 22:30:00+00:00
 ,Portugal Liga NOS,FC Arouca,Famalicão,,,0.0,bet_away_refined_ah,1.925,166683174630.0808,0.0,settled,2025-10-05 22:30:00+00:00
 ,Belgium Pro League,KRC Genk,FCV Dender EH,,,-1.5,bet_home_refined_ah,1.925,60057752887.099785,-60057752887.099785,settled,2025-10-05 22:00:00+00:00
-,Scotland Premiership,Aberdeen,Dundee,,,-0.75,bet_home_refined_ah,1.925,59882.5447847133,55391.353925859796,settled,2025-10-05 22:00:00+00:00
 ,Scotland Premiership,Celtic,Motherwell,,,2.0,bet_away_refined_ah,1.925,76741.81742250893,70986.18111582077,settled,2025-10-05 22:00:00+00:00
+,Turkey Süper Lig,Fatih Karagümrük,Gazişehir Gaziantep,,,0.0,bet_away_refined_ah,1.925,99022498429.13931,91595811046.95386,settled,2025-10-05 22:00:00+00:00
 ,Denmark Superliga,AGF,Silkeborg,,,-1.0,bet_home_refined_ah,1.925,150831700948.99487,139519323377.82025,settled,2025-10-05 22:00:00+00:00
 ,Scotland Premiership,Falkirk,Rangers,,,0.75,bet_home_refined_ah,1.925,244524.96494749846,226185.59257643612,settled,2025-10-05 22:00:00+00:00
 ,Scotland Premiership,Falkirk,Rangers,,,0.75,bet_home_refined_ah,1.925,157807667117.8859,145972092084.04446,settled,2025-10-05 22:00:00+00:00
-,Turkey Süper Lig,Fatih Karagümrük,Gazişehir Gaziantep,,,0.0,bet_away_refined_ah,1.925,99022498429.13931,91595811046.95386,settled,2025-10-05 22:00:00+00:00
+,Scotland Premiership,Aberdeen,Dundee,,,-0.75,bet_home_refined_ah,1.925,59882.5447847133,55391.353925859796,settled,2025-10-05 22:00:00+00:00
 ,Scotland Premiership,Falkirk,Rangers,,,0.75,bet_home_refined_ah,1.925,110388.8072560571,102109.64671185284,settled,2025-10-05 22:00:00+00:00
 ,Germany Bundesliga,Stuttgart,Heidenheim,,,-1.25,bet_home_refined_ah,1.925,154699180460.50757,-77349590230.25378,settled,2025-10-05 21:30:00+00:00
-,Italy Serie A,Bologna,Pisa,,,-0.75,bet_home_refined_ah,1.925,148762499136.56625,137605311701.32376,settled,2025-10-05 21:00:00+00:00
+,England Premier League,Wolverhampton Wanderers,Brighton & Hove Albion,,,-0.5,bet_away_refined_ah,1.925,242445.4816240532,-242445.4816240532,settled,2025-10-05 21:00:00+00:00
 ,Italy Serie A,Bologna,Pisa,,,-0.75,bet_home_refined_ah,1.925,230323.20754285055,213048.96697713676,settled,2025-10-05 21:00:00+00:00
 ,Malaysia Super League,PDRM,Johor Darul Ta'zim,,,-2.0,bet_away_refined_ah,1.925,147860626485.55084,136771079499.13452,settled,2025-10-05 21:00:00+00:00
 ,England Premier League,Wolverhampton Wanderers,Brighton & Hove Albion,,,-0.5,bet_away_refined_ah,1.925,155642764721.63245,-155642764721.63245,settled,2025-10-05 21:00:00+00:00
+,Italy Serie A,Bologna,Pisa,,,-0.75,bet_home_refined_ah,1.925,148762499136.56625,137605311701.32376,settled,2025-10-05 21:00:00+00:00
 ,Italy Serie A,Fiorentina,Roma,,,0.25,bet_home_refined_ah,1.925,104381593630.19806,-104381593630.19806,settled,2025-10-05 21:00:00+00:00
 ,France Ligue 1,Olympique Lyonnais,Toulouse,,,0.5,bet_away_refined_ah,1.925,125571.31302566099,116153.46454873643,settled,2025-10-05 21:00:00+00:00
 ,England Premier League,Newcastle United,Nottingham Forest,,,-1.0,bet_home_refined_ah,1.925,123416.82192992029,114160.56028517627,settled,2025-10-05 21:00:00+00:00
-,England Premier League,Wolverhampton Wanderers,Brighton & Hove Albion,,,-0.5,bet_away_refined_ah,1.925,242445.4816240532,-242445.4816240532,settled,2025-10-05 21:00:00+00:00
 ,England Premier League,Wolverhampton Wanderers,Brighton & Hove Albion,,,-0.5,bet_away_refined_ah,1.925,84390.19713735719,-84390.19713735719,settled,2025-10-05 21:00:00+00:00
 ,France Ligue 1,Olympique Lyonnais,Toulouse,,,0.5,bet_away_refined_ah,1.925,55355.60122064454,51203.9311290962,settled,2025-10-05 21:00:00+00:00
 ,Italy Serie A,Bologna,Pisa,,,-0.75,bet_home_refined_ah,1.925,107187.7709821231,99148.68815846386,settled,2025-10-05 21:00:00+00:00
 ,Italy Serie A,Fiorentina,Roma,,,0.25,bet_home_refined_ah,1.925,57333.05059738256,-57333.05059738256,settled,2025-10-05 21:00:00+00:00
-,Netherlands Eredivisie,Feyenoord,Utrecht,,,-1.0,bet_home_refined_ah,1.925,230929.78038235754,0.0,settled,2025-10-05 20:30:00+00:00
-,Netherlands Eredivisie,Feyenoord,Utrecht,,,-1.0,bet_home_refined_ah,1.925,35148.625069989335,0.0,settled,2025-10-05 20:30:00+00:00
 ,Austria Bundesliga,Rheindorf Altach,Sturm Graz,,,-0.25,bet_away_refined_ah,1.925,147174746779.52322,136136640771.05899,settled,2025-10-05 20:30:00+00:00
 ,Netherlands Eredivisie,Feyenoord,Utrecht,,,-1.0,bet_home_refined_ah,1.925,140022451384.41565,0.0,settled,2025-10-05 20:30:00+00:00
-,Spain La Liga,Deportivo Alavés,Elche CF,,,-0.25,bet_home_refined_ah,1.925,73032.94225071694,67555.47158191318,settled,2025-10-05 20:00:00+00:00
-,Spain La Liga,Deportivo Alavés,Elche CF,,,-0.25,bet_home_refined_ah,1.925,188452.82356893033,174318.86180126056,settled,2025-10-05 20:00:00+00:00
+,Netherlands Eredivisie,Feyenoord,Utrecht,,,-1.0,bet_home_refined_ah,1.925,230929.78038235754,0.0,settled,2025-10-05 20:30:00+00:00
+,Netherlands Eredivisie,Feyenoord,Utrecht,,,-1.0,bet_home_refined_ah,1.925,35148.625069989335,0.0,settled,2025-10-05 20:30:00+00:00
 ,Denmark Superliga,Randers,Viborg,,,0.25,bet_away_refined_ah,1.925,143987.19959946568,-143987.19959946568,settled,2025-10-05 20:00:00+00:00
 ,Denmark Superliga,Randers,Viborg,,,0.25,bet_away_refined_ah,1.925,70583.7741502289,-70583.7741502289,settled,2025-10-05 20:00:00+00:00
-,Italy Serie A,Udinese,Cagliari,,,-0.25,bet_home_refined_ah,1.925,207705.13736019607,-103852.56868009803,settled,2025-10-05 18:30:00+00:00
-,Italy Serie A,Udinese,Cagliari,,,-0.25,bet_home_refined_ah,1.925,94126223081.1224,-47063111540.5612,settled,2025-10-05 18:30:00+00:00
+,Spain La Liga,Deportivo Alavés,Elche CF,,,-0.25,bet_home_refined_ah,1.925,73032.94225071694,67555.47158191318,settled,2025-10-05 20:00:00+00:00
+,Spain La Liga,Deportivo Alavés,Elche CF,,,-0.25,bet_home_refined_ah,1.925,188452.82356893033,174318.86180126056,settled,2025-10-05 20:00:00+00:00
 ,Italy Serie A,Udinese,Cagliari,,,-0.25,bet_home_refined_ah,1.925,90043.59565370932,-45021.79782685466,settled,2025-10-05 18:30:00+00:00
+,Italy Serie A,Udinese,Cagliari,,,-0.25,bet_home_refined_ah,1.925,94126223081.1224,-47063111540.5612,settled,2025-10-05 18:30:00+00:00
+,Italy Serie A,Udinese,Cagliari,,,-0.25,bet_home_refined_ah,1.925,207705.13736019607,-103852.56868009803,settled,2025-10-05 18:30:00+00:00
 ,Netherlands Eredivisie,Twente,Heracles,,,-1.5,bet_home_refined_ah,1.925,110852144012.15501,-110852144012.15501,settled,2025-10-05 18:15:00+00:00
 ,Malaysia Super League,Imigresen,Selangor,,,1.5,bet_home_refined_ah,1.925,163232115323.3253,-163232115323.3253,settled,2025-10-05 17:00:00+00:00
 ,USA MLS,Seattle Sounders,Portland Timbers,,,0.75,bet_away_refined_ah,1.925,156558427234.86893,-78279213617.43446,settled,2025-10-05 10:30:00+00:00
@@ -82,266 +88,266 @@ fixture_id,league,home,away,home_score,away_score,line_betted_on_refined,bet_typ
 ,USA MLS,New York RB,FC Cincinnati,,,0.0,bet_home_refined_ah,1.925,182933816089.69836,-182933816089.69836,settled,2025-10-05 07:30:00+00:00
 ,Brazil Serie A,Internacional,Botafogo,,,0.25,bet_away_refined_ah,1.925,108726703280.85774,-108726703280.85774,settled,2025-10-05 05:30:00+00:00
 ,USA MLS,FC Dallas,LA Galaxy,,,0.5,bet_away_refined_ah,1.925,181432009061.4358,-181432009061.4358,settled,2025-10-05 04:30:00+00:00
-,France Ligue 1,Auxerre,Lens,,,0.5,bet_home_refined_ah,1.925,152240.84979255786,-152240.84979255786,settled,2025-10-05 03:05:00+00:00
-,France Ligue 1,Auxerre,Lens,,,0.5,bet_home_refined_ah,1.925,115358.18526513854,-115358.18526513854,settled,2025-10-05 03:05:00+00:00
 ,France Ligue 1,Auxerre,Lens,,,0.5,bet_home_refined_ah,1.925,199321128068.01697,-199321128068.01697,settled,2025-10-05 03:05:00+00:00
 ,France Ligue 1,Auxerre,Lens,,,0.5,bet_home_refined_ah,1.925,246953.50074344498,-246953.50074344498,settled,2025-10-05 03:05:00+00:00
-,Spain La Liga,Real Madrid,Villarreal,,,-1.25,bet_home_refined_ah,1.925,190510038774.68765,176221785866.5861,settled,2025-10-05 03:00:00+00:00
+,France Ligue 1,Auxerre,Lens,,,0.5,bet_home_refined_ah,1.925,115358.18526513854,-115358.18526513854,settled,2025-10-05 03:05:00+00:00
+,France Ligue 1,Auxerre,Lens,,,0.5,bet_home_refined_ah,1.925,152240.84979255786,-152240.84979255786,settled,2025-10-05 03:05:00+00:00
 ,Netherlands Eredivisie,Heerenveen,Excelsior,,,-0.75,bet_home_refined_ah,1.925,77966728117.6373,36059611754.40726,settled,2025-10-05 03:00:00+00:00
+,Spain La Liga,Real Madrid,Villarreal,,,-1.25,bet_home_refined_ah,1.925,190510038774.68765,176221785866.5861,settled,2025-10-05 03:00:00+00:00
 ,USA MLS,DC United,Charlotte,,,0.0,bet_away_refined_ah,1.925,180365169115.38092,166837781431.72736,settled,2025-10-05 02:30:00+00:00
-,Netherlands Eredivisie,PEC Zwolle,PSV,,,-1.5,bet_away_refined_ah,1.925,158246198842.71747,146377733929.51367,settled,2025-10-05 02:00:00+00:00
 ,Spain Copa del Rey,Universitario FC,Inter de Valdemoro,,,0.0,bet_away_refined_ah,1.925,113548591276.48775,105032446930.75117,settled,2025-10-05 02:00:00+00:00
+,Netherlands Eredivisie,PEC Zwolle,PSV,,,-1.5,bet_away_refined_ah,1.925,158246198842.71747,146377733929.51367,settled,2025-10-05 02:00:00+00:00
 ,Netherlands Eredivisie,PEC Zwolle,PSV,,,-1.5,bet_away_refined_ah,1.925,145510.96754366343,134597.6449778887,settled,2025-10-05 02:00:00+00:00
-,Portugal Liga NOS,AVS,Alverca,,,0.0,bet_away_refined_ah,1.925,110258.71948878234,101989.31552712366,settled,2025-10-05 01:00:00+00:00
-,France Ligue 1,Brest,Nantes,,,-0.5,bet_home_refined_ah,1.925,211106.29997488606,-211106.29997488606,settled,2025-10-05 01:00:00+00:00
-,France Ligue 1,Brest,Nantes,,,-0.5,bet_home_refined_ah,1.925,161917336485.68115,-161917336485.68115,settled,2025-10-05 01:00:00+00:00
 ,Portugal Liga NOS,AVS,Alverca,,,0.0,bet_away_refined_ah,1.925,161663792106.52115,149539007698.53207,settled,2025-10-05 01:00:00+00:00
-,France Ligue 1,Brest,Nantes,,,-0.5,bet_home_refined_ah,1.925,146398.5085014535,-146398.5085014535,settled,2025-10-05 01:00:00+00:00
+,France Ligue 1,Brest,Nantes,,,-0.5,bet_home_refined_ah,1.925,211106.29997488606,-211106.29997488606,settled,2025-10-05 01:00:00+00:00
 ,Portugal Liga NOS,AVS,Alverca,,,0.0,bet_away_refined_ah,1.925,139078.58307638083,128647.6893456523,settled,2025-10-05 01:00:00+00:00
+,France Ligue 1,Brest,Nantes,,,-0.5,bet_home_refined_ah,1.925,146398.5085014535,-146398.5085014535,settled,2025-10-05 01:00:00+00:00
 ,Turkey Süper Lig,Galatasaray,Beşiktaş,,,1.0,bet_away_refined_ah,1.925,84444106539.62097,78110798549.14941,settled,2025-10-05 01:00:00+00:00
-,Portugal Liga NOS,AVS,Alverca,,,0.0,bet_away_refined_ah,1.925,236036.7987989916,218334.03888906725,settled,2025-10-05 01:00:00+00:00
+,France Ligue 1,Brest,Nantes,,,-0.5,bet_home_refined_ah,1.925,161917336485.68115,-161917336485.68115,settled,2025-10-05 01:00:00+00:00
 ,France Ligue 1,Brest,Nantes,,,-0.5,bet_home_refined_ah,1.925,116061.80998819193,-116061.80998819193,settled,2025-10-05 01:00:00+00:00
+,Portugal Liga NOS,AVS,Alverca,,,0.0,bet_away_refined_ah,1.925,110258.71948878234,101989.31552712366,settled,2025-10-05 01:00:00+00:00
+,Portugal Liga NOS,AVS,Alverca,,,0.0,bet_away_refined_ah,1.925,236036.7987989916,218334.03888906725,settled,2025-10-05 01:00:00+00:00
 ,Scotland Premiership,Hearts,Hibernian,,,-0.5,bet_home_refined_ah,1.925,118195438929.11583,109330781009.43214,settled,2025-10-05 00:45:00+00:00
+,Spain La Liga,Athletic Club Bilbao,RCD Mallorca,,,-1.0,bet_home_refined_ah,1.925,75279.7939031477,0.0,settled,2025-10-05 00:30:00+00:00
 ,Spain La Liga,Athletic Club Bilbao,RCD Mallorca,,,-1.0,bet_home_refined_ah,1.925,69769.79032442207,0.0,settled,2025-10-05 00:30:00+00:00
 ,England Premier League,Chelsea,Liverpool,,,0.25,bet_home_refined_ah,1.925,95655233104.48874,88481090621.6521,settled,2025-10-05 00:30:00+00:00
-,Spain La Liga,Athletic Club Bilbao,RCD Mallorca,,,-1.0,bet_home_refined_ah,1.925,75279.7939031477,0.0,settled,2025-10-05 00:30:00+00:00
-,Italy Serie A,Inter Milan,Cremonese,,,-2.0,bet_home_refined_ah,1.925,107182.27502193284,99143.6043952879,settled,2025-10-05 00:00:00+00:00
 ,Italy Serie A,Inter Milan,Cremonese,,,-2.0,bet_home_refined_ah,1.925,213117.49753509733,197133.68521996503,settled,2025-10-05 00:00:00+00:00
-,France Ligue 1,Metz,Olympique Marseille,,,-1.0,bet_away_refined_ah,1.925,106193.19452179455,98228.70493265997,settled,2025-10-04 23:00:00+00:00
+,Italy Serie A,Inter Milan,Cremonese,,,-2.0,bet_home_refined_ah,1.925,107182.27502193284,99143.6043952879,settled,2025-10-05 00:00:00+00:00
 ,France Ligue 1,Metz,Olympique Marseille,,,-1.0,bet_away_refined_ah,1.925,139926.88984607262,129432.37310761717,settled,2025-10-04 23:00:00+00:00
-,Portugal Liga NOS,CD Nacional,Moreirense FC,,,-0.25,bet_home_refined_ah,1.925,30006.332698293256,27755.85774592126,settled,2025-10-04 22:30:00+00:00
+,France Ligue 1,Metz,Olympique Marseille,,,-1.0,bet_away_refined_ah,1.925,106193.19452179455,98228.70493265997,settled,2025-10-04 23:00:00+00:00
 ,Portugal Liga NOS,CD Nacional,Moreirense FC,,,-0.25,bet_home_refined_ah,1.925,47440.6187305668,43882.572325774294,settled,2025-10-04 22:30:00+00:00
-,Netherlands Eredivisie,Sparta Rotterdam,Ajax,,,0.75,bet_home_refined_ah,1.925,47368.60423766149,43815.95891983688,settled,2025-10-04 22:30:00+00:00
+,Portugal Liga NOS,CD Nacional,Moreirense FC,,,-0.25,bet_home_refined_ah,1.925,30006.332698293256,27755.85774592126,settled,2025-10-04 22:30:00+00:00
 ,Portugal Liga NOS,Gil Vicente,Estrela Amadora,,,0.75,bet_away_refined_ah,1.925,91898.32584373614,-91898.32584373614,settled,2025-10-04 22:30:00+00:00
-,Spain La Liga,Girona FC,Valencia CF,,,0.25,bet_away_refined_ah,1.925,145830.62837765957,-145830.62837765957,settled,2025-10-04 22:15:00+00:00
+,Netherlands Eredivisie,Sparta Rotterdam,Ajax,,,0.75,bet_home_refined_ah,1.925,47368.60423766149,43815.95891983688,settled,2025-10-04 22:30:00+00:00
 ,Spain La Liga,Girona FC,Valencia CF,,,0.25,bet_away_refined_ah,1.925,112003.35184389557,-112003.35184389557,settled,2025-10-04 22:15:00+00:00
-,England Championship,Millwall,West Bromwich Albion,,,0.0,bet_home_refined_ah,1.925,29019.409506903234,26842.953793885492,settled,2025-10-04 22:00:00+00:00
-,England Premier League,Arsenal,West Ham United,,,-2.0,bet_home_refined_ah,1.925,104182.38135036279,0.0,settled,2025-10-04 22:00:00+00:00
-,England Championship,Portsmouth,Middlesbrough,,,-0.25,bet_away_refined_ah,1.925,32732.7613533503,-32732.7613533503,settled,2025-10-04 22:00:00+00:00
+,Spain La Liga,Girona FC,Valencia CF,,,0.25,bet_away_refined_ah,1.925,145830.62837765957,-145830.62837765957,settled,2025-10-04 22:15:00+00:00
 ,England Championship,Preston North End,Charlton Athletic,,,0.0,bet_home_refined_ah,1.925,62158.70775071014,57496.80466940688,settled,2025-10-04 22:00:00+00:00
-,Scotland Premiership,Kilmarnock,St. Mirren,,,0.0,bet_home_refined_ah,1.925,104182.38135036279,96368.70274908558,settled,2025-10-04 22:00:00+00:00
 ,Scotland Premiership,Kilmarnock,St. Mirren,,,0.0,bet_home_refined_ah,1.925,74270.02237989384,68699.77070140181,settled,2025-10-04 22:00:00+00:00
+,England Premier League,Arsenal,West Ham United,,,-2.0,bet_home_refined_ah,1.925,104182.38135036279,0.0,settled,2025-10-04 22:00:00+00:00
 ,England Championship,Preston North End,Charlton Athletic,,,0.0,bet_home_refined_ah,1.925,128001.65858238061,118401.53418870208,settled,2025-10-04 22:00:00+00:00
+,England Championship,Portsmouth,Middlesbrough,,,-0.25,bet_away_refined_ah,1.925,32732.7613533503,-32732.7613533503,settled,2025-10-04 22:00:00+00:00
+,England Championship,Millwall,West Bromwich Albion,,,0.0,bet_home_refined_ah,1.925,29019.409506903234,26842.953793885492,settled,2025-10-04 22:00:00+00:00
 ,England Championship,Portsmouth,Middlesbrough,,,-0.25,bet_away_refined_ah,1.925,24289.051341722614,-24289.051341722614,settled,2025-10-04 22:00:00+00:00
-,Germany Bundesliga,Borussia Dortmund,RB Leipzig,,,0.75,bet_away_refined_ah,1.925,45251.86834806688,41857.97822196186,settled,2025-10-04 21:30:00+00:00
+,Scotland Premiership,Kilmarnock,St. Mirren,,,0.0,bet_home_refined_ah,1.925,104182.38135036279,96368.70274908558,settled,2025-10-04 22:00:00+00:00
 ,Germany Bundesliga,Bayer Leverkusen,Union Berlin,,,-0.75,bet_home_refined_ah,1.925,56515.74894291519,52277.06777219655,settled,2025-10-04 21:30:00+00:00
-,Italy Serie A,Lazio,Torino,,,0.5,bet_away_refined_ah,1.925,130006.50159113384,120256.0139717988,settled,2025-10-04 21:00:00+00:00
+,Germany Bundesliga,Borussia Dortmund,RB Leipzig,,,0.75,bet_away_refined_ah,1.925,45251.86834806688,41857.97822196186,settled,2025-10-04 21:30:00+00:00
 ,Italy Serie A,Lazio,Torino,,,0.5,bet_away_refined_ah,1.925,83258.51512880046,77014.12649414044,settled,2025-10-04 21:00:00+00:00
-,Spain La Liga,Real Oviedo,Levante UD,,,0.25,bet_away_refined_ah,1.925,110476.98327151891,102191.20952615498,settled,2025-10-04 20:00:00+00:00
+,Italy Serie A,Lazio,Torino,,,0.5,bet_away_refined_ah,1.925,130006.50159113384,120256.0139717988,settled,2025-10-04 21:00:00+00:00
 ,Spain La Liga,Real Oviedo,Levante UD,,,0.25,bet_away_refined_ah,1.925,49567.737319314445,45850.15702036586,settled,2025-10-04 20:00:00+00:00
+,Spain La Liga,Real Oviedo,Levante UD,,,0.25,bet_away_refined_ah,1.925,110476.98327151891,102191.20952615498,settled,2025-10-04 20:00:00+00:00
+,England Championship,Sheffield Wednesday,Coventry City,,,-1.0,bet_away_refined_ah,1.925,40849.3973736211,37785.692570599516,settled,2025-10-04 19:30:00+00:00
 ,England Championship,Hull City,Sheffield United,,,0.0,bet_away_refined_ah,1.925,98458.97806052388,-98458.97806052388,settled,2025-10-04 19:30:00+00:00
 ,England Championship,Hull City,Sheffield United,,,0.0,bet_away_refined_ah,1.925,131470.4643313959,-131470.4643313959,settled,2025-10-04 19:30:00+00:00
-,England Championship,Sheffield Wednesday,Coventry City,,,-1.0,bet_away_refined_ah,1.925,40849.3973736211,37785.692570599516,settled,2025-10-04 19:30:00+00:00
+,England Premier League,AFC Bournemouth,Fulham,,,0.5,bet_away_refined_ah,1.925,143038.7611537938,-143038.7611537938,settled,2025-10-04 03:00:00+00:00
 ,England Championship,Wrexham,Birmingham City,,,0.25,bet_home_refined_ah,1.925,37074.73490318723,17147.06489272409,settled,2025-10-04 03:00:00+00:00
 ,England Championship,Wrexham,Birmingham City,,,0.25,bet_home_refined_ah,1.925,96081.60033957307,44437.74015705255,settled,2025-10-04 03:00:00+00:00
 ,England Premier League,AFC Bournemouth,Fulham,,,0.5,bet_away_refined_ah,1.925,90088.52819881767,-90088.52819881767,settled,2025-10-04 03:00:00+00:00
-,England Premier League,AFC Bournemouth,Fulham,,,0.5,bet_away_refined_ah,1.925,143038.7611537938,-143038.7611537938,settled,2025-10-04 03:00:00+00:00
-,Italy Serie A,Hellas Verona,Sassuolo,,,0.0,bet_home_refined_ah,1.925,58257.16087064075,-58257.16087064075,settled,2025-10-04 02:45:00+00:00
 ,Italy Serie A,Hellas Verona,Sassuolo,,,0.0,bet_home_refined_ah,1.925,136317.7050540671,-136317.7050540671,settled,2025-10-04 02:45:00+00:00
+,Italy Serie A,Hellas Verona,Sassuolo,,,0.0,bet_home_refined_ah,1.925,58257.16087064075,-58257.16087064075,settled,2025-10-04 02:45:00+00:00
 ,Netherlands Eredivisie,NAC Breda,Groningen,,,0.0,bet_away_refined_ah,1.925,58261.19549900142,53891.60583657632,settled,2025-10-04 02:00:00+00:00
 ,Netherlands Eredivisie,NAC Breda,Groningen,,,0.0,bet_away_refined_ah,1.925,84460.10963588898,78125.60141319732,settled,2025-10-04 02:00:00+00:00
-,Europe UEFA Champions League,FC Barcelona,PSG,,,0.75,bet_away_refined_ah,1.925,352242.0771343389,325823.9213492635,settled,2025-10-02 03:00:00+00:00
-,Europe UEFA Champions League,Borussia Dortmund,Athletic Club Bilbao,,,-0.5,bet_home_refined_ah,1.925,135358.15089893024,125206.28958151047,settled,2025-10-02 03:00:00+00:00
-,Europe UEFA Champions League,FC Barcelona,PSG,,,0.75,bet_away_refined_ah,1.925,256160.31619370828,236948.29247918015,settled,2025-10-02 03:00:00+00:00
-,Europe UEFA Champions League,Borussia Dortmund,Athletic Club Bilbao,,,-0.5,bet_home_refined_ah,1.925,193962.0152947858,179414.86414767685,settled,2025-10-02 03:00:00+00:00
-,Europe UEFA Champions League,Villarreal,Juventus,,,0.25,bet_away_refined_ah,1.925,271215.75050765194,125437.28460978903,settled,2025-10-02 03:00:00+00:00
+,Europe UEFA Champions League,Arsenal,Olympiakos Piraeus,,,1.75,bet_away_refined_ah,1.925,168265.06079115838,-84132.53039557919,settled,2025-10-02 03:00:00+00:00
+,Europe UEFA Champions League,Arsenal,Olympiakos Piraeus,,,1.75,bet_away_refined_ah,1.925,141274.232422236,-70637.116211118,settled,2025-10-02 03:00:00+00:00
+,Europe UEFA Champions League,FC Barcelona,PSG,,,0.75,bet_away_refined_ah,1.925,135029.1349316473,124901.94981177375,settled,2025-10-02 03:00:00+00:00
+,Europe UEFA Champions League,Monaco,Manchester City,,,1.25,bet_home_refined_ah,1.925,28248.44744527952,26129.813886883552,settled,2025-10-02 03:00:00+00:00
+,Europe UEFA Champions League,Napoli,Sporting CP,,,0.5,bet_away_refined_ah,1.925,117370.40893087444,-117370.40893087444,settled,2025-10-02 03:00:00+00:00
+,Europe UEFA Champions League,Borussia Dortmund,Athletic Club Bilbao,,,-0.5,bet_home_refined_ah,1.925,50684.80079896288,46883.44073904067,settled,2025-10-02 03:00:00+00:00
+,England Championship,Queens Park Rangers,Oxford United,,,-0.25,bet_home_refined_ah,1.925,59705.09193123781,-29852.545965618905,settled,2025-10-02 03:00:00+00:00
+,Europe UEFA Champions League,Borussia Dortmund,Athletic Club Bilbao,,,-0.5,bet_home_refined_ah,1.925,116253.92320155785,107534.878961441,settled,2025-10-02 03:00:00+00:00
+,Europe UEFA Champions League,FC Barcelona,PSG,,,0.75,bet_away_refined_ah,1.925,259916.06833773336,240422.36321240335,settled,2025-10-02 03:00:00+00:00
+,Europe UEFA Champions League,Napoli,Sporting CP,,,0.5,bet_away_refined_ah,1.925,183019.1528996757,-183019.1528996757,settled,2025-10-02 03:00:00+00:00
 ,Europe UEFA Champions League,Arsenal,Olympiakos Piraeus,,,1.75,bet_away_refined_ah,1.925,122139.29097439334,-61069.64548719667,settled,2025-10-02 03:00:00+00:00
 ,Europe UEFA Champions League,Napoli,Sporting CP,,,0.5,bet_away_refined_ah,1.925,304355.43566744705,-304355.43566744705,settled,2025-10-02 03:00:00+00:00
 ,Europe UEFA Champions League,Napoli,Sporting CP,,,0.5,bet_away_refined_ah,1.925,269642.4380986403,-269642.4380986403,settled,2025-10-02 03:00:00+00:00
 ,Europe UEFA Champions League,Monaco,Manchester City,,,1.25,bet_home_refined_ah,1.925,93736.73259435888,86706.47764978197,settled,2025-10-02 03:00:00+00:00
-,England Championship,Queens Park Rangers,Oxford United,,,-0.25,bet_home_refined_ah,1.925,59705.09193123781,-29852.545965618905,settled,2025-10-02 03:00:00+00:00
-,Europe UEFA Champions League,Borussia Dortmund,Athletic Club Bilbao,,,-0.5,bet_home_refined_ah,1.925,50684.80079896288,46883.44073904067,settled,2025-10-02 03:00:00+00:00
-,Europe UEFA Champions League,Napoli,Sporting CP,,,0.5,bet_away_refined_ah,1.925,117370.40893087444,-117370.40893087444,settled,2025-10-02 03:00:00+00:00
-,Europe UEFA Champions League,Arsenal,Olympiakos Piraeus,,,1.75,bet_away_refined_ah,1.925,141274.232422236,-70637.116211118,settled,2025-10-02 03:00:00+00:00
-,Europe UEFA Champions League,FC Barcelona,PSG,,,0.75,bet_away_refined_ah,1.925,135029.1349316473,124901.94981177375,settled,2025-10-02 03:00:00+00:00
-,Europe UEFA Champions League,Monaco,Manchester City,,,1.25,bet_home_refined_ah,1.925,28248.44744527952,26129.813886883552,settled,2025-10-02 03:00:00+00:00
-,Europe UEFA Champions League,Arsenal,Olympiakos Piraeus,,,1.75,bet_away_refined_ah,1.925,168265.06079115838,-84132.53039557919,settled,2025-10-02 03:00:00+00:00
-,Europe UEFA Champions League,Borussia Dortmund,Athletic Club Bilbao,,,-0.5,bet_home_refined_ah,1.925,116253.92320155785,107534.878961441,settled,2025-10-02 03:00:00+00:00
-,Europe UEFA Champions League,FC Barcelona,PSG,,,0.75,bet_away_refined_ah,1.925,259916.06833773336,240422.36321240335,settled,2025-10-02 03:00:00+00:00
-,Europe UEFA Champions League,Napoli,Sporting CP,,,0.5,bet_away_refined_ah,1.925,183019.1528996757,-183019.1528996757,settled,2025-10-02 03:00:00+00:00
-,England Championship,Portsmouth,Watford,,,0.25,bet_away_refined_ah,1.925,76978.33862230543,35602.481612816264,settled,2025-10-02 02:45:00+00:00
-,England Championship,Portsmouth,Watford,,,0.25,bet_away_refined_ah,1.925,157308.69804151866,72755.2728442024,settled,2025-10-02 02:45:00+00:00
+,Europe UEFA Champions League,Borussia Dortmund,Athletic Club Bilbao,,,-0.5,bet_home_refined_ah,1.925,135358.15089893024,125206.28958151047,settled,2025-10-02 03:00:00+00:00
+,Europe UEFA Champions League,FC Barcelona,PSG,,,0.75,bet_away_refined_ah,1.925,256160.31619370828,236948.29247918015,settled,2025-10-02 03:00:00+00:00
+,Europe UEFA Champions League,Villarreal,Juventus,,,0.25,bet_away_refined_ah,1.925,271215.75050765194,125437.28460978903,settled,2025-10-02 03:00:00+00:00
+,Europe UEFA Champions League,FC Barcelona,PSG,,,0.75,bet_away_refined_ah,1.925,352242.0771343389,325823.9213492635,settled,2025-10-02 03:00:00+00:00
+,Europe UEFA Champions League,Borussia Dortmund,Athletic Club Bilbao,,,-0.5,bet_home_refined_ah,1.925,193962.0152947858,179414.86414767685,settled,2025-10-02 03:00:00+00:00
 ,England Championship,Portsmouth,Watford,,,0.25,bet_away_refined_ah,1.925,72837.28774442783,33687.24558179788,settled,2025-10-02 02:45:00+00:00
+,England Championship,Portsmouth,Watford,,,0.25,bet_away_refined_ah,1.925,157308.69804151866,72755.2728442024,settled,2025-10-02 02:45:00+00:00
+,England Championship,Portsmouth,Watford,,,0.25,bet_away_refined_ah,1.925,76978.33862230543,35602.481612816264,settled,2025-10-02 02:45:00+00:00
 ,Europe UEFA Champions League,Qarabağ,København,,,-0.25,bet_away_refined_ah,1.925,190133.40203258453,-190133.40203258453,settled,2025-10-02 00:45:00+00:00
-,Europe UEFA Champions League,Olympique Marseille,Ajax,,,1.25,bet_away_refined_ah,1.925,320997.84580780484,-320997.84580780484,settled,2025-10-01 03:00:00+00:00
-,Europe UEFA Champions League,FK Bodo - Glimt,Tottenham Hotspur,,,0.25,bet_home_refined_ah,1.925,343277.80486543657,158765.9847502644,settled,2025-10-01 03:00:00+00:00
 ,Europe UEFA Champions League,Inter Milan,Slavia Praha,,,-1.75,bet_home_refined_ah,1.925,351216.1041029498,324874.89629522857,settled,2025-10-01 03:00:00+00:00
+,Europe UEFA Champions League,Olympique Marseille,Ajax,,,1.25,bet_away_refined_ah,1.925,320997.84580780484,-320997.84580780484,settled,2025-10-01 03:00:00+00:00
 ,Europe UEFA Champions League,Chelsea,Benfica,,,1.0,bet_away_refined_ah,1.925,367459.84891771124,0.0,settled,2025-10-01 03:00:00+00:00
-,Europe UEFA Champions League,Chelsea,Benfica,,,1.0,bet_away_refined_ah,1.925,253530.04286321666,0.0,settled,2025-10-01 03:00:00+00:00
-,Europe UEFA Champions League,Inter Milan,Slavia Praha,,,-1.75,bet_home_refined_ah,1.925,253695.83019403298,234668.64292948053,settled,2025-10-01 03:00:00+00:00
+,Europe UEFA Champions League,FK Bodo - Glimt,Tottenham Hotspur,,,0.25,bet_home_refined_ah,1.925,343277.80486543657,158765.9847502644,settled,2025-10-01 03:00:00+00:00
+,Europe UEFA Champions League,Paphos,Bayern München,,,-2.0,bet_away_refined_ah,1.925,352750.9433376636,326294.62258733885,settled,2025-10-01 03:00:00+00:00
 ,Europe UEFA Champions League,Olympique Marseille,Ajax,,,1.25,bet_away_refined_ah,1.925,249474.15257254452,-249474.15257254452,settled,2025-10-01 03:00:00+00:00
-,Europe UEFA Champions League,Olympique Marseille,Ajax,,,1.25,bet_away_refined_ah,1.925,136985.55657533242,-136985.55657533242,settled,2025-10-01 03:00:00+00:00
+,Europe UEFA Champions League,Inter Milan,Slavia Praha,,,-1.75,bet_home_refined_ah,1.925,253695.83019403298,234668.64292948053,settled,2025-10-01 03:00:00+00:00
+,Europe UEFA Champions League,Chelsea,Benfica,,,1.0,bet_away_refined_ah,1.925,253530.04286321666,0.0,settled,2025-10-01 03:00:00+00:00
+,Europe UEFA Champions League,FK Bodo - Glimt,Tottenham Hotspur,,,0.25,bet_home_refined_ah,1.925,247961.71552257348,114682.29342919025,settled,2025-10-01 03:00:00+00:00
 ,Europe UEFA Champions League,Paphos,Bayern München,,,-2.0,bet_away_refined_ah,1.925,237000.44494391733,219225.41157312354,settled,2025-10-01 03:00:00+00:00
+,Europe UEFA Champions League,Olympique Marseille,Ajax,,,1.25,bet_away_refined_ah,1.925,136985.55657533242,-136985.55657533242,settled,2025-10-01 03:00:00+00:00
+,Europe UEFA Champions League,FK Bodo - Glimt,Tottenham Hotspur,,,0.25,bet_home_refined_ah,1.925,130136.2787465658,60188.028920286684,settled,2025-10-01 03:00:00+00:00
 ,Europe UEFA Champions League,Inter Milan,Slavia Praha,,,-1.75,bet_home_refined_ah,1.925,133145.68019258016,123159.75417813665,settled,2025-10-01 03:00:00+00:00
 ,Europe UEFA Champions League,Inter Milan,Slavia Praha,,,-1.75,bet_home_refined_ah,1.925,377600.31818908063,349280.2943248996,settled,2025-10-01 03:00:00+00:00
 ,Europe UEFA Champions League,FK Bodo - Glimt,Tottenham Hotspur,,,0.25,bet_home_refined_ah,1.925,369065.67446703056,170692.87444100162,settled,2025-10-01 03:00:00+00:00
-,Europe UEFA Champions League,Paphos,Bayern München,,,-2.0,bet_away_refined_ah,1.925,352750.9433376636,326294.62258733885,settled,2025-10-01 03:00:00+00:00
 ,Europe UEFA Champions League,Atlético Madrid,Eintracht Frankfurt,,,-1.25,bet_home_refined_ah,1.925,337157.4129870142,311870.6070129881,settled,2025-10-01 03:00:00+00:00
 ,Europe UEFA Champions League,Olympique Marseille,Ajax,,,1.25,bet_away_refined_ah,1.925,354902.5399863308,-354902.5399863308,settled,2025-10-01 03:00:00+00:00
-,Europe UEFA Champions League,FK Bodo - Glimt,Tottenham Hotspur,,,0.25,bet_home_refined_ah,1.925,130136.2787465658,60188.028920286684,settled,2025-10-01 03:00:00+00:00
-,Europe UEFA Champions League,FK Bodo - Glimt,Tottenham Hotspur,,,0.25,bet_home_refined_ah,1.925,247961.71552257348,114682.29342919025,settled,2025-10-01 03:00:00+00:00
-,England Championship,Bristol City,Ipswich Town,,,0.0,bet_away_refined_ah,1.925,98404.80288519536,0.0,settled,2025-10-01 02:45:00+00:00
-,England Championship,Bristol City,Ipswich Town,,,0.0,bet_away_refined_ah,1.925,165504.04012443704,0.0,settled,2025-10-01 02:45:00+00:00
-,England Championship,Birmingham City,Sheffield Wednesday,,,1.25,bet_away_refined_ah,1.925,227905.3992489369,210812.49430526665,settled,2025-10-01 02:45:00+00:00
-,England Championship,Hull City,Preston North End,,,0.25,bet_away_refined_ah,1.925,201826.6454210921,93344.82350725512,settled,2025-10-01 02:45:00+00:00
-,England Championship,Sheffield United,Southampton,,,0.25,bet_away_refined_ah,1.925,238446.02396420029,220562.57216688525,settled,2025-10-01 02:45:00+00:00
-,England Championship,Blackburn Rovers,Swansea City,,,0.0,bet_home_refined_ah,1.925,83203.88371003713,-83203.88371003713,settled,2025-10-01 02:45:00+00:00
-,England Championship,Sheffield United,Southampton,,,0.25,bet_away_refined_ah,1.925,134906.33286579142,124788.35790085708,settled,2025-10-01 02:45:00+00:00
-,England Championship,Birmingham City,Sheffield Wednesday,,,1.25,bet_away_refined_ah,1.925,128942.73153241712,119272.02666748583,settled,2025-10-01 02:45:00+00:00
+,England Championship,Hull City,Preston North End,,,0.25,bet_away_refined_ah,1.925,192043.39713705104,88820.07117588611,settled,2025-10-01 02:45:00+00:00
+,England Championship,Middlesbrough,Stoke City,,,0.5,bet_away_refined_ah,1.925,324218.7787230832,299902.370318852,settled,2025-10-01 02:45:00+00:00
 ,England Championship,Hull City,Preston North End,,,0.25,bet_away_refined_ah,1.925,81314.00561920283,37607.727598881305,settled,2025-10-01 02:45:00+00:00
+,England Championship,Blackburn Rovers,Swansea City,,,0.0,bet_home_refined_ah,1.925,83203.88371003713,-83203.88371003713,settled,2025-10-01 02:45:00+00:00
 ,England Championship,Birmingham City,Sheffield Wednesday,,,1.25,bet_away_refined_ah,1.925,243405.14837337678,225149.76224537354,settled,2025-10-01 02:45:00+00:00
 ,England Championship,Sheffield United,Southampton,,,0.25,bet_away_refined_ah,1.925,339213.8972390258,313772.8549460989,settled,2025-10-01 02:45:00+00:00
-,England Championship,Hull City,Preston North End,,,0.25,bet_away_refined_ah,1.925,192043.39713705104,88820.07117588611,settled,2025-10-01 02:45:00+00:00
 ,England Championship,Bristol City,Ipswich Town,,,0.0,bet_away_refined_ah,1.925,274020.287742203,0.0,settled,2025-10-01 02:45:00+00:00
-,England Championship,Middlesbrough,Stoke City,,,0.5,bet_away_refined_ah,1.925,324218.7787230832,299902.370318852,settled,2025-10-01 02:45:00+00:00
-,England Championship,Blackburn Rovers,Swansea City,,,0.0,bet_home_refined_ah,1.925,173591.87896343187,-173591.87896343187,settled,2025-10-01 02:45:00+00:00
+,England Championship,Sheffield United,Southampton,,,0.25,bet_away_refined_ah,1.925,238446.02396420029,220562.57216688525,settled,2025-10-01 02:45:00+00:00
+,England Championship,Hull City,Preston North End,,,0.25,bet_away_refined_ah,1.925,201826.6454210921,93344.82350725512,settled,2025-10-01 02:45:00+00:00
+,England Championship,Bristol City,Ipswich Town,,,0.0,bet_away_refined_ah,1.925,98404.80288519536,0.0,settled,2025-10-01 02:45:00+00:00
+,England Championship,Birmingham City,Sheffield Wednesday,,,1.25,bet_away_refined_ah,1.925,227905.3992489369,210812.49430526665,settled,2025-10-01 02:45:00+00:00
+,England Championship,Bristol City,Ipswich Town,,,0.0,bet_away_refined_ah,1.925,165504.04012443704,0.0,settled,2025-10-01 02:45:00+00:00
+,England Championship,Sheffield United,Southampton,,,0.25,bet_away_refined_ah,1.925,134906.33286579142,124788.35790085708,settled,2025-10-01 02:45:00+00:00
+,England Championship,Birmingham City,Sheffield Wednesday,,,1.25,bet_away_refined_ah,1.925,128942.73153241712,119272.02666748583,settled,2025-10-01 02:45:00+00:00
+,England Championship,Hull City,Preston North End,,,0.25,bet_away_refined_ah,1.925,167818.37244380018,77615.99725525758,settled,2025-10-01 02:45:00+00:00
 ,England Championship,Bristol City,Ipswich Town,,,0.0,bet_away_refined_ah,1.925,287875.5068233759,0.0,settled,2025-10-01 02:45:00+00:00
+,England Championship,Blackburn Rovers,Swansea City,,,0.0,bet_home_refined_ah,1.925,173591.87896343187,-173591.87896343187,settled,2025-10-01 02:45:00+00:00
 ,England Championship,Sheffield United,Southampton,,,0.25,bet_away_refined_ah,1.925,285268.5995843615,263873.45461553434,settled,2025-10-01 02:45:00+00:00
 ,England Championship,Birmingham City,Sheffield Wednesday,,,1.25,bet_away_refined_ah,1.925,235973.805013684,218275.7696376577,settled,2025-10-01 02:45:00+00:00
-,England Championship,Hull City,Preston North End,,,0.25,bet_away_refined_ah,1.925,167818.37244380018,77615.99725525758,settled,2025-10-01 02:45:00+00:00
 ,Europe UEFA Champions League,Atalanta,Club Brugge,,,-0.5,bet_home_refined_ah,1.925,238241.26630321395,220373.17133047292,settled,2025-10-01 00:45:00+00:00
-,Europe UEFA Champions League,Atalanta,Club Brugge,,,-0.5,bet_home_refined_ah,1.925,192697.60634914445,178245.28587295863,settled,2025-10-01 00:45:00+00:00
-,Europe UEFA Champions League,Kairat,Real Madrid,,,2.0,bet_home_refined_ah,1.925,90501.46194988383,-90501.46194988383,settled,2025-10-01 00:45:00+00:00
-,Europe UEFA Champions League,Atalanta,Club Brugge,,,-0.5,bet_home_refined_ah,1.925,91939.658167469,85044.18380490883,settled,2025-10-01 00:45:00+00:00
-,Europe UEFA Champions League,Atalanta,Club Brugge,,,-0.5,bet_home_refined_ah,1.925,271245.5244388943,250902.11010597722,settled,2025-10-01 00:45:00+00:00
 ,Europe UEFA Champions League,Kairat,Real Madrid,,,2.0,bet_home_refined_ah,1.925,274828.8801677716,-274828.8801677716,settled,2025-10-01 00:45:00+00:00
+,Europe UEFA Champions League,Atalanta,Club Brugge,,,-0.5,bet_home_refined_ah,1.925,271245.5244388943,250902.11010597722,settled,2025-10-01 00:45:00+00:00
+,Europe UEFA Champions League,Kairat,Real Madrid,,,2.0,bet_home_refined_ah,1.925,90501.46194988383,-90501.46194988383,settled,2025-10-01 00:45:00+00:00
+,Europe UEFA Champions League,Atalanta,Club Brugge,,,-0.5,bet_home_refined_ah,1.925,192697.60634914445,178245.28587295863,settled,2025-10-01 00:45:00+00:00
+,Europe UEFA Champions League,Atalanta,Club Brugge,,,-0.5,bet_home_refined_ah,1.925,91939.658167469,85044.18380490883,settled,2025-10-01 00:45:00+00:00
 ,England Premier League,Everton,West Ham United,,,0.75,bet_away_refined_ah,1.925,109946.81605744614,101700.80485313768,settled,2025-09-30 03:00:00+00:00
-,England Premier League,Everton,West Ham United,,,0.75,bet_away_refined_ah,1.925,216693.69656997183,200441.66932722394,settled,2025-09-30 03:00:00+00:00
+,Portugal Liga NOS,FC Arouca,Porto,,,1.5,bet_home_refined_ah,1.925,44496.457934212995,-44496.457934212995,settled,2025-09-30 03:00:00+00:00
 ,Portugal Liga NOS,FC Arouca,Porto,,,1.5,bet_home_refined_ah,1.925,85037.49749768472,-85037.49749768472,settled,2025-09-30 03:00:00+00:00
 ,Spain La Liga,Valencia CF,Real Oviedo,,,0.75,bet_away_refined_ah,1.925,41127.975793957165,38043.377609410374,settled,2025-09-30 03:00:00+00:00
 ,England Premier League,Everton,West Ham United,,,0.75,bet_away_refined_ah,1.925,92346.42669327107,85420.44469127576,settled,2025-09-30 03:00:00+00:00
-,Portugal Liga NOS,FC Arouca,Porto,,,1.5,bet_home_refined_ah,1.925,44496.457934212995,-44496.457934212995,settled,2025-09-30 03:00:00+00:00
+,England Premier League,Everton,West Ham United,,,0.75,bet_away_refined_ah,1.925,216693.69656997183,200441.66932722394,settled,2025-09-30 03:00:00+00:00
 ,Portugal Liga NOS,FC Arouca,Porto,,,1.5,bet_home_refined_ah,1.925,227030.44015880526,-227030.44015880526,settled,2025-09-30 03:00:00+00:00
 ,Denmark Superliga,Midtjylland,Randers,,,-0.75,bet_home_refined_ah,1.925,112107.14389429305,51849.554051110536,settled,2025-09-30 01:00:00+00:00
 ,Brazil Serie A,Corinthians,Flamengo,,,0.5,bet_home_refined_ah,1.925,11094606305.208784,-11094606305.208784,settled,2025-09-29 07:30:00+00:00
 ,USA MLS,FC Cincinnati,Orlando City,,,0.0,bet_away_refined_ah,1.925,9971044143.719494,0.0,settled,2025-09-29 07:00:00+00:00
 ,Brazil Serie A,Bragantino,Santos,,,0.25,bet_away_refined_ah,1.925,15895642601.951889,7351734703.402748,settled,2025-09-29 05:30:00+00:00
 ,Portugal Liga NOS,Famalicão,Rio Ave FC,,,-0.75,bet_home_refined_ah,1.925,18131141797.701633,-18131141797.701633,settled,2025-09-29 03:30:00+00:00
-,Brazil Serie A,Bahia,Palmeiras,,,0.5,bet_home_refined_ah,1.925,13893393640.006638,12851389117.006142,settled,2025-09-29 03:00:00+00:00
+,Spain La Liga,Real Betis,CA Osasuna,,,0.75,bet_away_refined_ah,1.925,13893.821761310994,-13893.821761310994,settled,2025-09-29 03:00:00+00:00
 ,Spain La Liga,Real Betis,CA Osasuna,,,0.75,bet_away_refined_ah,1.925,27707.598291656417,-27707.598291656417,settled,2025-09-29 03:00:00+00:00
 ,Brazil Serie A,Fluminense,Botafogo,,,0.25,bet_away_refined_ah,1.925,16093501814.492636,-16093501814.492636,settled,2025-09-29 03:00:00+00:00
+,Brazil Serie A,Bahia,Palmeiras,,,0.5,bet_home_refined_ah,1.925,13893393640.006638,12851389117.006142,settled,2025-09-29 03:00:00+00:00
 ,Spain La Liga,Real Betis,CA Osasuna,,,0.75,bet_away_refined_ah,1.925,4018554177.829509,-4018554177.829509,settled,2025-09-29 03:00:00+00:00
-,Spain La Liga,Real Betis,CA Osasuna,,,0.75,bet_away_refined_ah,1.925,13893.821761310994,-13893.821761310994,settled,2025-09-29 03:00:00+00:00
-,Italy Serie A,AC Milan,Napoli,,,0.25,bet_away_refined_ah,1.925,324687.9856780352,-324687.9856780352,settled,2025-09-29 02:45:00+00:00
-,Italy Serie A,AC Milan,Napoli,,,0.25,bet_away_refined_ah,1.925,71528.10052111953,-71528.10052111953,settled,2025-09-29 02:45:00+00:00
 ,Italy Serie A,AC Milan,Napoli,,,0.25,bet_away_refined_ah,1.925,19467552780.492035,-19467552780.492035,settled,2025-09-29 02:45:00+00:00
 ,Italy Serie A,AC Milan,Napoli,,,0.25,bet_away_refined_ah,1.925,117191.78523371469,-117191.78523371469,settled,2025-09-29 02:45:00+00:00
+,Italy Serie A,AC Milan,Napoli,,,0.25,bet_away_refined_ah,1.925,71528.10052111953,-71528.10052111953,settled,2025-09-29 02:45:00+00:00
+,Italy Serie A,AC Milan,Napoli,,,0.25,bet_away_refined_ah,1.925,324687.9856780352,-324687.9856780352,settled,2025-09-29 02:45:00+00:00
+,Germany Bundesliga,Union Berlin,Hamburger SV,,,0.5,bet_away_refined_ah,1.925,310334.9922848604,287059.8678634959,settled,2025-09-29 01:30:00+00:00
+,Germany Bundesliga,Union Berlin,Hamburger SV,,,0.5,bet_away_refined_ah,1.925,68366.16537263517,63238.70296968754,settled,2025-09-29 01:30:00+00:00
 ,Germany Bundesliga,Union Berlin,Hamburger SV,,,0.5,bet_away_refined_ah,1.925,18606979957.45953,17211456460.650066,settled,2025-09-29 01:30:00+00:00
 ,Germany Bundesliga,Union Berlin,Hamburger SV,,,0.5,bet_away_refined_ah,1.925,112011.264261615,103610.41944199387,settled,2025-09-29 01:30:00+00:00
-,Germany Bundesliga,Union Berlin,Hamburger SV,,,0.5,bet_away_refined_ah,1.925,68366.16537263517,63238.70296968754,settled,2025-09-29 01:30:00+00:00
-,Germany Bundesliga,Union Berlin,Hamburger SV,,,0.5,bet_away_refined_ah,1.925,310334.9922848604,287059.8678634959,settled,2025-09-29 01:30:00+00:00
-,Portugal Liga NOS,Sporting Braga,CD Nacional,,,1.25,bet_away_refined_ah,1.925,65344.00513513516,60443.20475000002,settled,2025-09-29 01:00:00+00:00
-,Portugal Liga NOS,Sporting Braga,CD Nacional,,,1.25,bet_away_refined_ah,1.925,296616.4800811091,274370.2440750259,settled,2025-09-29 01:00:00+00:00
-,Turkey Süper Lig,Fenerbahçe,Antalyaspor,,,-1.75,bet_home_refined_ah,1.925,18652737454.02644,8626891072.48723,settled,2025-09-29 01:00:00+00:00
+,Portugal Liga NOS,Sporting Braga,CD Nacional,,,1.25,bet_away_refined_ah,1.925,107059.75078768458,99030.26947860824,settled,2025-09-29 01:00:00+00:00
 ,Portugal Liga NOS,Sporting Braga,CD Nacional,,,1.25,bet_away_refined_ah,1.925,17828183946.500774,16491070150.513218,settled,2025-09-29 01:00:00+00:00
 ,Turkey Süper Lig,Kayserispor,Gençlerbirliği,,,-0.25,bet_home_refined_ah,1.925,19084082007.6508,-9542041003.8254,settled,2025-09-29 01:00:00+00:00
-,Portugal Liga NOS,Sporting Braga,CD Nacional,,,1.25,bet_away_refined_ah,1.925,107059.75078768458,99030.26947860824,settled,2025-09-29 01:00:00+00:00
+,Portugal Liga NOS,Sporting Braga,CD Nacional,,,1.25,bet_away_refined_ah,1.925,65344.00513513516,60443.20475000002,settled,2025-09-29 01:00:00+00:00
+,Turkey Süper Lig,Fenerbahçe,Antalyaspor,,,-1.75,bet_home_refined_ah,1.925,18652737454.02644,8626891072.48723,settled,2025-09-29 01:00:00+00:00
+,Portugal Liga NOS,Sporting Braga,CD Nacional,,,1.25,bet_away_refined_ah,1.925,296616.4800811091,274370.2440750259,settled,2025-09-29 01:00:00+00:00
 ,Spain La Liga,FC Barcelona,Real Sociedad,,,-1.5,bet_home_refined_ah,1.925,18766509417.36924,-18766509417.36924,settled,2025-09-29 00:30:00+00:00
-,Denmark Superliga,Nordsjælland,AGF,,,0.0,bet_away_refined_ah,1.925,65578.84128593146,60660.4281894866,settled,2025-09-29 00:00:00+00:00
 ,Italy Serie A,Lecce,Bologna,,,-0.5,bet_away_refined_ah,1.925,28450.079921922614,-28450.079921922614,settled,2025-09-29 00:00:00+00:00
+,Denmark Superliga,Nordsjælland,AGF,,,0.0,bet_away_refined_ah,1.925,65578.84128593146,60660.4281894866,settled,2025-09-29 00:00:00+00:00
 ,Denmark Superliga,Nordsjælland,AGF,,,0.0,bet_away_refined_ah,1.925,233603.5206976996,216083.25664537217,settled,2025-09-29 00:00:00+00:00
 ,Italy Serie A,Lecce,Bologna,,,-0.5,bet_away_refined_ah,1.925,220611.2411344193,-220611.2411344193,settled,2025-09-29 00:00:00+00:00
-,Germany Bundesliga,Köln,Stuttgart,,,0.0,bet_away_refined_ah,1.925,39345.04259702443,36394.1644022476,settled,2025-09-28 23:30:00+00:00
-,Germany Bundesliga,Köln,Stuttgart,,,0.0,bet_away_refined_ah,1.925,45358.63586670757,41956.7381767045,settled,2025-09-28 23:30:00+00:00
-,England Premier League,Newcastle United,Arsenal,,,-0.25,bet_away_refined_ah,1.925,98782.69674119107,91373.99448560174,settled,2025-09-28 23:30:00+00:00
 ,England Premier League,Newcastle United,Arsenal,,,-0.25,bet_away_refined_ah,1.925,17936926563.793777,16591657071.509247,settled,2025-09-28 23:30:00+00:00
+,England Premier League,Newcastle United,Arsenal,,,-0.25,bet_away_refined_ah,1.925,98782.69674119107,91373.99448560174,settled,2025-09-28 23:30:00+00:00
+,Germany Bundesliga,Köln,Stuttgart,,,0.0,bet_away_refined_ah,1.925,45358.63586670757,41956.7381767045,settled,2025-09-28 23:30:00+00:00
+,Germany Bundesliga,Köln,Stuttgart,,,0.0,bet_away_refined_ah,1.925,39345.04259702443,36394.1644022476,settled,2025-09-28 23:30:00+00:00
 ,France Ligue 1,Metz,Le Havre,,,0.0,bet_away_refined_ah,1.925,67200.80217950275,0.0,settled,2025-09-28 23:15:00+00:00
-,France Ligue 1,Metz,Le Havre,,,0.0,bet_away_refined_ah,1.925,7224824057.223889,0.0,settled,2025-09-28 23:15:00+00:00
 ,France Ligue 1,Lille,Olympique Lyonnais,,,-0.25,bet_home_refined_ah,1.925,18880975330.309242,-18880975330.309242,settled,2025-09-28 23:15:00+00:00
+,France Ligue 1,Metz,Le Havre,,,0.0,bet_away_refined_ah,1.925,7224824057.223889,0.0,settled,2025-09-28 23:15:00+00:00
 ,France Ligue 1,Lille,Olympique Lyonnais,,,-0.25,bet_home_refined_ah,1.925,73430.91963484616,-73430.91963484616,settled,2025-09-28 23:15:00+00:00
 ,Austria Bundesliga,Rapid Wien,Austria Wien,,,0.5,bet_away_refined_ah,1.925,13550807020.786928,12534496494.227911,settled,2025-09-28 23:00:00+00:00
 ,Portugal Liga NOS,Alverca,Vitória Guimarães,,,0.0,bet_away_refined_ah,1.925,98068.88095617943,-98068.88095617943,settled,2025-09-28 22:30:00+00:00
 ,Portugal Liga NOS,Alverca,Vitória Guimarães,,,0.0,bet_away_refined_ah,1.925,45683.224999498816,-45683.224999498816,settled,2025-09-28 22:30:00+00:00
-,Spain La Liga,Elche CF,Celta de Vigo,,,0.0,bet_home_refined_ah,1.925,40509.64995524584,37471.42620860241,settled,2025-09-28 22:15:00+00:00
 ,Spain La Liga,Elche CF,Celta de Vigo,,,0.0,bet_home_refined_ah,1.925,54247.195164467106,50178.65552713207,settled,2025-09-28 22:15:00+00:00
+,Spain La Liga,Elche CF,Celta de Vigo,,,0.0,bet_home_refined_ah,1.925,40509.64995524584,37471.42620860241,settled,2025-09-28 22:15:00+00:00
+,Scotland Premiership,Livingston,Rangers,,,-0.75,bet_away_refined_ah,1.925,10753415427.516996,4973454635.226611,settled,2025-09-28 22:00:00+00:00
+,Scotland Premiership,Livingston,Rangers,,,-0.75,bet_away_refined_ah,1.925,33235.72887752659,15371.524605856048,settled,2025-09-28 22:00:00+00:00
 ,Denmark Superliga,Silkeborg,Vejle,,,0.5,bet_away_refined_ah,1.925,13790535687.96796,12756245511.370365,settled,2025-09-28 22:00:00+00:00
 ,Brazil Serie A,Grêmio,Vitória,,,0.75,bet_away_refined_ah,1.925,19215000532.20826,-19215000532.20826,settled,2025-09-28 22:00:00+00:00
 ,Denmark Superliga,Silkeborg,Vejle,,,0.5,bet_away_refined_ah,1.925,100213.86283812257,92697.82312526337,settled,2025-09-28 22:00:00+00:00
-,Scotland Premiership,Livingston,Rangers,,,-0.75,bet_away_refined_ah,1.925,10753415427.516996,4973454635.226611,settled,2025-09-28 22:00:00+00:00
-,Scotland Premiership,Livingston,Rangers,,,-0.75,bet_away_refined_ah,1.925,33235.72887752659,15371.524605856048,settled,2025-09-28 22:00:00+00:00
 ,Denmark Superliga,Silkeborg,Vejle,,,0.5,bet_away_refined_ah,1.925,60101.61378205073,55593.99274839692,settled,2025-09-28 22:00:00+00:00
 ,Germany Bundesliga,Freiburg,Hoffenheim,,,0.25,bet_away_refined_ah,1.925,59021.73340193519,27297.551698395026,settled,2025-09-28 21:30:00+00:00
 ,Germany Bundesliga,Freiburg,Hoffenheim,,,0.25,bet_away_refined_ah,1.925,17914248527.675903,8285339944.050106,settled,2025-09-28 21:30:00+00:00
 ,Germany Bundesliga,Freiburg,Hoffenheim,,,0.25,bet_away_refined_ah,1.925,97948.79690958833,45301.3185706846,settled,2025-09-28 21:30:00+00:00
-,Italy Serie A,Pisa,Fiorentina,,,-0.25,bet_away_refined_ah,1.925,51587.182394024145,-25793.591197012072,settled,2025-09-28 21:00:00+00:00
-,Italy Serie A,Roma,Hellas Verona,,,1.25,bet_away_refined_ah,1.925,103103.9967469351,-103103.9967469351,settled,2025-09-28 21:00:00+00:00
-,France Ligue 1,Nice,Paris,,,0.5,bet_away_refined_ah,1.925,52736.15121033979,48780.93986956431,settled,2025-09-28 21:00:00+00:00
 ,France Ligue 1,Nice,Paris,,,0.5,bet_away_refined_ah,1.925,18023516093.995754,16671752386.946072,settled,2025-09-28 21:00:00+00:00
-,England Premier League,Aston Villa,Fulham,,,0.25,bet_away_refined_ah,1.925,67467.61241191543,-67467.61241191543,settled,2025-09-28 21:00:00+00:00
 ,Italy Serie A,Roma,Hellas Verona,,,1.25,bet_away_refined_ah,1.925,18857103713.34306,-18857103713.34306,settled,2025-09-28 21:00:00+00:00
+,Italy Serie A,Pisa,Fiorentina,,,-0.25,bet_away_refined_ah,1.925,51587.182394024145,-25793.591197012072,settled,2025-09-28 21:00:00+00:00
+,England Premier League,Aston Villa,Fulham,,,0.25,bet_away_refined_ah,1.925,67467.61241191543,-67467.61241191543,settled,2025-09-28 21:00:00+00:00
+,France Ligue 1,Nice,Paris,,,0.5,bet_away_refined_ah,1.925,52736.15121033979,48780.93986956431,settled,2025-09-28 21:00:00+00:00
+,Italy Serie A,Roma,Hellas Verona,,,1.25,bet_away_refined_ah,1.925,103103.9967469351,-103103.9967469351,settled,2025-09-28 21:00:00+00:00
+,Italy Serie A,Roma,Hellas Verona,,,1.25,bet_away_refined_ah,1.925,62128.14042308967,-62128.14042308967,settled,2025-09-28 21:00:00+00:00
 ,England Premier League,Aston Villa,Fulham,,,0.25,bet_away_refined_ah,1.925,25584.831416656343,-25584.831416656343,settled,2025-09-28 21:00:00+00:00
 ,France Ligue 1,Nice,Paris,,,0.5,bet_away_refined_ah,1.925,39271.2094107319,36325.86870492701,settled,2025-09-28 21:00:00+00:00
-,Italy Serie A,Roma,Hellas Verona,,,1.25,bet_away_refined_ah,1.925,62128.14042308967,-62128.14042308967,settled,2025-09-28 21:00:00+00:00
 ,Netherlands Eredivisie,Groningen,Feyenoord,,,0.5,bet_home_refined_ah,1.925,11137825414.015242,-11137825414.015242,settled,2025-09-28 20:30:00+00:00
 ,Malaysia Super League,Kuching FA,Imigresen,,,-1.5,bet_home_refined_ah,1.925,17759051244.632275,16427122401.284855,settled,2025-09-28 20:15:00+00:00
-,Denmark Superliga,Viborg,Fredericia,,,-0.75,bet_home_refined_ah,1.925,16901091274.363495,7816754714.393116,settled,2025-09-28 20:00:00+00:00
 ,Spain La Liga,Rayo Vallecano,Sevilla FC,,,-0.25,bet_home_refined_ah,1.925,110871.58940410866,-110871.58940410866,settled,2025-09-28 20:00:00+00:00
+,Denmark Superliga,Viborg,Fredericia,,,-0.75,bet_home_refined_ah,1.925,16901091274.363495,7816754714.393116,settled,2025-09-28 20:00:00+00:00
 ,Spain La Liga,Rayo Vallecano,Sevilla FC,,,-0.25,bet_home_refined_ah,1.925,18693738152.244503,-18693738152.244503,settled,2025-09-28 20:00:00+00:00
 ,China Chinese Super League,Tianjin Teda,Henan Jianye,,,-0.25,bet_away_refined_ah,1.925,19266210964.762997,-19266210964.762997,settled,2025-09-28 19:00:00+00:00
 ,Italy Serie A,Sassuolo,Udinese,,,0.25,bet_away_refined_ah,1.925,18111476971.261654,-18111476971.261654,settled,2025-09-28 18:30:00+00:00
 ,Italy Serie A,Sassuolo,Udinese,,,0.25,bet_away_refined_ah,1.925,116706.93621485122,-116706.93621485122,settled,2025-09-28 18:30:00+00:00
 ,Italy Serie A,Sassuolo,Udinese,,,0.25,bet_away_refined_ah,1.925,54592.83137251048,-54592.83137251048,settled,2025-09-28 18:30:00+00:00
-,Netherlands Eredivisie,NEC,AZ,,,0.25,bet_home_refined_ah,1.925,61477.40036062285,56866.595333576144,settled,2025-09-28 18:15:00+00:00
 ,Netherlands Eredivisie,NEC,AZ,,,0.25,bet_home_refined_ah,1.925,111547.84823402745,103181.7596164754,settled,2025-09-28 18:15:00+00:00
-,USA MLS,San Diego,SJ Earthquakes,,,-0.75,bet_home_refined_ah,1.925,13909195869.624006,-13909195869.624006,settled,2025-09-28 10:30:00+00:00
+,Netherlands Eredivisie,NEC,AZ,,,0.25,bet_home_refined_ah,1.925,61477.40036062285,56866.595333576144,settled,2025-09-28 18:15:00+00:00
 ,USA MLS,Seattle Sounders,Vancouver Whitecaps,,,0.5,bet_away_refined_ah,1.925,15991997062.065308,14792597282.410412,settled,2025-09-28 10:30:00+00:00
+,USA MLS,San Diego,SJ Earthquakes,,,-0.75,bet_home_refined_ah,1.925,13909195869.624006,-13909195869.624006,settled,2025-09-28 10:30:00+00:00
 ,USA MLS,Real Salt Lake,Austin,,,-0.75,bet_home_refined_ah,1.925,10205967439.315632,9440519881.366959,settled,2025-09-28 09:30:00+00:00
-,USA MLS,Chicago Fire,Columbus Crew,,,-0.25,bet_home_refined_ah,1.925,16042203921.350246,14839038627.248978,settled,2025-09-28 08:30:00+00:00
-,USA MLS,St. Louis City,Los Angeles FC,,,-0.5,bet_away_refined_ah,1.925,18786703702.38319,17377700924.70445,settled,2025-09-28 08:30:00+00:00
 ,USA MLS,Nashville SC,Houston Dynamo,,,-0.75,bet_home_refined_ah,1.925,9110450871.968193,8427167056.57058,settled,2025-09-28 08:30:00+00:00
+,USA MLS,St. Louis City,Los Angeles FC,,,-0.5,bet_away_refined_ah,1.925,18786703702.38319,17377700924.70445,settled,2025-09-28 08:30:00+00:00
+,USA MLS,Chicago Fire,Columbus Crew,,,-0.25,bet_home_refined_ah,1.925,16042203921.350246,14839038627.248978,settled,2025-09-28 08:30:00+00:00
 ,Brazil Serie A,Atlético Mineiro,Mirassol,,,0.5,bet_away_refined_ah,1.925,18550940440.202328,-18550940440.202328,settled,2025-09-28 08:00:00+00:00
 ,USA MLS,Charlotte,Montreal Impact,,,1.0,bet_away_refined_ah,1.925,17730886920.145596,16401070401.134678,settled,2025-09-28 07:30:00+00:00
 ,Brazil Serie A,Juventude,Internacional,,,0.5,bet_home_refined_ah,1.925,16947084272.540592,15676052952.100048,settled,2025-09-28 05:30:00+00:00
 ,USA MLS,Toronto,Inter Miami,,,-0.25,bet_away_refined_ah,1.925,11546477948.834927,-5773238974.417463,settled,2025-09-28 04:30:00+00:00
-,Portugal Liga NOS,GD Estoril Praia,Sporting CP,,,1.5,bet_home_refined_ah,1.925,244042.91248186934,225739.69404572912,settled,2025-09-28 03:30:00+00:00
 ,Portugal Liga NOS,GD Estoril Praia,Sporting CP,,,1.5,bet_home_refined_ah,1.925,16473831513.750504,15238294150.219215,settled,2025-09-28 03:30:00+00:00
 ,Portugal Liga NOS,GD Estoril Praia,Sporting CP,,,1.5,bet_home_refined_ah,1.925,13521.392195870283,12507.287781180012,settled,2025-09-28 03:30:00+00:00
-,England Premier League,Tottenham Hotspur,Wolverhampton Wanderers,,,1.25,bet_away_refined_ah,1.925,58162.04154988182,53799.88843364069,settled,2025-09-28 03:00:00+00:00
-,Spain La Liga,Villarreal,Athletic Club Bilbao,,,0.5,bet_away_refined_ah,1.925,57429.22385198725,-57429.22385198725,settled,2025-09-28 03:00:00+00:00
-,Spain La Liga,Villarreal,Athletic Club Bilbao,,,0.5,bet_away_refined_ah,1.925,54752.11728672137,-54752.11728672137,settled,2025-09-28 03:00:00+00:00
-,Netherlands Eredivisie,Heracles,Sparta Rotterdam,,,0.0,bet_away_refined_ah,1.925,13493865676.1113,-13493865676.1113,settled,2025-09-28 03:00:00+00:00
-,England Premier League,Tottenham Hotspur,Wolverhampton Wanderers,,,1.25,bet_away_refined_ah,1.925,10066368202.6837,9311390587.482422,settled,2025-09-28 03:00:00+00:00
-,Spain La Liga,Villarreal,Athletic Club Bilbao,,,0.5,bet_away_refined_ah,1.925,7539075784.700968,-7539075784.700968,settled,2025-09-28 03:00:00+00:00
-,England Premier League,Tottenham Hotspur,Wolverhampton Wanderers,,,1.25,bet_away_refined_ah,1.925,106616.82029536672,98620.55877321423,settled,2025-09-28 03:00:00+00:00
-,Brazil Serie A,Fortaleza,Sport Recife,,,0.75,bet_away_refined_ah,1.925,12206379707.128668,-6103189853.564334,settled,2025-09-28 03:00:00+00:00
+,Portugal Liga NOS,GD Estoril Praia,Sporting CP,,,1.5,bet_home_refined_ah,1.925,244042.91248186934,225739.69404572912,settled,2025-09-28 03:30:00+00:00
 ,England Premier League,Tottenham Hotspur,Wolverhampton Wanderers,,,1.25,bet_away_refined_ah,1.925,1096147.7595696177,1013936.6776018965,settled,2025-09-28 03:00:00+00:00
 ,Spain La Liga,Villarreal,Athletic Club Bilbao,,,0.5,bet_away_refined_ah,1.925,990591.5431281308,-990591.5431281308,settled,2025-09-28 03:00:00+00:00
-,Italy Serie A,Cagliari,Inter Milan,,,-1.0,bet_away_refined_ah,1.925,96565.51012621637,89323.09686675013,settled,2025-09-28 02:45:00+00:00
-,Italy Serie A,Cagliari,Inter Milan,,,-1.0,bet_away_refined_ah,1.925,1095032.1020081474,1012904.6943575365,settled,2025-09-28 02:45:00+00:00
-,Belgium Pro League,Union Saint-Gilloise,KVC Westerlo,,,-1.5,bet_home_refined_ah,1.925,4372368551.495259,4044440910.133115,settled,2025-09-28 02:45:00+00:00
+,England Premier League,Tottenham Hotspur,Wolverhampton Wanderers,,,1.25,bet_away_refined_ah,1.925,10066368202.6837,9311390587.482422,settled,2025-09-28 03:00:00+00:00
+,England Premier League,Tottenham Hotspur,Wolverhampton Wanderers,,,1.25,bet_away_refined_ah,1.925,106616.82029536672,98620.55877321423,settled,2025-09-28 03:00:00+00:00
+,Spain La Liga,Villarreal,Athletic Club Bilbao,,,0.5,bet_away_refined_ah,1.925,7539075784.700968,-7539075784.700968,settled,2025-09-28 03:00:00+00:00
+,Brazil Serie A,Fortaleza,Sport Recife,,,0.75,bet_away_refined_ah,1.925,12206379707.128668,-6103189853.564334,settled,2025-09-28 03:00:00+00:00
+,Spain La Liga,Villarreal,Athletic Club Bilbao,,,0.5,bet_away_refined_ah,1.925,57429.22385198725,-57429.22385198725,settled,2025-09-28 03:00:00+00:00
+,England Premier League,Tottenham Hotspur,Wolverhampton Wanderers,,,1.25,bet_away_refined_ah,1.925,58162.04154988182,53799.88843364069,settled,2025-09-28 03:00:00+00:00
+,Spain La Liga,Villarreal,Athletic Club Bilbao,,,0.5,bet_away_refined_ah,1.925,54752.11728672137,-54752.11728672137,settled,2025-09-28 03:00:00+00:00
+,Netherlands Eredivisie,Heracles,Sparta Rotterdam,,,0.0,bet_away_refined_ah,1.925,13493865676.1113,-13493865676.1113,settled,2025-09-28 03:00:00+00:00
 ,Italy Serie A,Cagliari,Inter Milan,,,-1.0,bet_away_refined_ah,1.925,15945540825.777845,14749625263.844507,settled,2025-09-28 02:45:00+00:00
+,Italy Serie A,Cagliari,Inter Milan,,,-1.0,bet_away_refined_ah,1.925,96565.51012621637,89323.09686675013,settled,2025-09-28 02:45:00+00:00
 ,Italy Serie A,Cagliari,Inter Milan,,,-1.0,bet_away_refined_ah,1.925,58335.48649221618,53960.325005299965,settled,2025-09-28 02:45:00+00:00
-,Netherlands Eredivisie,Excelsior,PSV,,,1.5,bet_home_refined_ah,1.925,41061.39877829106,37981.79386991924,settled,2025-09-28 02:00:00+00:00
-,Netherlands Eredivisie,Excelsior,PSV,,,1.5,bet_home_refined_ah,1.925,100251.63327729057,92732.76078149378,settled,2025-09-28 02:00:00+00:00
-,Spain Copa del Rey,Inter de Valdemoro,Universitario FC,,,0.75,bet_away_refined_ah,1.925,15699273826.902113,14521828289.884455,settled,2025-09-28 02:00:00+00:00
-,Netherlands Eredivisie,Excelsior,PSV,,,1.5,bet_home_refined_ah,1.925,9058721413.12718,8379317307.142641,settled,2025-09-28 02:00:00+00:00
-,Spain Copa del Rey,CE Sant Jordi,Lourdes,,,0.5,bet_away_refined_ah,1.925,11474208566.323692,-11474208566.323692,settled,2025-09-28 02:00:00+00:00
+,Belgium Pro League,Union Saint-Gilloise,KVC Westerlo,,,-1.5,bet_home_refined_ah,1.925,4372368551.495259,4044440910.133115,settled,2025-09-28 02:45:00+00:00
+,Italy Serie A,Cagliari,Inter Milan,,,-1.0,bet_away_refined_ah,1.925,1095032.1020081474,1012904.6943575365,settled,2025-09-28 02:45:00+00:00
 ,Netherlands Eredivisie,Excelsior,PSV,,,1.5,bet_home_refined_ah,1.925,1046625.6650018136,968128.7401266776,settled,2025-09-28 02:00:00+00:00
+,Netherlands Eredivisie,Excelsior,PSV,,,1.5,bet_home_refined_ah,1.925,41061.39877829106,37981.79386991924,settled,2025-09-28 02:00:00+00:00
+,Spain Copa del Rey,Inter de Valdemoro,Universitario FC,,,0.75,bet_away_refined_ah,1.925,15699273826.902113,14521828289.884455,settled,2025-09-28 02:00:00+00:00
+,Netherlands Eredivisie,Excelsior,PSV,,,1.5,bet_home_refined_ah,1.925,100251.63327729057,92732.76078149378,settled,2025-09-28 02:00:00+00:00
+,Spain Copa del Rey,CE Sant Jordi,Lourdes,,,0.5,bet_away_refined_ah,1.925,11474208566.323692,-11474208566.323692,settled,2025-09-28 02:00:00+00:00
+,Netherlands Eredivisie,Excelsior,PSV,,,1.5,bet_home_refined_ah,1.925,9058721413.12718,8379317307.142641,settled,2025-09-28 02:00:00+00:00
+,France Ligue 1,Toulouse,Nantes,,,-0.75,bet_home_refined_ah,1.925,31778.956207628384,-31778.956207628384,settled,2025-09-28 01:00:00+00:00
 ,Portugal Liga NOS,Estrela Amadora,AVS,,,0.75,bet_away_refined_ah,1.925,81588.055483168,-81588.055483168,settled,2025-09-28 01:00:00+00:00
 ,France Ligue 1,Toulouse,Nantes,,,-0.75,bet_home_refined_ah,1.925,33414.30085000497,-33414.30085000497,settled,2025-09-28 01:00:00+00:00
-,Portugal Liga NOS,Estrela Amadora,AVS,,,0.75,bet_away_refined_ah,1.925,714383.0521056175,-714383.0521056175,settled,2025-09-28 01:00:00+00:00
-,France Ligue 1,Toulouse,Nantes,,,-0.75,bet_home_refined_ah,1.925,31778.956207628384,-31778.956207628384,settled,2025-09-28 01:00:00+00:00
 ,Portugal Liga NOS,Estrela Amadora,AVS,,,0.75,bet_away_refined_ah,1.925,59406.09755072998,-59406.09755072998,settled,2025-09-28 01:00:00+00:00
+,Portugal Liga NOS,Estrela Amadora,AVS,,,0.75,bet_away_refined_ah,1.925,714383.0521056175,-714383.0521056175,settled,2025-09-28 01:00:00+00:00
+,Netherlands Eredivisie,Volendam,PEC Zwolle,,,0.0,bet_away_refined_ah,1.925,618855.5261969726,-618855.5261969726,settled,2025-09-28 00:45:00+00:00
+,Israel Israeli Premier League,Hapoel Petah Tikva,Ironi Tiberias,,,0.75,bet_away_refined_ah,1.925,10359922978.165667,9582928754.803244,settled,2025-09-28 00:45:00+00:00
 ,Netherlands Eredivisie,Volendam,PEC Zwolle,,,0.0,bet_away_refined_ah,1.925,28898.20813825643,-28898.20813825643,settled,2025-09-28 00:45:00+00:00
 ,Israel Israeli Premier League,Ironi Kiryat Shmona,Ashdod,,,-0.25,bet_home_refined_ah,1.925,8280140617.546375,-8280140617.546375,settled,2025-09-28 00:45:00+00:00
-,Israel Israeli Premier League,Hapoel Tel Aviv,Hapoel Haifa,,,-0.75,bet_home_refined_ah,1.925,10783597758.357462,4987413963.240327,settled,2025-09-28 00:45:00+00:00
-,Israel Israeli Premier League,Hapoel Petah Tikva,Ironi Tiberias,,,0.75,bet_away_refined_ah,1.925,10359922978.165667,9582928754.803244,settled,2025-09-28 00:45:00+00:00
-,Netherlands Eredivisie,Volendam,PEC Zwolle,,,0.0,bet_away_refined_ah,1.925,618855.5261969726,-618855.5261969726,settled,2025-09-28 00:45:00+00:00
 ,Netherlands Eredivisie,Volendam,PEC Zwolle,,,0.0,bet_away_refined_ah,1.925,51593.48425437691,-51593.48425437691,settled,2025-09-28 00:45:00+00:00
-,Spain La Liga,RCD Mallorca,Deportivo Alavés,,,0.25,bet_away_refined_ah,1.925,707095.9104313529,-707095.9104313529,settled,2025-09-28 00:30:00+00:00
-,Israel Israeli Premier League,Hapoel Katamon,Maccabi Netanya,,,-0.25,bet_away_refined_ah,1.925,11651180612.52442,10777342066.585089,settled,2025-09-28 00:30:00+00:00
+,Israel Israeli Premier League,Hapoel Tel Aviv,Hapoel Haifa,,,-0.75,bet_home_refined_ah,1.925,10783597758.357462,4987413963.240327,settled,2025-09-28 00:45:00+00:00
 ,Germany Bundesliga,Borussia M'gladbach,Eintracht Frankfurt,,,-0.25,bet_away_refined_ah,1.925,14852576616.330994,13738633370.10617,settled,2025-09-28 00:30:00+00:00
-,England Premier League,Nottingham Forest,Sunderland,,,-0.75,bet_home_refined_ah,1.925,33238.30935433001,-33238.30935433001,settled,2025-09-28 00:30:00+00:00
-,England Premier League,Nottingham Forest,Sunderland,,,-0.75,bet_home_refined_ah,1.925,530886.2116472475,-530886.2116472475,settled,2025-09-28 00:30:00+00:00
-,Germany Bundesliga,Borussia M'gladbach,Eintracht Frankfurt,,,-0.25,bet_away_refined_ah,1.925,1064074.1638393719,984268.6015514191,settled,2025-09-28 00:30:00+00:00
-,Germany Bundesliga,Borussia M'gladbach,Eintracht Frankfurt,,,-0.25,bet_away_refined_ah,1.925,103781.52956431835,95997.91484699446,settled,2025-09-28 00:30:00+00:00
-,Spain La Liga,RCD Mallorca,Deportivo Alavés,,,0.25,bet_away_refined_ah,1.925,101518.76302130542,-101518.76302130542,settled,2025-09-28 00:30:00+00:00
+,Israel Israeli Premier League,Hapoel Katamon,Maccabi Netanya,,,-0.25,bet_away_refined_ah,1.925,11651180612.52442,10777342066.585089,settled,2025-09-28 00:30:00+00:00
 ,Spain La Liga,RCD Mallorca,Deportivo Alavés,,,0.25,bet_away_refined_ah,1.925,64232.09500750951,-64232.09500750951,settled,2025-09-28 00:30:00+00:00
 ,England Premier League,Nottingham Forest,Sunderland,,,-0.75,bet_home_refined_ah,1.925,19300.552837575044,-19300.552837575044,settled,2025-09-28 00:30:00+00:00
+,England Premier League,Nottingham Forest,Sunderland,,,-0.75,bet_home_refined_ah,1.925,33238.30935433001,-33238.30935433001,settled,2025-09-28 00:30:00+00:00
+,Spain La Liga,RCD Mallorca,Deportivo Alavés,,,0.25,bet_away_refined_ah,1.925,101518.76302130542,-101518.76302130542,settled,2025-09-28 00:30:00+00:00
+,Germany Bundesliga,Borussia M'gladbach,Eintracht Frankfurt,,,-0.25,bet_away_refined_ah,1.925,1064074.1638393719,984268.6015514191,settled,2025-09-28 00:30:00+00:00
+,England Premier League,Nottingham Forest,Sunderland,,,-0.75,bet_home_refined_ah,1.925,530886.2116472475,-530886.2116472475,settled,2025-09-28 00:30:00+00:00
+,Spain La Liga,RCD Mallorca,Deportivo Alavés,,,0.25,bet_away_refined_ah,1.925,707095.9104313529,-707095.9104313529,settled,2025-09-28 00:30:00+00:00
+,Germany Bundesliga,Borussia M'gladbach,Eintracht Frankfurt,,,-0.25,bet_away_refined_ah,1.925,103781.52956431835,95997.91484699446,settled,2025-09-28 00:30:00+00:00
 ,Belgium Pro League,Standard Liège,Club Brugge,,,1.0,bet_home_refined_ah,1.925,6625807341.056531,0.0,settled,2025-09-28 00:15:00+00:00
+,Italy Serie A,Juventus,Atalanta,,,-0.5,bet_home_refined_ah,1.925,523675.59851328237,-523675.59851328237,settled,2025-09-28 00:00:00+00:00
 ,Italy Serie A,Juventus,Atalanta,,,-0.5,bet_home_refined_ah,1.925,9648510316.211721,-9648510316.211721,settled,2025-09-28 00:00:00+00:00
 ,Italy Serie A,Juventus,Atalanta,,,-0.5,bet_home_refined_ah,1.925,100098.40400856159,-100098.40400856159,settled,2025-09-28 00:00:00+00:00
-,Italy Serie A,Juventus,Atalanta,,,-0.5,bet_home_refined_ah,1.925,523675.59851328237,-523675.59851328237,settled,2025-09-28 00:00:00+00:00
 ,Saudi Arabia Professional League,Al Najma,Al Feiha,,,0.0,bet_away_refined_ah,1.925,753124.0606092025,696639.7560635124,settled,2025-09-27 23:35:00+00:00
 ,Saudi Arabia Professional League,Al Najma,Al Feiha,,,0.0,bet_away_refined_ah,1.925,59673.29582822243,55197.79864110575,settled,2025-09-27 23:35:00+00:00
 ,Portugal Liga NOS,Santa Clara,CD Tondela,,,0.75,bet_away_refined_ah,1.925,44545.95245210663,41205.00601819863,settled,2025-09-27 23:30:00+00:00
@@ -349,10 +355,10 @@ fixture_id,league,home,away,home_score,away_score,line_betted_on_refined,bet_typ
 ,Saudi Arabia Professional League,Al Riyadh,Neom SC,,,-0.75,bet_away_refined_ah,1.925,822192.8492556971,380264.1927807599,settled,2025-09-27 23:20:00+00:00
 ,France Ligue 1,Lorient,Monaco,,,0.75,bet_home_refined_ah,1.925,1011116.2316770558,935282.5143012768,settled,2025-09-27 23:00:00+00:00
 ,France Ligue 1,Lorient,Monaco,,,0.75,bet_home_refined_ah,1.925,59065.282726728765,54635.386522224115,settled,2025-09-27 23:00:00+00:00
-,Portugal Liga NOS,Moreirense FC,Casa Pia,,,0.25,bet_away_refined_ah,1.925,59658.12128244631,-59658.12128244631,settled,2025-09-27 22:30:00+00:00
 ,Netherlands Eredivisie,Ajax,NAC Breda,,,1.5,bet_away_refined_ah,1.925,59305.31784071788,54857.41900266404,settled,2025-09-27 22:30:00+00:00
-,Portugal Liga NOS,Moreirense FC,Casa Pia,,,0.25,bet_away_refined_ah,1.925,609192.5701185596,-609192.5701185596,settled,2025-09-27 22:30:00+00:00
+,Portugal Liga NOS,Moreirense FC,Casa Pia,,,0.25,bet_away_refined_ah,1.925,59658.12128244631,-59658.12128244631,settled,2025-09-27 22:30:00+00:00
 ,Netherlands Eredivisie,Ajax,NAC Breda,,,1.5,bet_away_refined_ah,1.925,995532.4828511196,920867.5466372856,settled,2025-09-27 22:30:00+00:00
+,Portugal Liga NOS,Moreirense FC,Casa Pia,,,0.25,bet_away_refined_ah,1.925,609192.5701185596,-609192.5701185596,settled,2025-09-27 22:30:00+00:00
 ,Spain La Liga,Atlético Madrid,Real Madrid,,,0.25,bet_home_refined_ah,1.925,951524.475843364,880160.1401551118,settled,2025-09-27 22:15:00+00:00
 ,Spain La Liga,Atlético Madrid,Real Madrid,,,0.25,bet_home_refined_ah,1.925,56683.6968609012,52432.41959633361,settled,2025-09-27 22:15:00+00:00
 ,England Championship,Ipswich Town,Portsmouth,,,1.0,bet_away_refined_ah,1.925,58170.807868719385,0.0,settled,2025-09-27 22:00:00+00:00
@@ -363,41 +369,41 @@ fixture_id,league,home,away,home_score,away_score,line_betted_on_refined,bet_typ
 ,England Championship,Southampton,Middlesbrough,,,0.25,bet_away_refined_ah,1.925,20470.67520261623,9467.687281210005,settled,2025-09-27 22:00:00+00:00
 ,England Championship,Oxford United,Sheffield United,,,0.25,bet_home_refined_ah,1.925,52185.98476530587,-52185.98476530587,settled,2025-09-27 22:00:00+00:00
 ,Scotland Premiership,Celtic,Hibernian,,,-1.75,bet_home_refined_ah,1.925,61232.42933549409,-61232.42933549409,settled,2025-09-27 22:00:00+00:00
+,England Championship,Charlton Athletic,Blackburn Rovers,,,-0.25,bet_home_refined_ah,1.925,440360.39289062086,407333.3634238243,settled,2025-09-27 22:00:00+00:00
 ,England Championship,Ipswich Town,Portsmouth,,,1.0,bet_away_refined_ah,1.925,981238.0432428763,0.0,settled,2025-09-27 22:00:00+00:00
 ,England Premier League,Leeds United,AFC Bournemouth,,,0.0,bet_away_refined_ah,1.925,790419.3919973256,0.0,settled,2025-09-27 22:00:00+00:00
-,Scotland Premiership,Celtic,Hibernian,,,-1.75,bet_home_refined_ah,1.925,558987.7700890814,-558987.7700890814,settled,2025-09-27 22:00:00+00:00
 ,Scotland Premiership,Dundee United,Kilmarnock,,,0.25,bet_away_refined_ah,1.925,649050.1015039998,300185.6719455999,settled,2025-09-27 22:00:00+00:00
+,Scotland Premiership,Celtic,Hibernian,,,-1.75,bet_home_refined_ah,1.925,558987.7700890814,-558987.7700890814,settled,2025-09-27 22:00:00+00:00
 ,Scotland Premiership,St. Mirren,Dundee,,,1.0,bet_away_refined_ah,1.925,979168.8645527704,0.0,settled,2025-09-27 22:00:00+00:00
-,England Championship,Preston North End,Bristol City,,,0.0,bet_away_refined_ah,1.925,1001604.7114140675,0.0,settled,2025-09-27 22:00:00+00:00
 ,England Championship,Oxford United,Sheffield United,,,0.25,bet_home_refined_ah,1.925,1001604.7114140675,-1001604.7114140675,settled,2025-09-27 22:00:00+00:00
-,England Championship,Charlton Athletic,Blackburn Rovers,,,-0.25,bet_home_refined_ah,1.925,440360.39289062086,407333.3634238243,settled,2025-09-27 22:00:00+00:00
+,England Championship,Preston North End,Bristol City,,,0.0,bet_away_refined_ah,1.925,1001604.7114140675,0.0,settled,2025-09-27 22:00:00+00:00
 ,Germany Bundesliga,Wolfsburg,RB Leipzig,,,0.0,bet_away_refined_ah,1.925,658209.4724860862,608843.7620496298,settled,2025-09-27 21:30:00+00:00
-,Germany Bundesliga,Heidenheim,Augsburg,,,0.0,bet_home_refined_ah,1.925,466735.5694780014,431730.40176715126,settled,2025-09-27 21:30:00+00:00
 ,Germany Bundesliga,St. Pauli,Bayer Leverkusen,,,0.25,bet_home_refined_ah,1.925,975937.0066967699,-975937.0066967699,settled,2025-09-27 21:30:00+00:00
+,Germany Bundesliga,Heidenheim,Augsburg,,,0.0,bet_home_refined_ah,1.925,466735.5694780014,431730.40176715126,settled,2025-09-27 21:30:00+00:00
 ,Germany Bundesliga,St. Pauli,Bayer Leverkusen,,,0.25,bet_home_refined_ah,1.925,46909.562197902196,-46909.562197902196,settled,2025-09-27 21:30:00+00:00
 ,Italy Serie A,Como,Cremonese,,,1.25,bet_away_refined_ah,1.925,34155.64189949251,31593.968757030576,settled,2025-09-27 21:00:00+00:00
 ,Spain La Liga,Getafe CF,Levante UD,,,0.5,bet_away_refined_ah,1.925,47476.73778062805,43915.98244708095,settled,2025-09-27 20:00:00+00:00
 ,Spain La Liga,Getafe CF,Levante UD,,,0.5,bet_away_refined_ah,1.925,845586.0246131622,782167.0727671749,settled,2025-09-27 20:00:00+00:00
-,England Championship,Coventry City,Birmingham City,,,-0.25,bet_home_refined_ah,1.925,895415.6779530811,828259.5021066001,settled,2025-09-27 19:30:00+00:00
 ,England Championship,Wrexham,Derby County,,,-0.25,bet_home_refined_ah,1.925,354239.12848491705,-177119.56424245852,settled,2025-09-27 19:30:00+00:00
+,England Championship,Coventry City,Birmingham City,,,-0.25,bet_home_refined_ah,1.925,895415.6779530811,828259.5021066001,settled,2025-09-27 19:30:00+00:00
+,England Championship,Coventry City,Birmingham City,,,-0.25,bet_home_refined_ah,1.925,55364.09847027841,51211.791085007535,settled,2025-09-27 19:30:00+00:00
 ,England Championship,Swansea City,Millwall,,,0.25,bet_away_refined_ah,1.925,36269.63608117165,16774.706687541886,settled,2025-09-27 19:30:00+00:00
 ,England Championship,Wrexham,Derby County,,,-0.25,bet_home_refined_ah,1.925,27258.007860399346,-13629.003930199673,settled,2025-09-27 19:30:00+00:00
-,England Championship,Coventry City,Birmingham City,,,-0.25,bet_home_refined_ah,1.925,55364.09847027841,51211.791085007535,settled,2025-09-27 19:30:00+00:00
-,Portugal Liga NOS,Benfica,Gil Vicente,,,1.5,bet_away_refined_ah,1.925,52766.36877649826,48808.891118260886,settled,2025-09-27 03:15:00+00:00
 ,Portugal Liga NOS,Benfica,Gil Vicente,,,1.5,bet_away_refined_ah,1.925,939380.3700026999,868926.8422524974,settled,2025-09-27 03:15:00+00:00
+,Portugal Liga NOS,Benfica,Gil Vicente,,,1.5,bet_away_refined_ah,1.925,52766.36877649826,48808.891118260886,settled,2025-09-27 03:15:00+00:00
 ,Portugal Liga NOS,Benfica,Gil Vicente,,,1.5,bet_away_refined_ah,1.925,864297.8792498964,799475.5383061543,settled,2025-09-27 03:15:00+00:00
-,Spain La Liga,Girona FC,RCD Espanyol,,,0.0,bet_away_refined_ah,1.925,552166.0428977521,0.0,settled,2025-09-27 03:00:00+00:00
-,England Championship,West Bromwich Albion,Leicester City,,,0.25,bet_away_refined_ah,1.925,369859.82140819257,171060.16740128907,settled,2025-09-27 03:00:00+00:00
 ,Spain La Liga,Girona FC,RCD Espanyol,,,0.0,bet_away_refined_ah,1.925,383341.4037588359,0.0,settled,2025-09-27 03:00:00+00:00
+,England Championship,West Bromwich Albion,Leicester City,,,0.25,bet_away_refined_ah,1.925,369859.82140819257,171060.16740128907,settled,2025-09-27 03:00:00+00:00
 ,England Championship,West Bromwich Albion,Leicester City,,,0.25,bet_away_refined_ah,1.925,554141.2781860783,256290.34116106125,settled,2025-09-27 03:00:00+00:00
 ,England Championship,West Bromwich Albion,Leicester City,,,0.25,bet_away_refined_ah,1.925,13088.204081880029,6053.294387869514,settled,2025-09-27 03:00:00+00:00
-,France Ligue 1,Strasbourg,Olympique Marseille,,,-0.5,bet_away_refined_ah,1.925,31109.375993985275,28776.17279443638,settled,2025-09-27 02:45:00+00:00
+,Spain La Liga,Girona FC,RCD Espanyol,,,0.0,bet_away_refined_ah,1.925,552166.0428977521,0.0,settled,2025-09-27 03:00:00+00:00
 ,France Ligue 1,Strasbourg,Olympique Marseille,,,-0.5,bet_away_refined_ah,1.925,563655.5068101021,521381.3437993445,settled,2025-09-27 02:45:00+00:00
+,France Ligue 1,Strasbourg,Olympique Marseille,,,-0.5,bet_away_refined_ah,1.925,31109.375993985275,28776.17279443638,settled,2025-09-27 02:45:00+00:00
 ,France Ligue 1,Strasbourg,Olympique Marseille,,,-0.5,bet_away_refined_ah,1.925,776825.7588050575,718563.8268946782,settled,2025-09-27 02:45:00+00:00
 ,Saudi Arabia Professional League,Al Ittihad,Al Nassr,,,-0.75,bet_away_refined_ah,1.925,783576.2767360555,724808.0559808514,settled,2025-09-27 02:00:00+00:00
-,Netherlands Eredivisie,Twente,Fortuna Sittard,,,-1.0,bet_home_refined_ah,1.925,649414.5123674349,0.0,settled,2025-09-27 02:00:00+00:00
-,Saudi Arabia Professional League,Al Ittihad,Al Nassr,,,-0.75,bet_away_refined_ah,1.925,723358.5441628507,669106.653350637,settled,2025-09-27 02:00:00+00:00
 ,Netherlands Eredivisie,Twente,Fortuna Sittard,,,-1.0,bet_home_refined_ah,1.925,455498.14543538954,0.0,settled,2025-09-27 02:00:00+00:00
+,Saudi Arabia Professional League,Al Ittihad,Al Nassr,,,-0.75,bet_away_refined_ah,1.925,723358.5441628507,669106.653350637,settled,2025-09-27 02:00:00+00:00
+,Netherlands Eredivisie,Twente,Fortuna Sittard,,,-1.0,bet_home_refined_ah,1.925,649414.5123674349,0.0,settled,2025-09-27 02:00:00+00:00
 ,Saudi Arabia Professional League,Al Ittihad,Al Nassr,,,-0.75,bet_away_refined_ah,1.925,48769.31461637559,45111.61602014743,settled,2025-09-27 02:00:00+00:00
 ,Saudi Arabia Professional League,Dhamk,Al Ittifaq,,,0.0,bet_home_refined_ah,1.925,912675.2137759449,-912675.2137759449,settled,2025-09-26 23:40:00+00:00
 ,Saudi Arabia Professional League,Dhamk,Al Ittifaq,,,0.0,bet_home_refined_ah,1.925,824817.1334063741,-824817.1334063741,settled,2025-09-26 23:40:00+00:00
@@ -406,56 +412,56 @@ fixture_id,league,home,away,home_score,away_score,line_betted_on_refined,bet_typ
 ,Spain La Liga,Real Oviedo,FC Barcelona,,,2.0,bet_home_refined_ah,1.925,624961.3609728845,0.0,settled,2025-09-26 03:30:00+00:00
 ,Saudi Arabia Professional League,Al Hilal,Al Akhdoud,,,-2.0,bet_home_refined_ah,1.925,116073.67954007903,0.0,settled,2025-09-26 02:00:00+00:00
 ,Saudi Arabia Professional League,Al Hilal,Al Akhdoud,,,-2.0,bet_home_refined_ah,1.925,755833.2683398193,0.0,settled,2025-09-26 02:00:00+00:00
-,Spain La Liga,CA Osasuna,Elche CF,,,0.5,bet_away_refined_ah,1.925,829848.0874364577,767609.4808787234,settled,2025-09-26 01:30:00+00:00
-,Spain La Liga,CA Osasuna,Elche CF,,,0.5,bet_away_refined_ah,1.925,797488.5942991984,737676.9497267585,settled,2025-09-26 01:30:00+00:00
 ,Spain La Liga,CA Osasuna,Elche CF,,,0.5,bet_away_refined_ah,1.925,535518.6895359182,495354.7878207243,settled,2025-09-26 01:30:00+00:00
+,Spain La Liga,CA Osasuna,Elche CF,,,0.5,bet_away_refined_ah,1.925,797488.5942991984,737676.9497267585,settled,2025-09-26 01:30:00+00:00
+,Spain La Liga,CA Osasuna,Elche CF,,,0.5,bet_away_refined_ah,1.925,829848.0874364577,767609.4808787234,settled,2025-09-26 01:30:00+00:00
 ,Saudi Arabia Professional League,Al Khaleej,Al Taawon,,,0.0,bet_home_refined_ah,1.925,482574.27643143985,-482574.27643143985,settled,2025-09-25 23:10:00+00:00
 ,Saudi Arabia Professional League,Al Khaleej,Al Taawon,,,0.0,bet_home_refined_ah,1.925,761538.1509294587,-761538.1509294587,settled,2025-09-25 23:10:00+00:00
 ,Brazil Serie A,Vasco da Gama,Bahia,,,0.0,bet_home_refined_ah,1.925,192891096423.22302,178424264191.48132,settled,2025-09-25 06:30:00+00:00
-,Belgium Pro League,Club Brugge,KVC Westerlo,,,1.5,bet_away_refined_ah,1.925,383862489397.9728,355072802693.1249,settled,2025-09-25 02:30:00+00:00
 ,Belgium Pro League,Club Brugge,KVC Westerlo,,,1.5,bet_away_refined_ah,1.925,1001652035.5742899,926528132.9062182,settled,2025-09-25 02:30:00+00:00
+,Belgium Pro League,Club Brugge,KVC Westerlo,,,1.5,bet_away_refined_ah,1.925,383862489397.9728,355072802693.1249,settled,2025-09-25 02:30:00+00:00
 ,Netherlands Eredivisie,AZ,PEC Zwolle,,,1.5,bet_away_refined_ah,1.925,237626.81055378125,219804.79976224768,settled,2025-09-25 02:00:00+00:00
 ,Spain La Liga,Getafe CF,Deportivo Alavés,,,0.25,bet_away_refined_ah,1.925,383071.5265550823,177170.58103172557,settled,2025-09-25 01:00:00+00:00
 ,Spain La Liga,Getafe CF,Deportivo Alavés,,,0.25,bet_away_refined_ah,1.925,221551.1402193014,102467.40235142689,settled,2025-09-25 01:00:00+00:00
-,Portugal Liga NOS,Benfica,Rio Ave FC,,,-2.0,bet_home_refined_ah,1.925,1048077.3724537111,-1048077.3724537111,settled,2025-09-24 03:15:00+00:00
-,Portugal Liga NOS,Benfica,Rio Ave FC,,,-2.0,bet_home_refined_ah,1.925,558527.9862495706,-558527.9862495706,settled,2025-09-24 03:15:00+00:00
 ,Portugal Liga NOS,Benfica,Rio Ave FC,,,-2.0,bet_home_refined_ah,1.925,259784.0214798974,-259784.0214798974,settled,2025-09-24 03:15:00+00:00
+,Portugal Liga NOS,Benfica,Rio Ave FC,,,-2.0,bet_home_refined_ah,1.925,558527.9862495706,-558527.9862495706,settled,2025-09-24 03:15:00+00:00
+,Portugal Liga NOS,Benfica,Rio Ave FC,,,-2.0,bet_home_refined_ah,1.925,1048077.3724537111,-1048077.3724537111,settled,2025-09-24 03:15:00+00:00
 ,Scotland Premiership,Falkirk,Hibernian,,,-0.25,bet_away_refined_ah,1.925,160657.3639070168,-80328.6819535084,settled,2025-09-24 02:45:00+00:00
-,Scotland Premiership,Falkirk,Hibernian,,,-0.25,bet_away_refined_ah,1.925,154175.48891727353,-77087.74445863676,settled,2025-09-24 02:45:00+00:00
-,Scotland Premiership,Falkirk,Hibernian,,,-0.25,bet_away_refined_ah,1.925,170243.1800368093,-85121.59001840465,settled,2025-09-24 02:45:00+00:00
 ,Scotland Premiership,Falkirk,Hibernian,,,-0.25,bet_away_refined_ah,1.925,108017.18870327799,-54008.594351638996,settled,2025-09-24 02:45:00+00:00
 ,Scotland Premiership,Falkirk,Hibernian,,,-0.25,bet_away_refined_ah,1.925,109457.18522850068,-54728.59261425034,settled,2025-09-24 02:45:00+00:00
-,Spain La Liga,RCD Espanyol,Valencia CF,,,-0.25,bet_home_refined_ah,1.925,469366.5489966355,-234683.27449831774,settled,2025-09-24 01:00:00+00:00
+,Scotland Premiership,Falkirk,Hibernian,,,-0.25,bet_away_refined_ah,1.925,154175.48891727353,-77087.74445863676,settled,2025-09-24 02:45:00+00:00
+,Scotland Premiership,Falkirk,Hibernian,,,-0.25,bet_away_refined_ah,1.925,170243.1800368093,-85121.59001840465,settled,2025-09-24 02:45:00+00:00
 ,Spain La Liga,RCD Espanyol,Valencia CF,,,-0.25,bet_home_refined_ah,1.925,1089118.3317839415,-544559.1658919707,settled,2025-09-24 01:00:00+00:00
 ,Spain La Liga,RCD Espanyol,Valencia CF,,,-0.25,bet_home_refined_ah,1.925,266445.1502357922,-133222.5751178961,settled,2025-09-24 01:00:00+00:00
+,Spain La Liga,RCD Espanyol,Valencia CF,,,-0.25,bet_home_refined_ah,1.925,469366.5489966355,-234683.27449831774,settled,2025-09-24 01:00:00+00:00
 ,Japan J1 League,Kashiwa Reysol,Sanfrecce Hiroshima,,,0.0,bet_away_refined_ah,1.925,266445.1502357922,0.0,settled,2025-09-23 18:00:00+00:00
-,Japan J1 League,Kashiwa Reysol,Sanfrecce Hiroshima,,,0.0,bet_away_refined_ah,1.925,1034860.9859240628,0.0,settled,2025-09-23 18:00:00+00:00
-,Japan J1 League,Kyoto Sanga,Machida Zelvia,,,0.25,bet_home_refined_ah,1.925,1034860.9859240628,478623.2059898791,settled,2025-09-23 18:00:00+00:00
 ,Japan J1 League,Vissel Kobe,Tokyo Verdy,,,0.75,bet_away_refined_ah,1.925,655701.3094137236,606523.7112076944,settled,2025-09-23 18:00:00+00:00
-,Japan J1 League,Tokyo,Avispa Fukuoka,,,-0.25,bet_home_refined_ah,1.925,989114.4429381723,914930.8597178094,settled,2025-09-23 17:00:00+00:00
+,Japan J1 League,Kyoto Sanga,Machida Zelvia,,,0.25,bet_home_refined_ah,1.925,1034860.9859240628,478623.2059898791,settled,2025-09-23 18:00:00+00:00
+,Japan J1 League,Kashiwa Reysol,Sanfrecce Hiroshima,,,0.0,bet_away_refined_ah,1.925,1034860.9859240628,0.0,settled,2025-09-23 18:00:00+00:00
 ,Japan J1 League,Fagiano Okayama,Yokohama,,,0.25,bet_away_refined_ah,1.925,939586.3958510936,434558.70808113075,settled,2025-09-23 17:00:00+00:00
-,Japan J1 League,Kashima Antlers,Cerezo Osaka,,,-0.25,bet_home_refined_ah,1.925,601083.4958491279,556002.2336604432,settled,2025-09-23 17:00:00+00:00
 ,Japan J1 League,Shimizu S-Pulse,Urawa Reds,,,0.0,bet_away_refined_ah,1.925,961314.33125515,0.0,settled,2025-09-23 17:00:00+00:00
-,Japan J1 League,Tokyo,Avispa Fukuoka,,,-0.25,bet_home_refined_ah,1.925,254666.81026121118,235566.79949162033,settled,2025-09-23 17:00:00+00:00
+,Japan J1 League,Kashima Antlers,Cerezo Osaka,,,-0.25,bet_home_refined_ah,1.925,601083.4958491279,556002.2336604432,settled,2025-09-23 17:00:00+00:00
+,Japan J1 League,Tokyo,Avispa Fukuoka,,,-0.25,bet_home_refined_ah,1.925,989114.4429381723,914930.8597178094,settled,2025-09-23 17:00:00+00:00
 ,Japan J1 League,Shimizu S-Pulse,Urawa Reds,,,0.0,bet_away_refined_ah,1.925,254666.81026121118,0.0,settled,2025-09-23 17:00:00+00:00
+,Japan J1 League,Tokyo,Avispa Fukuoka,,,-0.25,bet_home_refined_ah,1.925,254666.81026121118,235566.79949162033,settled,2025-09-23 17:00:00+00:00
 ,Japan J1 League,Albirex Niigata,Nagoya Grampus,,,0.25,bet_home_refined_ah,1.925,918349.5622246485,424736.6725288999,settled,2025-09-23 13:00:00+00:00
 ,Portugal Liga NOS,Sporting CP,Moreirense FC,,,-2.0,bet_home_refined_ah,1.925,463920.23026237165,429126.2129926938,settled,2025-09-23 03:15:00+00:00
 ,Portugal Liga NOS,Sporting CP,Moreirense FC,,,-2.0,bet_home_refined_ah,1.925,75919.0011609772,70225.07607390391,settled,2025-09-23 03:15:00+00:00
 ,England Championship,Millwall,Watford,,,0.5,bet_away_refined_ah,1.925,251016.61808457784,-251016.61808457784,settled,2025-09-23 03:00:00+00:00
 ,Italy Serie A,Napoli,Pisa,,,1.5,bet_away_refined_ah,1.925,239920.30402349136,221926.2812217295,settled,2025-09-23 02:45:00+00:00
-,Italy Serie A,Napoli,Pisa,,,1.5,bet_away_refined_ah,1.925,857245.6406929642,792952.217640992,settled,2025-09-23 02:45:00+00:00
 ,Italy Serie A,Napoli,Pisa,,,1.5,bet_away_refined_ah,1.925,240053.1005567656,222049.1180150082,settled,2025-09-23 02:45:00+00:00
-,France Ligue 1,Olympique Marseille,PSG,,,-0.75,bet_away_refined_ah,1.925,60736.97814640764,-60736.97814640764,settled,2025-09-23 02:00:00+00:00
+,Italy Serie A,Napoli,Pisa,,,1.5,bet_away_refined_ah,1.925,857245.6406929642,792952.217640992,settled,2025-09-23 02:45:00+00:00
 ,France Ligue 1,Olympique Marseille,PSG,,,-0.75,bet_away_refined_ah,1.925,349891.4295345066,-349891.4295345066,settled,2025-09-23 02:00:00+00:00
+,France Ligue 1,Olympique Marseille,PSG,,,-0.75,bet_away_refined_ah,1.925,60736.97814640764,-60736.97814640764,settled,2025-09-23 02:00:00+00:00
+,Denmark Superliga,Randers,Nordsjælland,,,0.0,bet_away_refined_ah,1.925,118875.36372223252,-118875.36372223252,settled,2025-09-23 01:00:00+00:00
 ,Denmark Superliga,Randers,Nordsjælland,,,0.0,bet_away_refined_ah,1.925,180150.8562645853,-180150.8562645853,settled,2025-09-23 01:00:00+00:00
 ,Denmark Superliga,Randers,Nordsjælland,,,0.0,bet_away_refined_ah,1.925,524254.09924200526,-524254.09924200526,settled,2025-09-23 01:00:00+00:00
-,Denmark Superliga,Randers,Nordsjælland,,,0.0,bet_away_refined_ah,1.925,118875.36372223252,-118875.36372223252,settled,2025-09-23 01:00:00+00:00
 ,USA MLS,Los Angeles FC,Real Salt Lake,,,1.0,bet_away_refined_ah,1.925,1106307700890.0317,-1106307700890.0317,settled,2025-09-22 09:00:00+00:00
-,Brazil Serie A,Santos,São Paulo,,,-0.25,bet_home_refined_ah,1.925,786587293493.3552,727593246481.3535,settled,2025-09-22 07:30:00+00:00
 ,Brazil Serie A,Cruzeiro,Bragantino,,,1.0,bet_away_refined_ah,1.925,991007668511.903,0.0,settled,2025-09-22 07:30:00+00:00
+,Brazil Serie A,Santos,São Paulo,,,-0.25,bet_home_refined_ah,1.925,786587293493.3552,727593246481.3535,settled,2025-09-22 07:30:00+00:00
 ,Brazil Serie A,Flamengo,Vasco da Gama,,,1.25,bet_away_refined_ah,1.925,1272214822873.2139,1176798711157.7227,settled,2025-09-22 04:30:00+00:00
-,Portugal Liga NOS,Casa Pia,Famalicão,,,0.25,bet_home_refined_ah,1.925,162590.60661752094,75198.15556060344,settled,2025-09-22 03:30:00+00:00
 ,Portugal Liga NOS,Casa Pia,Famalicão,,,0.25,bet_home_refined_ah,1.925,273011.2760506072,126267.71517340583,settled,2025-09-22 03:30:00+00:00
+,Portugal Liga NOS,Casa Pia,Famalicão,,,0.25,bet_home_refined_ah,1.925,162590.60661752094,75198.15556060344,settled,2025-09-22 03:30:00+00:00
 ,Portugal Liga NOS,Casa Pia,Famalicão,,,0.25,bet_home_refined_ah,1.925,106258.59248397182,49144.59902383697,settled,2025-09-22 03:30:00+00:00
 ,Spain La Liga,FC Barcelona,Getafe CF,,,-1.75,bet_home_refined_ah,1.925,56378.121614103686,52149.76249304591,settled,2025-09-22 03:00:00+00:00
 ,Spain La Liga,FC Barcelona,Getafe CF,,,-1.75,bet_home_refined_ah,1.925,192796.92789730115,178337.1583050036,settled,2025-09-22 03:00:00+00:00
@@ -463,53 +469,53 @@ fixture_id,league,home,away,home_score,away_score,line_betted_on_refined,bet_typ
 ,Italy Serie A,Inter Milan,Sassuolo,,,-1.5,bet_home_refined_ah,1.925,481833732959.93835,-481833732959.93835,settled,2025-09-22 02:45:00+00:00
 ,Israel Israeli Premier League,Hapoel Haifa,Maccabi Haifa,,,0.75,bet_home_refined_ah,1.925,936207863465.6001,865992273705.6802,settled,2025-09-22 01:30:00+00:00
 ,Belgium Pro League,KV Mechelen,Cercle Brugge,,,0.25,bet_away_refined_ah,1.925,750408146894.8151,347063767938.852,settled,2025-09-22 01:15:00+00:00
-,Israel Israeli Premier League,Hapoel Be'er Sheva,Bnei Sakhnin,,,-2.0,bet_home_refined_ah,1.925,1075627734623.7402,-1075627734623.7402,settled,2025-09-22 01:00:00+00:00
 ,Turkey Süper Lig,Kasımpaşa,Fenerbahçe,,,1.25,bet_home_refined_ah,1.925,1580727824217.6963,1462173237401.3691,settled,2025-09-22 01:00:00+00:00
+,Israel Israeli Premier League,Hapoel Be'er Sheva,Bnei Sakhnin,,,-2.0,bet_home_refined_ah,1.925,1075627734623.7402,-1075627734623.7402,settled,2025-09-22 01:00:00+00:00
 ,Belgium Pro League,Club Brugge,Sint-Truiden,,,-1.5,bet_home_refined_ah,1.925,1478415739733.5671,1367534559253.5496,settled,2025-09-22 00:30:00+00:00
-,Italy Serie A,Fiorentina,Como,,,0.25,bet_away_refined_ah,1.925,234330.16875382603,216755.4060972891,settled,2025-09-22 00:00:00+00:00
-,Italy Serie A,Fiorentina,Como,,,0.25,bet_away_refined_ah,1.925,351618.59380556474,325247.1992701474,settled,2025-09-22 00:00:00+00:00
-,Italy Serie A,Fiorentina,Como,,,0.25,bet_away_refined_ah,1.925,616363.1466648619,570135.9106649974,settled,2025-09-22 00:00:00+00:00
 ,Italy Serie A,Fiorentina,Como,,,0.25,bet_away_refined_ah,1.925,1445496866193.5664,1337084601229.0488,settled,2025-09-22 00:00:00+00:00
+,Italy Serie A,Fiorentina,Como,,,0.25,bet_away_refined_ah,1.925,616363.1466648619,570135.9106649974,settled,2025-09-22 00:00:00+00:00
+,Italy Serie A,Fiorentina,Como,,,0.25,bet_away_refined_ah,1.925,234330.16875382603,216755.4060972891,settled,2025-09-22 00:00:00+00:00
 ,Italy Serie A,Fiorentina,Como,,,0.25,bet_away_refined_ah,1.925,230501.57689847206,213213.95863108666,settled,2025-09-22 00:00:00+00:00
+,Italy Serie A,Fiorentina,Como,,,0.25,bet_away_refined_ah,1.925,351618.59380556474,325247.1992701474,settled,2025-09-22 00:00:00+00:00
 ,Germany Bundesliga,Bayer Leverkusen,Borussia M'gladbach,,,1.0,bet_away_refined_ah,1.925,138904.4625989004,128486.62790398285,settled,2025-09-21 23:30:00+00:00
-,Germany Bundesliga,Bayer Leverkusen,Borussia M'gladbach,,,1.0,bet_away_refined_ah,1.925,159868.32333894266,147878.19908852194,settled,2025-09-21 23:30:00+00:00
 ,Germany Bundesliga,Bayer Leverkusen,Borussia M'gladbach,,,1.0,bet_away_refined_ah,1.925,1204239584072.5334,1113921615267.0935,settled,2025-09-21 23:30:00+00:00
+,Germany Bundesliga,Bayer Leverkusen,Borussia M'gladbach,,,1.0,bet_away_refined_ah,1.925,159868.32333894266,147878.19908852194,settled,2025-09-21 23:30:00+00:00
 ,France Ligue 1,Auxerre,Toulouse,,,-0.25,bet_away_refined_ah,1.925,1439656726139.8757,-1439656726139.8757,settled,2025-09-21 23:15:00+00:00
 ,France Ligue 1,Auxerre,Toulouse,,,-0.25,bet_away_refined_ah,1.925,231559.61694441523,-231559.61694441523,settled,2025-09-21 23:15:00+00:00
 ,France Ligue 1,Monaco,Metz,,,-1.5,bet_home_refined_ah,1.925,459833865426.0743,425346325519.1187,settled,2025-09-21 23:15:00+00:00
-,France Ligue 1,Auxerre,Toulouse,,,-0.25,bet_away_refined_ah,1.925,656267.4588238084,-656267.4588238084,settled,2025-09-21 23:15:00+00:00
-,France Ligue 1,Le Havre,Lorient,,,-0.25,bet_home_refined_ah,1.925,283637.56871024024,-141818.78435512012,settled,2025-09-21 23:15:00+00:00
 ,France Ligue 1,Auxerre,Toulouse,,,-0.25,bet_away_refined_ah,1.925,363362.38148459536,-363362.38148459536,settled,2025-09-21 23:15:00+00:00
-,Netherlands Eredivisie,AZ,Feyenoord,,,0.0,bet_away_refined_ah,1.925,611995.378365732,0.0,settled,2025-09-21 22:45:00+00:00
+,France Ligue 1,Le Havre,Lorient,,,-0.25,bet_home_refined_ah,1.925,283637.56871024024,-141818.78435512012,settled,2025-09-21 23:15:00+00:00
+,France Ligue 1,Auxerre,Toulouse,,,-0.25,bet_away_refined_ah,1.925,656267.4588238084,-656267.4588238084,settled,2025-09-21 23:15:00+00:00
 ,Netherlands Eredivisie,AZ,Feyenoord,,,0.0,bet_away_refined_ah,1.925,318453.1800486869,0.0,settled,2025-09-21 22:45:00+00:00
+,Netherlands Eredivisie,AZ,Feyenoord,,,0.0,bet_away_refined_ah,1.925,611995.378365732,0.0,settled,2025-09-21 22:45:00+00:00
 ,Netherlands Eredivisie,AZ,Feyenoord,,,0.0,bet_away_refined_ah,1.925,1106379553442.3152,0.0,settled,2025-09-21 22:45:00+00:00
 ,Netherlands Eredivisie,AZ,Feyenoord,,,0.0,bet_away_refined_ah,1.925,172511.11203030805,0.0,settled,2025-09-21 22:45:00+00:00
 ,Portugal Liga NOS,CD Tondela,Estrela Amadora,,,0.5,bet_away_refined_ah,1.925,298605716956.9559,276210288185.18414,settled,2025-09-21 22:30:00+00:00
-,Spain La Liga,RCD Mallorca,Atlético Madrid,,,-0.75,bet_away_refined_ah,1.925,631557720169.5127,-631557720169.5127,settled,2025-09-21 22:15:00+00:00
 ,Spain La Liga,RCD Mallorca,Atlético Madrid,,,-0.75,bet_away_refined_ah,1.925,81035.56832941098,-81035.56832941098,settled,2025-09-21 22:15:00+00:00
-,Spain La Liga,RCD Mallorca,Atlético Madrid,,,-0.75,bet_away_refined_ah,1.925,222089.09796806547,-222089.09796806547,settled,2025-09-21 22:15:00+00:00
+,Spain La Liga,RCD Mallorca,Atlético Madrid,,,-0.75,bet_away_refined_ah,1.925,631557720169.5127,-631557720169.5127,settled,2025-09-21 22:15:00+00:00
 ,Spain La Liga,RCD Mallorca,Atlético Madrid,,,-0.75,bet_away_refined_ah,1.925,207144.42528244204,-207144.42528244204,settled,2025-09-21 22:15:00+00:00
+,Spain La Liga,RCD Mallorca,Atlético Madrid,,,-0.75,bet_away_refined_ah,1.925,222089.09796806547,-222089.09796806547,settled,2025-09-21 22:15:00+00:00
 ,England Championship,Bristol City,Oxford United,,,0.75,bet_away_refined_ah,1.925,637870.4073808474,590030.1268272839,settled,2025-09-21 22:00:00+00:00
 ,England Championship,Bristol City,Oxford United,,,0.75,bet_away_refined_ah,1.925,357199.1424121552,330409.2067312436,settled,2025-09-21 22:00:00+00:00
 ,England Championship,Bristol City,Oxford United,,,0.75,bet_away_refined_ah,1.925,231843.26696591754,214455.02194347372,settled,2025-09-21 22:00:00+00:00
 ,England Championship,Bristol City,Oxford United,,,0.75,bet_away_refined_ah,1.925,1461422157535.2607,1351815495720.1162,settled,2025-09-21 22:00:00+00:00
 ,Turkey Süper Lig,Kocaelispor,Rizespor,,,0.0,bet_home_refined_ah,1.925,1458283677060.4658,0.0,settled,2025-09-21 22:00:00+00:00
 ,Belgium Pro League,KVC Westerlo,Standard Liège,,,-0.5,bet_home_refined_ah,1.925,1414585105216.0107,-1414585105216.0107,settled,2025-09-21 22:00:00+00:00
-,England Premier League,Sunderland,Aston Villa,,,-0.25,bet_away_refined_ah,1.925,117208.35564887569,-58604.177824437844,settled,2025-09-21 21:00:00+00:00
-,Italy Serie A,Cremonese,Parma,,,0.0,bet_away_refined_ah,1.925,246975.75306587192,0.0,settled,2025-09-21 21:00:00+00:00
-,France Ligue 1,Paris,Strasbourg,,,-0.25,bet_home_refined_ah,1.925,244045.54417465004,-244045.54417465004,settled,2025-09-21 21:00:00+00:00
-,England Premier League,AFC Bournemouth,Newcastle United,,,0.0,bet_home_refined_ah,1.925,244045.54417465004,0.0,settled,2025-09-21 21:00:00+00:00
-,England Premier League,Sunderland,Aston Villa,,,-0.25,bet_away_refined_ah,1.925,1052709903426.9955,-526354951713.49774,settled,2025-09-21 21:00:00+00:00
-,Italy Serie A,Cremonese,Parma,,,0.0,bet_away_refined_ah,1.925,1566042005390.4583,0.0,settled,2025-09-21 21:00:00+00:00
 ,France Ligue 1,Paris,Strasbourg,,,-0.25,bet_home_refined_ah,1.925,1566042005390.4583,-1566042005390.4583,settled,2025-09-21 21:00:00+00:00
+,Italy Serie A,Cremonese,Parma,,,0.0,bet_away_refined_ah,1.925,1566042005390.4583,0.0,settled,2025-09-21 21:00:00+00:00
+,England Premier League,Sunderland,Aston Villa,,,-0.25,bet_away_refined_ah,1.925,117208.35564887569,-58604.177824437844,settled,2025-09-21 21:00:00+00:00
+,England Premier League,Sunderland,Aston Villa,,,-0.25,bet_away_refined_ah,1.925,1052709903426.9955,-526354951713.49774,settled,2025-09-21 21:00:00+00:00
+,England Premier League,AFC Bournemouth,Newcastle United,,,0.0,bet_home_refined_ah,1.925,244045.54417465004,0.0,settled,2025-09-21 21:00:00+00:00
+,France Ligue 1,Paris,Strasbourg,,,-0.25,bet_home_refined_ah,1.925,244045.54417465004,-244045.54417465004,settled,2025-09-21 21:00:00+00:00
+,Italy Serie A,Cremonese,Parma,,,0.0,bet_away_refined_ah,1.925,246975.75306587192,0.0,settled,2025-09-21 21:00:00+00:00
+,Italy Serie A,Cremonese,Parma,,,0.0,bet_away_refined_ah,1.925,661931.9057304162,0.0,settled,2025-09-21 21:00:00+00:00
 ,France Ligue 1,Paris,Strasbourg,,,-0.25,bet_home_refined_ah,1.925,375999.09727595287,-375999.09727595287,settled,2025-09-21 21:00:00+00:00
 ,Italy Serie A,Cremonese,Parma,,,0.0,bet_away_refined_ah,1.925,375999.09727595287,0.0,settled,2025-09-21 21:00:00+00:00
 ,England Premier League,AFC Bournemouth,Newcastle United,,,0.0,bet_home_refined_ah,1.925,375999.09727595287,0.0,settled,2025-09-21 21:00:00+00:00
 ,France Ligue 1,Paris,Strasbourg,,,-0.25,bet_home_refined_ah,1.925,481229.96699137555,-481229.96699137555,settled,2025-09-21 21:00:00+00:00
 ,England Premier League,AFC Bournemouth,Newcastle United,,,0.0,bet_home_refined_ah,1.925,661931.9057304162,0.0,settled,2025-09-21 21:00:00+00:00
-,Italy Serie A,Cremonese,Parma,,,0.0,bet_away_refined_ah,1.925,661931.9057304162,0.0,settled,2025-09-21 21:00:00+00:00
-,Netherlands Eredivisie,PSV,Ajax,,,0.75,bet_away_refined_ah,1.925,261129.66488521826,241544.94001882692,settled,2025-09-21 20:30:00+00:00
 ,Netherlands Eredivisie,PSV,Ajax,,,0.75,bet_away_refined_ah,1.925,225934.94458668493,208989.82374268357,settled,2025-09-21 20:30:00+00:00
+,Netherlands Eredivisie,PSV,Ajax,,,0.75,bet_away_refined_ah,1.925,261129.66488521826,241544.94001882692,settled,2025-09-21 20:30:00+00:00
 ,Netherlands Eredivisie,PSV,Ajax,,,0.75,bet_away_refined_ah,1.925,191698.38265344058,177321.00395443256,settled,2025-09-21 20:30:00+00:00
 ,Austria Bundesliga,Rheindorf Altach,Wattens,,,-0.5,bet_home_refined_ah,1.925,1648465268832.0615,-1648465268832.0615,settled,2025-09-21 20:30:00+00:00
 ,Austria Bundesliga,LASK Linz,Blau-Weiß Linz,,,-0.5,bet_home_refined_ah,1.925,870075743070.1686,804820062339.9059,settled,2025-09-21 20:30:00+00:00
@@ -518,10 +524,10 @@ fixture_id,league,home,away,home_score,away_score,line_betted_on_refined,bet_typ
 ,Belgium Pro League,KRC Genk,Union Saint-Gilloise,,,0.25,bet_home_refined_ah,1.925,710202528297.5704,-710202528297.5704,settled,2025-09-21 19:30:00+00:00
 ,Italy Serie A,Lazio,Roma,,,0.0,bet_away_refined_ah,1.925,1448213355784.7905,1339597354100.9312,settled,2025-09-21 18:30:00+00:00
 ,Italy Serie A,Lazio,Roma,,,0.0,bet_away_refined_ah,1.925,227583.945393692,210515.1494891651,settled,2025-09-21 18:30:00+00:00
-,Italy Serie A,Lazio,Roma,,,0.0,bet_away_refined_ah,1.925,349390.304505442,323186.03166753385,settled,2025-09-21 18:30:00+00:00
 ,Italy Serie A,Lazio,Roma,,,0.0,bet_away_refined_ah,1.925,621127.5113304419,574542.9479806587,settled,2025-09-21 18:30:00+00:00
-,Netherlands Eredivisie,PEC Zwolle,Go Ahead Eagles,,,0.25,bet_away_refined_ah,1.925,333945.33286063746,308899.4328960896,settled,2025-09-21 18:15:00+00:00
+,Italy Serie A,Lazio,Roma,,,0.0,bet_away_refined_ah,1.925,349390.304505442,323186.03166753385,settled,2025-09-21 18:30:00+00:00
 ,Netherlands Eredivisie,PEC Zwolle,Go Ahead Eagles,,,0.25,bet_away_refined_ah,1.925,593670.2617256314,549144.9920962091,settled,2025-09-21 18:15:00+00:00
+,Netherlands Eredivisie,PEC Zwolle,Go Ahead Eagles,,,0.25,bet_away_refined_ah,1.925,333945.33286063746,308899.4328960896,settled,2025-09-21 18:15:00+00:00
 ,Netherlands Eredivisie,PEC Zwolle,Go Ahead Eagles,,,0.25,bet_away_refined_ah,1.925,217523.48424725642,201209.2229287122,settled,2025-09-21 18:15:00+00:00
 ,Netherlands Eredivisie,PEC Zwolle,Go Ahead Eagles,,,0.25,bet_away_refined_ah,1.925,1389132229618.438,1284947312397.0552,settled,2025-09-21 18:15:00+00:00
 ,South Korea K League 1,Pohang Steelers,Jeju United,,,0.5,bet_away_refined_ah,1.925,1322537157753.385,-1322537157753.385,settled,2025-09-21 18:00:00+00:00
@@ -529,88 +535,87 @@ fixture_id,league,home,away,home_score,away_score,line_betted_on_refined,bet_typ
 ,South Korea K League 1,Ulsan,Anyang,,,0.75,bet_away_refined_ah,1.925,406194345301.91846,375729769404.27454,settled,2025-09-21 15:30:00+00:00
 ,USA MLS,LA Galaxy,FC Cincinnati,,,0.0,bet_away_refined_ah,1.925,972480283858.5033,899544262569.1156,settled,2025-09-21 10:30:00+00:00
 ,USA MLS,SJ Earthquakes,St. Louis City,,,0.75,bet_away_refined_ah,1.925,928429241266.9276,858797048171.9081,settled,2025-09-21 10:30:00+00:00
-,USA MLS,Houston Dynamo,Portland Timbers,,,-0.5,bet_home_refined_ah,1.925,717580829614.1055,663762267393.0476,settled,2025-09-21 08:30:00+00:00
 ,USA MLS,Minnesota United,Chicago Fire,,,0.25,bet_away_refined_ah,1.925,1047086733436.6122,968555228428.8663,settled,2025-09-21 08:30:00+00:00
+,USA MLS,Houston Dynamo,Portland Timbers,,,-0.5,bet_home_refined_ah,1.925,717580829614.1055,663762267393.0476,settled,2025-09-21 08:30:00+00:00
 ,USA MLS,FC Dallas,Colorado Rapids,,,-0.25,bet_home_refined_ah,1.925,830086569339.3386,767830076638.8882,settled,2025-09-21 08:30:00+00:00
 ,USA MLS,Montreal Impact,New York RB,,,0.25,bet_home_refined_ah,1.925,699817372496.2487,-699817372496.2487,settled,2025-09-21 07:30:00+00:00
 ,Brazil Serie A,Botafogo,Atlético Mineiro,,,0.75,bet_away_refined_ah,1.925,1165379304683.9502,-582689652341.9751,settled,2025-09-21 05:30:00+00:00
 ,USA MLS,Atlanta United FC,San Diego,,,0.0,bet_home_refined_ah,1.925,1165379304683.9502,0.0,settled,2025-09-21 04:30:00+00:00
 ,Portugal Liga NOS,Vitória Guimarães,Sporting Braga,,,-0.25,bet_away_refined_ah,1.925,101459.63040419407,-50729.81520209704,settled,2025-09-21 03:30:00+00:00
-,Portugal Liga NOS,Vitória Guimarães,Sporting Braga,,,-0.25,bet_away_refined_ah,1.925,82913.3648177005,-41456.68240885025,settled,2025-09-21 03:30:00+00:00
-,Portugal Liga NOS,Vitória Guimarães,Sporting Braga,,,-0.25,bet_away_refined_ah,1.925,673904.3704522465,-336952.18522612326,settled,2025-09-21 03:30:00+00:00
 ,Portugal Liga NOS,Vitória Guimarães,Sporting Braga,,,-0.25,bet_away_refined_ah,1.925,557227.3955245209,-278613.69776226045,settled,2025-09-21 03:30:00+00:00
-,Portugal Liga NOS,Vitória Guimarães,Sporting Braga,,,-0.25,bet_away_refined_ah,1.925,285240.49937183876,-142620.24968591938,settled,2025-09-21 03:30:00+00:00
-,Portugal Liga NOS,Vitória Guimarães,Sporting Braga,,,-0.25,bet_away_refined_ah,1.925,343136.2266028921,-171568.11330144605,settled,2025-09-21 03:30:00+00:00
+,Portugal Liga NOS,Vitória Guimarães,Sporting Braga,,,-0.25,bet_away_refined_ah,1.925,82913.3648177005,-41456.68240885025,settled,2025-09-21 03:30:00+00:00
 ,Portugal Liga NOS,Vitória Guimarães,Sporting Braga,,,-0.25,bet_away_refined_ah,1.925,469117.2890600875,-234558.64453004376,settled,2025-09-21 03:30:00+00:00
-,France Ligue 1,Lens,Lille,,,0.0,bet_away_refined_ah,1.925,219175.53002776092,-219175.53002776092,settled,2025-09-21 03:05:00+00:00
+,Portugal Liga NOS,Vitória Guimarães,Sporting Braga,,,-0.25,bet_away_refined_ah,1.925,343136.2266028921,-171568.11330144605,settled,2025-09-21 03:30:00+00:00
+,Portugal Liga NOS,Vitória Guimarães,Sporting Braga,,,-0.25,bet_away_refined_ah,1.925,285240.49937183876,-142620.24968591938,settled,2025-09-21 03:30:00+00:00
+,Portugal Liga NOS,Vitória Guimarães,Sporting Braga,,,-0.25,bet_away_refined_ah,1.925,673904.3704522465,-336952.18522612326,settled,2025-09-21 03:30:00+00:00
 ,France Ligue 1,Lens,Lille,,,0.0,bet_away_refined_ah,1.925,506110.31295807107,-506110.31295807107,settled,2025-09-21 03:05:00+00:00
 ,France Ligue 1,Lens,Lille,,,0.0,bet_away_refined_ah,1.925,594323.4359351466,-594323.4359351466,settled,2025-09-21 03:05:00+00:00
 ,France Ligue 1,Lens,Lille,,,0.0,bet_away_refined_ah,1.925,293977.39106609026,-293977.39106609026,settled,2025-09-21 03:05:00+00:00
 ,France Ligue 1,Lens,Lille,,,0.0,bet_away_refined_ah,1.925,560469.4094046287,-560469.4094046287,settled,2025-09-21 03:05:00+00:00
-,France Ligue 1,Lens,Lille,,,0.0,bet_away_refined_ah,1.925,141815.21937341423,-141815.21937341423,settled,2025-09-21 03:05:00+00:00
+,France Ligue 1,Lens,Lille,,,0.0,bet_away_refined_ah,1.925,219175.53002776092,-219175.53002776092,settled,2025-09-21 03:05:00+00:00
 ,France Ligue 1,Lens,Lille,,,0.0,bet_away_refined_ah,1.925,122282.36504223096,-122282.36504223096,settled,2025-09-21 03:05:00+00:00
+,France Ligue 1,Lens,Lille,,,0.0,bet_away_refined_ah,1.925,141815.21937341423,-141815.21937341423,settled,2025-09-21 03:05:00+00:00
 ,Netherlands Eredivisie,NAC Breda,Heracles,,,-0.25,bet_home_refined_ah,1.925,146909.16840359208,135890.9807733227,settled,2025-09-21 03:00:00+00:00
 ,Spain La Liga,Valencia CF,Athletic Club Bilbao,,,0.25,bet_home_refined_ah,1.925,265961997404.00247,246014847598.7023,settled,2025-09-21 03:00:00+00:00
 ,Netherlands Eredivisie,NAC Breda,Heracles,,,-0.25,bet_home_refined_ah,1.925,526741.0473487143,487235.4687975608,settled,2025-09-21 03:00:00+00:00
 ,Belgium Pro League,RSC Anderlecht,Royal Antwerp FC,,,-1.0,bet_home_refined_ah,1.925,816880820086.2122,-816880820086.2122,settled,2025-09-21 02:45:00+00:00
-,Italy Serie A,Udinese,AC Milan,,,-0.75,bet_away_refined_ah,1.925,326287.48498128896,301815.9236076923,settled,2025-09-21 02:45:00+00:00
 ,Italy Serie A,Udinese,AC Milan,,,-0.75,bet_away_refined_ah,1.925,39864.66341673892,36874.81366048351,settled,2025-09-21 02:45:00+00:00
+,Italy Serie A,Udinese,AC Milan,,,-0.75,bet_away_refined_ah,1.925,326287.48498128896,301815.9236076923,settled,2025-09-21 02:45:00+00:00
 ,Netherlands Eredivisie,Fortuna Sittard,Utrecht,,,-0.5,bet_away_refined_ah,1.925,1256760635061.3953,-1256760635061.3953,settled,2025-09-21 02:00:00+00:00
-,Portugal Liga NOS,AVS,Benfica,,,2.0,bet_home_refined_ah,1.925,527597.785012601,-527597.785012601,settled,2025-09-21 01:00:00+00:00
-,France Ligue 1,Brest,Nice,,,0.0,bet_away_refined_ah,1.925,581493.3336722986,-581493.3336722986,settled,2025-09-21 01:00:00+00:00
-,France Ligue 1,Brest,Nice,,,0.0,bet_away_refined_ah,1.925,367348.0693258651,-367348.0693258651,settled,2025-09-21 01:00:00+00:00
 ,France Ligue 1,Brest,Nice,,,0.0,bet_away_refined_ah,1.925,519500.26898416504,-519500.26898416504,settled,2025-09-21 01:00:00+00:00
-,Portugal Liga NOS,AVS,Benfica,,,2.0,bet_home_refined_ah,1.925,924443.6200562529,-924443.6200562529,settled,2025-09-21 01:00:00+00:00
-,France Ligue 1,Brest,Nice,,,0.0,bet_away_refined_ah,1.925,894544160899.5232,-894544160899.5232,settled,2025-09-21 01:00:00+00:00
-,France Ligue 1,Brest,Nice,,,0.0,bet_away_refined_ah,1.925,101849.78651652517,-101849.78651652517,settled,2025-09-21 01:00:00+00:00
-,France Ligue 1,Brest,Nice,,,0.0,bet_away_refined_ah,1.925,500955.5020063515,-500955.5020063515,settled,2025-09-21 01:00:00+00:00
-,France Ligue 1,Brest,Nice,,,0.0,bet_away_refined_ah,1.925,550718.6100632458,-550718.6100632458,settled,2025-09-21 01:00:00+00:00
 ,France Ligue 1,Brest,Nice,,,0.0,bet_away_refined_ah,1.925,239106.03786950736,-239106.03786950736,settled,2025-09-21 01:00:00+00:00
-,Israel Israeli Premier League,Beitar Jerusalem,Ironi Kiryat Shmona,,,1.0,bet_away_refined_ah,1.925,1345233724760.1904,0.0,settled,2025-09-21 01:00:00+00:00
+,France Ligue 1,Brest,Nice,,,0.0,bet_away_refined_ah,1.925,894544160899.5232,-894544160899.5232,settled,2025-09-21 01:00:00+00:00
 ,Israel Israeli Premier League,Maccabi Tel Aviv,Hapoel Katamon,,,-2.0,bet_home_refined_ah,1.925,874917633076.3768,-874917633076.3768,settled,2025-09-21 01:00:00+00:00
-,Israel Israeli Premier League,Ashdod,Hapoel Tel Aviv,,,-0.75,bet_away_refined_ah,1.925,590896787586.9752,546579528517.952,settled,2025-09-21 00:45:00+00:00
+,Israel Israeli Premier League,Beitar Jerusalem,Ironi Kiryat Shmona,,,1.0,bet_away_refined_ah,1.925,1345233724760.1904,0.0,settled,2025-09-21 01:00:00+00:00
+,France Ligue 1,Brest,Nice,,,0.0,bet_away_refined_ah,1.925,550718.6100632458,-550718.6100632458,settled,2025-09-21 01:00:00+00:00
+,France Ligue 1,Brest,Nice,,,0.0,bet_away_refined_ah,1.925,500955.5020063515,-500955.5020063515,settled,2025-09-21 01:00:00+00:00
+,France Ligue 1,Brest,Nice,,,0.0,bet_away_refined_ah,1.925,101849.78651652517,-101849.78651652517,settled,2025-09-21 01:00:00+00:00
+,Portugal Liga NOS,AVS,Benfica,,,2.0,bet_home_refined_ah,1.925,924443.6200562529,-924443.6200562529,settled,2025-09-21 01:00:00+00:00
+,France Ligue 1,Brest,Nice,,,0.0,bet_away_refined_ah,1.925,367348.0693258651,-367348.0693258651,settled,2025-09-21 01:00:00+00:00
+,France Ligue 1,Brest,Nice,,,0.0,bet_away_refined_ah,1.925,581493.3336722986,-581493.3336722986,settled,2025-09-21 01:00:00+00:00
+,Portugal Liga NOS,AVS,Benfica,,,2.0,bet_home_refined_ah,1.925,527597.785012601,-527597.785012601,settled,2025-09-21 01:00:00+00:00
 ,Israel Israeli Premier League,Maccabi Bnei Raina,Hapoel Petah Tikva,,,-0.25,bet_away_refined_ah,1.925,1015899560368.5895,939707093340.9452,settled,2025-09-21 00:45:00+00:00
-,England Premier League,Manchester United,Chelsea,,,0.0,bet_home_refined_ah,1.925,702683019472.0024,649981793011.6023,settled,2025-09-21 00:30:00+00:00
+,Israel Israeli Premier League,Ashdod,Hapoel Tel Aviv,,,-0.75,bet_away_refined_ah,1.925,590896787586.9752,546579528517.952,settled,2025-09-21 00:45:00+00:00
+,England Premier League,Manchester United,Chelsea,,,0.0,bet_home_refined_ah,1.925,454782.71720297076,420674.013412748,settled,2025-09-21 00:30:00+00:00
 ,England Premier League,Manchester United,Chelsea,,,0.0,bet_home_refined_ah,1.925,589389.8111382545,545185.5753028855,settled,2025-09-21 00:30:00+00:00
 ,England Premier League,Manchester United,Chelsea,,,0.0,bet_home_refined_ah,1.925,296967.87310687854,274695.2826238627,settled,2025-09-21 00:30:00+00:00
-,England Premier League,Manchester United,Chelsea,,,0.0,bet_home_refined_ah,1.925,140577.03943591518,130033.76147822157,settled,2025-09-21 00:30:00+00:00
+,England Premier League,Manchester United,Chelsea,,,0.0,bet_home_refined_ah,1.925,702683019472.0024,649981793011.6023,settled,2025-09-21 00:30:00+00:00
 ,Spain La Liga,Villarreal,CA Osasuna,,,-1.0,bet_home_refined_ah,1.925,120332.65680546883,0.0,settled,2025-09-21 00:30:00+00:00
-,Spain La Liga,Deportivo Alavés,Sevilla FC,,,0.25,bet_away_refined_ah,1.925,80259.6069926626,74240.1364682129,settled,2025-09-21 00:30:00+00:00
 ,England Premier League,Manchester United,Chelsea,,,0.0,bet_home_refined_ah,1.925,512541.0822592058,474100.5010897654,settled,2025-09-21 00:30:00+00:00
-,England Premier League,Manchester United,Chelsea,,,0.0,bet_home_refined_ah,1.925,454782.71720297076,420674.013412748,settled,2025-09-21 00:30:00+00:00
+,Spain La Liga,Deportivo Alavés,Sevilla FC,,,0.25,bet_away_refined_ah,1.925,80259.6069926626,74240.1364682129,settled,2025-09-21 00:30:00+00:00
+,England Premier League,Manchester United,Chelsea,,,0.0,bet_home_refined_ah,1.925,140577.03943591518,130033.76147822157,settled,2025-09-21 00:30:00+00:00
 ,Belgium Pro League,Sporting Charleroi,Zulte-Waregem,,,0.75,bet_away_refined_ah,1.925,1183675320446.0361,1094899671412.5835,settled,2025-09-21 00:15:00+00:00
-,Italy Serie A,Hellas Verona,Juventus,,,1.0,bet_home_refined_ah,1.925,222437.63361860134,205754.81109720623,settled,2025-09-21 00:00:00+00:00
-,Italy Serie A,Hellas Verona,Juventus,,,1.0,bet_home_refined_ah,1.925,846131811595.3812,782671925725.7277,settled,2025-09-21 00:00:00+00:00
 ,Italy Serie A,Hellas Verona,Juventus,,,1.0,bet_home_refined_ah,1.925,483105.5841454101,446872.66533450433,settled,2025-09-21 00:00:00+00:00
-,Italy Serie A,Hellas Verona,Juventus,,,1.0,bet_home_refined_ah,1.925,295305.66061546275,273157.73606930306,settled,2025-09-21 00:00:00+00:00
 ,Italy Serie A,Hellas Verona,Juventus,,,1.0,bet_home_refined_ah,1.925,908404.906576307,840274.538583084,settled,2025-09-21 00:00:00+00:00
 ,Italy Serie A,Hellas Verona,Juventus,,,1.0,bet_home_refined_ah,1.925,147075.9261074549,136045.2316493958,settled,2025-09-21 00:00:00+00:00
 ,Italy Serie A,Hellas Verona,Juventus,,,1.0,bet_home_refined_ah,1.925,278618.9408997232,257722.520332244,settled,2025-09-21 00:00:00+00:00
 ,Italy Serie A,Hellas Verona,Juventus,,,1.0,bet_home_refined_ah,1.925,621669.3901067793,575044.1858487709,settled,2025-09-21 00:00:00+00:00
 ,Denmark Superliga,Midtjylland,Viborg,,,-1.0,bet_home_refined_ah,1.925,165672.8886470048,153247.42199847946,settled,2025-09-21 00:00:00+00:00
+,Italy Serie A,Hellas Verona,Juventus,,,1.0,bet_home_refined_ah,1.925,846131811595.3812,782671925725.7277,settled,2025-09-21 00:00:00+00:00
 ,Denmark Superliga,Midtjylland,Viborg,,,-1.0,bet_home_refined_ah,1.925,1131350366017.7168,1046499088566.3882,settled,2025-09-21 00:00:00+00:00
-,Saudi Arabia Professional League,Al Najma,Al Ittihad,,,1.25,bet_home_refined_ah,1.925,143751.6687672131,66485.14680483607,settled,2025-09-20 23:40:00+00:00
+,Italy Serie A,Hellas Verona,Juventus,,,1.0,bet_home_refined_ah,1.925,222437.63361860134,205754.81109720623,settled,2025-09-21 00:00:00+00:00
+,Italy Serie A,Hellas Verona,Juventus,,,1.0,bet_home_refined_ah,1.925,295305.66061546275,273157.73606930306,settled,2025-09-21 00:00:00+00:00
+,Saudi Arabia Professional League,Al Hazm,Al Fateh,,,0.0,bet_away_refined_ah,1.925,79657.38116451437,0.0,settled,2025-09-20 23:40:00+00:00
 ,Saudi Arabia Professional League,Al Hazm,Al Fateh,,,0.0,bet_away_refined_ah,1.925,908404.906576307,0.0,settled,2025-09-20 23:40:00+00:00
 ,Saudi Arabia Professional League,Al Najma,Al Ittihad,,,1.25,bet_home_refined_ah,1.925,321908.6634132927,148882.75682864792,settled,2025-09-20 23:40:00+00:00
 ,Saudi Arabia Professional League,Al Hazm,Al Fateh,,,0.0,bet_away_refined_ah,1.925,208205.66912044294,0.0,settled,2025-09-20 23:40:00+00:00
 ,Saudi Arabia Professional League,Al Najma,Al Ittihad,,,1.25,bet_home_refined_ah,1.925,607618.2187970964,281023.42619365716,settled,2025-09-20 23:40:00+00:00
 ,Saudi Arabia Professional League,Al Hazm,Al Fateh,,,0.0,bet_away_refined_ah,1.925,288646.9603402158,0.0,settled,2025-09-20 23:40:00+00:00
-,Saudi Arabia Professional League,Al Hazm,Al Fateh,,,0.0,bet_away_refined_ah,1.925,79657.38116451437,0.0,settled,2025-09-20 23:40:00+00:00
+,Saudi Arabia Professional League,Al Najma,Al Ittihad,,,1.25,bet_home_refined_ah,1.925,143751.6687672131,66485.14680483607,settled,2025-09-20 23:40:00+00:00
 ,Saudi Arabia Professional League,Al Najma,Al Ittihad,,,1.25,bet_home_refined_ah,1.925,887872.8469896708,410641.1917327228,settled,2025-09-20 23:40:00+00:00
 ,Saudi Arabia Professional League,Al Hazm,Al Fateh,,,0.0,bet_away_refined_ah,1.925,339236.4429573095,0.0,settled,2025-09-20 23:40:00+00:00
 ,Saudi Arabia Professional League,Al Hazm,Al Fateh,,,0.0,bet_away_refined_ah,1.925,247437.70698306581,0.0,settled,2025-09-20 23:40:00+00:00
 ,Saudi Arabia Professional League,Al Najma,Al Ittihad,,,1.25,bet_home_refined_ah,1.925,523349.9340846228,242049.34451413807,settled,2025-09-20 23:40:00+00:00
-,France Ligue 1,Nantes,Rennes,,,0.5,bet_home_refined_ah,1.925,95856.91049185104,88667.6422049622,settled,2025-09-20 23:00:00+00:00
 ,France Ligue 1,Nantes,Rennes,,,0.5,bet_home_refined_ah,1.925,390131.86439103633,360871.97456170863,settled,2025-09-20 23:00:00+00:00
+,France Ligue 1,Nantes,Rennes,,,0.5,bet_home_refined_ah,1.925,95856.91049185104,88667.6422049622,settled,2025-09-20 23:00:00+00:00
 ,France Ligue 1,Nantes,Rennes,,,0.5,bet_home_refined_ah,1.925,422155.15598666546,390493.51928766555,settled,2025-09-20 23:00:00+00:00
 ,France Ligue 1,Nantes,Rennes,,,0.5,bet_home_refined_ah,1.925,690339.389323414,638563.935124158,settled,2025-09-20 23:00:00+00:00
 ,Netherlands Eredivisie,Volendam,Excelsior,,,0.25,bet_away_refined_ah,1.925,157686.6511101791,145860.1522769157,settled,2025-09-20 22:30:00+00:00
 ,Portugal Liga NOS,Santa Clara,Alverca,,,-0.75,bet_home_refined_ah,1.925,142157.81634770677,65747.9900608144,settled,2025-09-20 22:30:00+00:00
-,Spain La Liga,Real Madrid,RCD Espanyol,,,2.0,bet_away_refined_ah,1.925,390327.90968302183,0.0,settled,2025-09-20 22:15:00+00:00
-,Spain La Liga,Real Madrid,RCD Espanyol,,,2.0,bet_away_refined_ah,1.925,291411.57606611185,0.0,settled,2025-09-20 22:15:00+00:00
-,Spain La Liga,Real Madrid,RCD Espanyol,,,2.0,bet_away_refined_ah,1.925,406238.75382431893,0.0,settled,2025-09-20 22:15:00+00:00
 ,Spain La Liga,Real Madrid,RCD Espanyol,,,2.0,bet_away_refined_ah,1.925,125986.52587955768,0.0,settled,2025-09-20 22:15:00+00:00
-,England Premier League,West Ham United,Crystal Palace,,,-0.25,bet_away_refined_ah,1.925,224095.26149596195,207288.11688376483,settled,2025-09-20 22:00:00+00:00
+,Spain La Liga,Real Madrid,RCD Espanyol,,,2.0,bet_away_refined_ah,1.925,406238.75382431893,0.0,settled,2025-09-20 22:15:00+00:00
+,Spain La Liga,Real Madrid,RCD Espanyol,,,2.0,bet_away_refined_ah,1.925,291411.57606611185,0.0,settled,2025-09-20 22:15:00+00:00
+,Spain La Liga,Real Madrid,RCD Espanyol,,,2.0,bet_away_refined_ah,1.925,390327.90968302183,0.0,settled,2025-09-20 22:15:00+00:00
 ,England Championship,Derby County,Preston North End,,,0.25,bet_away_refined_ah,1.925,548880.5800463497,507714.53654287336,settled,2025-09-20 22:00:00+00:00
 ,England Championship,Blackburn Rovers,Ipswich Town,,,0.5,bet_home_refined_ah,1.925,589411.9362935841,545206.0410715654,settled,2025-09-20 22:00:00+00:00
 ,England Premier League,Wolverhampton Wanderers,Leeds United,,,0.0,bet_home_refined_ah,1.925,405812.79929542873,-405812.79929542873,settled,2025-09-20 22:00:00+00:00
@@ -651,6 +656,7 @@ fixture_id,league,home,away,home_score,away_score,line_betted_on_refined,bet_typ
 ,England Championship,Sheffield United,Charlton Athletic,,,0.5,bet_away_refined_ah,1.925,339163.58712929103,313726.3180945942,settled,2025-09-20 22:00:00+00:00
 ,England Championship,Sheffield United,Charlton Athletic,,,0.5,bet_away_refined_ah,1.925,265308.5331369404,245410.39315166988,settled,2025-09-20 22:00:00+00:00
 ,Scotland Premiership,Dundee,Livingston,,,0.0,bet_home_refined_ah,1.925,79821.51337521507,0.0,settled,2025-09-20 22:00:00+00:00
+,England Premier League,West Ham United,Crystal Palace,,,-0.25,bet_away_refined_ah,1.925,224095.26149596195,207288.11688376483,settled,2025-09-20 22:00:00+00:00
 ,Scotland Premiership,Dundee,Livingston,,,0.0,bet_home_refined_ah,1.925,152264.86867724257,0.0,settled,2025-09-20 22:00:00+00:00
 ,England Premier League,Brighton & Hove Albion,Tottenham Hotspur,,,-0.25,bet_home_refined_ah,1.925,107700.30036420365,-53850.150182101825,settled,2025-09-20 22:00:00+00:00
 ,England Premier League,Wolverhampton Wanderers,Leeds United,,,0.0,bet_home_refined_ah,1.925,417308.3048237252,-417308.3048237252,settled,2025-09-20 22:00:00+00:00
@@ -664,76 +670,76 @@ fixture_id,league,home,away,home_score,away_score,line_betted_on_refined,bet_typ
 ,England Championship,Norwich City,Wrexham,,,0.5,bet_away_refined_ah,1.925,345324.02551421226,319424.7236006463,settled,2025-09-20 22:00:00+00:00
 ,England Championship,Portsmouth,Sheffield Wednesday,,,1.0,bet_away_refined_ah,1.925,481772.89301709656,445639.9260408144,settled,2025-09-20 22:00:00+00:00
 ,Germany Bundesliga,Hamburger SV,Heidenheim,,,0.5,bet_away_refined_ah,1.925,532022.2441737447,-532022.2441737447,settled,2025-09-20 21:30:00+00:00
-,Germany Bundesliga,Werder Bremen,Freiburg,,,0.25,bet_away_refined_ah,1.925,187463.7083393072,173403.93021385916,settled,2025-09-20 21:30:00+00:00
-,Germany Bundesliga,Hoffenheim,Bayern München,,,1.75,bet_home_refined_ah,1.925,126324.68542537236,-126324.68542537236,settled,2025-09-20 21:30:00+00:00
-,Germany Bundesliga,Hamburger SV,Heidenheim,,,0.5,bet_away_refined_ah,1.925,75647.01017625626,-75647.01017625626,settled,2025-09-20 21:30:00+00:00
-,Germany Bundesliga,Hamburger SV,Heidenheim,,,0.5,bet_away_refined_ah,1.925,484186.84931332583,-484186.84931332583,settled,2025-09-20 21:30:00+00:00
-,Germany Bundesliga,Hamburger SV,Heidenheim,,,0.5,bet_away_refined_ah,1.925,341738.10068637505,-341738.10068637505,settled,2025-09-20 21:30:00+00:00
 ,Germany Bundesliga,Hoffenheim,Bayern München,,,1.75,bet_home_refined_ah,1.925,138994.1241605869,-138994.1241605869,settled,2025-09-20 21:30:00+00:00
-,Spain La Liga,Girona FC,Levante UD,,,0.75,bet_away_refined_ah,1.925,398638.8104441407,368740.89966083015,settled,2025-09-20 20:00:00+00:00
+,Germany Bundesliga,Hamburger SV,Heidenheim,,,0.5,bet_away_refined_ah,1.925,341738.10068637505,-341738.10068637505,settled,2025-09-20 21:30:00+00:00
+,Germany Bundesliga,Hamburger SV,Heidenheim,,,0.5,bet_away_refined_ah,1.925,484186.84931332583,-484186.84931332583,settled,2025-09-20 21:30:00+00:00
+,Germany Bundesliga,Hamburger SV,Heidenheim,,,0.5,bet_away_refined_ah,1.925,75647.01017625626,-75647.01017625626,settled,2025-09-20 21:30:00+00:00
+,Germany Bundesliga,Hoffenheim,Bayern München,,,1.75,bet_home_refined_ah,1.925,126324.68542537236,-126324.68542537236,settled,2025-09-20 21:30:00+00:00
+,Germany Bundesliga,Werder Bremen,Freiburg,,,0.25,bet_away_refined_ah,1.925,187463.7083393072,173403.93021385916,settled,2025-09-20 21:30:00+00:00
 ,Spain La Liga,Girona FC,Levante UD,,,0.75,bet_away_refined_ah,1.925,705061.2374862946,652181.6446748226,settled,2025-09-20 20:00:00+00:00
 ,Spain La Liga,Girona FC,Levante UD,,,0.75,bet_away_refined_ah,1.925,124355.58990125226,115028.92065865833,settled,2025-09-20 20:00:00+00:00
 ,Spain La Liga,Girona FC,Levante UD,,,0.75,bet_away_refined_ah,1.925,508503.9370836269,470366.1418023549,settled,2025-09-20 20:00:00+00:00
 ,Spain La Liga,Girona FC,Levante UD,,,0.75,bet_away_refined_ah,1.925,253580.43788476978,234561.9050434121,settled,2025-09-20 20:00:00+00:00
+,Spain La Liga,Girona FC,Levante UD,,,0.75,bet_away_refined_ah,1.925,398638.8104441407,368740.89966083015,settled,2025-09-20 20:00:00+00:00
 ,Spain La Liga,Girona FC,Levante UD,,,0.75,bet_away_refined_ah,1.925,420291.5722232788,388769.70430653286,settled,2025-09-20 20:00:00+00:00
-,England Championship,Queens Park Rangers,Stoke City,,,0.0,bet_home_refined_ah,1.925,324240.79173517623,299922.73235503805,settled,2025-09-20 19:30:00+00:00
 ,England Championship,Queens Park Rangers,Stoke City,,,0.0,bet_home_refined_ah,1.925,250089.67718540647,231332.951396501,settled,2025-09-20 19:30:00+00:00
 ,England Championship,Queens Park Rangers,Stoke City,,,0.0,bet_home_refined_ah,1.925,361896.4971344854,334754.259849399,settled,2025-09-20 19:30:00+00:00
 ,England Championship,Queens Park Rangers,Stoke City,,,0.0,bet_home_refined_ah,1.925,180829.2415406359,167267.0484250882,settled,2025-09-20 19:30:00+00:00
 ,England Championship,Queens Park Rangers,Stoke City,,,0.0,bet_home_refined_ah,1.925,435886.6255198073,403195.1286058217,settled,2025-09-20 19:30:00+00:00
 ,England Championship,Queens Park Rangers,Stoke City,,,0.0,bet_home_refined_ah,1.925,107658.99951943236,99584.57455547493,settled,2025-09-20 19:30:00+00:00
-,Japan J1 League,Urawa Reds,Kashima Antlers,,,0.0,bet_away_refined_ah,1.925,227543.3593195703,0.0,settled,2025-09-20 18:00:00+00:00
-,Japan J1 League,Yokohama F. Marinos,Avispa Fukuoka,,,0.0,bet_away_refined_ah,1.925,458929.04494786053,0.0,settled,2025-09-20 18:00:00+00:00
-,Japan J1 League,Kawasaki Frontale,Tokyo,,,0.5,bet_away_refined_ah,1.925,423992.6405708036,392193.1925279934,settled,2025-09-20 18:00:00+00:00
+,England Championship,Queens Park Rangers,Stoke City,,,0.0,bet_home_refined_ah,1.925,324240.79173517623,299922.73235503805,settled,2025-09-20 19:30:00+00:00
 ,Japan J1 League,Urawa Reds,Kashima Antlers,,,0.0,bet_away_refined_ah,1.925,385107.4188302534,0.0,settled,2025-09-20 18:00:00+00:00
 ,Japan J1 League,Kyoto Sanga,Shimizu S-Pulse,,,0.5,bet_away_refined_ah,1.925,573491.8763664579,530479.9856389735,settled,2025-09-20 18:00:00+00:00
+,Japan J1 League,Yokohama F. Marinos,Avispa Fukuoka,,,0.0,bet_away_refined_ah,1.925,458929.04494786053,0.0,settled,2025-09-20 18:00:00+00:00
+,Japan J1 League,Kawasaki Frontale,Tokyo,,,0.5,bet_away_refined_ah,1.925,423992.6405708036,392193.1925279934,settled,2025-09-20 18:00:00+00:00
 ,Japan J1 League,Urawa Reds,Kashima Antlers,,,0.0,bet_away_refined_ah,1.925,109055.45513864624,0.0,settled,2025-09-20 18:00:00+00:00
 ,Japan J1 League,Kawasaki Frontale,Tokyo,,,0.5,bet_away_refined_ah,1.925,109055.45513864624,100876.29600324779,settled,2025-09-20 18:00:00+00:00
 ,Japan J1 League,Yokohama F. Marinos,Avispa Fukuoka,,,0.0,bet_away_refined_ah,1.925,114099.26993880862,0.0,settled,2025-09-20 18:00:00+00:00
 ,Japan J1 League,Kyoto Sanga,Shimizu S-Pulse,,,0.5,bet_away_refined_ah,1.925,114099.26993880862,105541.82469339798,settled,2025-09-20 18:00:00+00:00
 ,Japan J1 League,Yokohama F. Marinos,Avispa Fukuoka,,,0.0,bet_away_refined_ah,1.925,401481.7642397247,0.0,settled,2025-09-20 18:00:00+00:00
 ,Japan J1 League,Urawa Reds,Kashima Antlers,,,0.0,bet_away_refined_ah,1.925,112727.16836673695,0.0,settled,2025-09-20 18:00:00+00:00
+,Japan J1 League,Urawa Reds,Kashima Antlers,,,0.0,bet_away_refined_ah,1.925,227543.3593195703,0.0,settled,2025-09-20 18:00:00+00:00
 ,Japan J1 League,Urawa Reds,Kashima Antlers,,,0.0,bet_away_refined_ah,1.925,344070.17780521244,0.0,settled,2025-09-20 18:00:00+00:00
 ,Japan J1 League,Yokohama F. Marinos,Avispa Fukuoka,,,0.0,bet_away_refined_ah,1.925,152192.42577359124,0.0,settled,2025-09-20 18:00:00+00:00
 ,Japan J1 League,Urawa Reds,Kashima Antlers,,,0.0,bet_away_refined_ah,1.925,408724.92465345375,0.0,settled,2025-09-20 18:00:00+00:00
 ,Japan J1 League,Yokohama F. Marinos,Avispa Fukuoka,,,0.0,bet_away_refined_ah,1.925,310069.3006024503,0.0,settled,2025-09-20 18:00:00+00:00
 ,Japan J1 League,Yokohama F. Marinos,Avispa Fukuoka,,,0.0,bet_away_refined_ah,1.925,112727.16836673695,0.0,settled,2025-09-20 18:00:00+00:00
-,Japan J1 League,Cerezo Osaka,Kashiwa Reysol,,,-0.25,bet_away_refined_ah,1.925,229718.73260993414,-114859.36630496707,settled,2025-09-20 17:30:00+00:00
 ,Japan J1 League,Cerezo Osaka,Kashiwa Reysol,,,-0.25,bet_away_refined_ah,1.925,419205.0509266192,-209602.5254633096,settled,2025-09-20 17:30:00+00:00
-,Japan J1 League,Yokohama,Albirex Niigata,,,0.0,bet_away_refined_ah,1.925,419205.0509266192,0.0,settled,2025-09-20 17:00:00+00:00
+,Japan J1 League,Cerezo Osaka,Kashiwa Reysol,,,-0.25,bet_away_refined_ah,1.925,229718.73260993414,-114859.36630496707,settled,2025-09-20 17:30:00+00:00
+,Japan J1 League,Yokohama,Albirex Niigata,,,0.0,bet_away_refined_ah,1.925,152192.42577359124,0.0,settled,2025-09-20 17:00:00+00:00
 ,Japan J1 League,Yokohama,Albirex Niigata,,,0.0,bet_away_refined_ah,1.925,112727.16836673695,0.0,settled,2025-09-20 17:00:00+00:00
 ,Japan J1 League,Yokohama,Albirex Niigata,,,0.0,bet_away_refined_ah,1.925,95326.91725580336,0.0,settled,2025-09-20 17:00:00+00:00
-,Japan J1 League,Yokohama,Albirex Niigata,,,0.0,bet_away_refined_ah,1.925,152192.42577359124,0.0,settled,2025-09-20 17:00:00+00:00
-,Japan J1 League,Nagoya Grampus,Shonan Bellmare,,,0.75,bet_away_refined_ah,1.925,76724.57374554747,70970.23071463141,settled,2025-09-20 16:00:00+00:00
-,Japan J1 League,Nagoya Grampus,Shonan Bellmare,,,0.75,bet_away_refined_ah,1.925,428974.76713467867,396801.6595995778,settled,2025-09-20 16:00:00+00:00
+,Japan J1 League,Yokohama,Albirex Niigata,,,0.0,bet_away_refined_ah,1.925,419205.0509266192,0.0,settled,2025-09-20 17:00:00+00:00
 ,Japan J1 League,Nagoya Grampus,Shonan Bellmare,,,0.75,bet_away_refined_ah,1.925,384990.791611384,356116.4822405302,settled,2025-09-20 16:00:00+00:00
+,Japan J1 League,Nagoya Grampus,Shonan Bellmare,,,0.75,bet_away_refined_ah,1.925,428974.76713467867,396801.6595995778,settled,2025-09-20 16:00:00+00:00
+,Japan J1 League,Nagoya Grampus,Shonan Bellmare,,,0.75,bet_away_refined_ah,1.925,76724.57374554747,70970.23071463141,settled,2025-09-20 16:00:00+00:00
 ,Japan J1 League,Nagoya Grampus,Shonan Bellmare,,,0.75,bet_away_refined_ah,1.925,177167.9602859039,163880.3632644611,settled,2025-09-20 16:00:00+00:00
 ,Portugal Liga NOS,Rio Ave FC,Porto,,,-1.5,bet_away_refined_ah,1.925,185293.92957383735,171396.88485579958,settled,2025-09-20 03:15:00+00:00
-,England Championship,Middlesbrough,West Bromwich Albion,,,0.5,bet_away_refined_ah,1.925,520091.73575640447,-520091.73575640447,settled,2025-09-20 03:00:00+00:00
-,England Championship,Middlesbrough,West Bromwich Albion,,,0.5,bet_away_refined_ah,1.925,656938.2726107532,-656938.2726107532,settled,2025-09-20 03:00:00+00:00
-,England Championship,Middlesbrough,West Bromwich Albion,,,0.5,bet_away_refined_ah,1.925,111059.94063464702,-111059.94063464702,settled,2025-09-20 03:00:00+00:00
-,England Championship,Middlesbrough,West Bromwich Albion,,,0.5,bet_away_refined_ah,1.925,422525.50191009766,-422525.50191009766,settled,2025-09-20 03:00:00+00:00
 ,England Championship,Middlesbrough,West Bromwich Albion,,,0.5,bet_away_refined_ah,1.925,249497.96557925508,-249497.96557925508,settled,2025-09-20 03:00:00+00:00
+,England Championship,Middlesbrough,West Bromwich Albion,,,0.5,bet_away_refined_ah,1.925,656938.2726107532,-656938.2726107532,settled,2025-09-20 03:00:00+00:00
+,England Championship,Middlesbrough,West Bromwich Albion,,,0.5,bet_away_refined_ah,1.925,422525.50191009766,-422525.50191009766,settled,2025-09-20 03:00:00+00:00
+,England Championship,Middlesbrough,West Bromwich Albion,,,0.5,bet_away_refined_ah,1.925,520091.73575640447,-520091.73575640447,settled,2025-09-20 03:00:00+00:00
+,England Championship,Middlesbrough,West Bromwich Albion,,,0.5,bet_away_refined_ah,1.925,111059.94063464702,-111059.94063464702,settled,2025-09-20 03:00:00+00:00
 ,England Championship,Middlesbrough,West Bromwich Albion,,,0.5,bet_away_refined_ah,1.925,392980.266535664,-392980.266535664,settled,2025-09-20 03:00:00+00:00
-,France Ligue 1,Olympique Lyonnais,Angers SCO,,,1.5,bet_away_refined_ah,1.925,56618.7051522033,52372.30226578805,settled,2025-09-20 02:45:00+00:00
-,France Ligue 1,Olympique Lyonnais,Angers SCO,,,1.5,bet_away_refined_ah,1.925,134524.81752084833,124435.4562067847,settled,2025-09-20 02:45:00+00:00
-,France Ligue 1,Olympique Lyonnais,Angers SCO,,,1.5,bet_away_refined_ah,1.925,256999.5089189409,237724.54575002036,settled,2025-09-20 02:45:00+00:00
 ,Italy Serie A,Lecce,Cagliari,,,0.0,bet_away_refined_ah,1.925,305079.8466547599,282198.85815565294,settled,2025-09-20 02:45:00+00:00
 ,France Ligue 1,Olympique Lyonnais,Angers SCO,,,1.5,bet_away_refined_ah,1.925,217826.3818950971,201489.40325296484,settled,2025-09-20 02:45:00+00:00
+,France Ligue 1,Olympique Lyonnais,Angers SCO,,,1.5,bet_away_refined_ah,1.925,256999.5089189409,237724.54575002036,settled,2025-09-20 02:45:00+00:00
+,France Ligue 1,Olympique Lyonnais,Angers SCO,,,1.5,bet_away_refined_ah,1.925,134524.81752084833,124435.4562067847,settled,2025-09-20 02:45:00+00:00
 ,Italy Serie A,Lecce,Cagliari,,,0.0,bet_away_refined_ah,1.925,103344.26891363034,95593.44874510806,settled,2025-09-20 02:45:00+00:00
-,Germany Bundesliga,Stuttgart,St. Pauli,,,-0.75,bet_home_refined_ah,1.925,310577.5895444162,287284.27032858494,settled,2025-09-20 02:30:00+00:00
+,France Ligue 1,Olympique Lyonnais,Angers SCO,,,1.5,bet_away_refined_ah,1.925,56618.7051522033,52372.30226578805,settled,2025-09-20 02:45:00+00:00
 ,Germany Bundesliga,Stuttgart,St. Pauli,,,-0.75,bet_home_refined_ah,1.925,74062.0398369687,68507.38684919605,settled,2025-09-20 02:30:00+00:00
+,Germany Bundesliga,Stuttgart,St. Pauli,,,-0.75,bet_home_refined_ah,1.925,198658.75559013963,183759.34892087916,settled,2025-09-20 02:30:00+00:00
 ,Germany Bundesliga,Stuttgart,St. Pauli,,,-0.75,bet_home_refined_ah,1.925,249989.44440504813,231240.23607466955,settled,2025-09-20 02:30:00+00:00
 ,Germany Bundesliga,Stuttgart,St. Pauli,,,-0.75,bet_home_refined_ah,1.925,62018.50461210267,57367.11676619497,settled,2025-09-20 02:30:00+00:00
+,Germany Bundesliga,Stuttgart,St. Pauli,,,-0.75,bet_home_refined_ah,1.925,310577.5895444162,287284.27032858494,settled,2025-09-20 02:30:00+00:00
 ,Germany Bundesliga,Stuttgart,St. Pauli,,,-0.75,bet_home_refined_ah,1.925,140857.09140193564,130292.80954679046,settled,2025-09-20 02:30:00+00:00
-,Germany Bundesliga,Stuttgart,St. Pauli,,,-0.75,bet_home_refined_ah,1.925,198658.75559013963,183759.34892087916,settled,2025-09-20 02:30:00+00:00
-,Netherlands Eredivisie,Sparta Rotterdam,Twente,,,0.0,bet_away_refined_ah,1.925,614168.754212018,568106.0976461166,settled,2025-09-20 02:00:00+00:00
-,Saudi Arabia Professional League,Al Ahli,Al Hilal,,,0.25,bet_home_refined_ah,1.925,220340.5579909646,101907.50807082113,settled,2025-09-20 02:00:00+00:00
-,Netherlands Eredivisie,Sparta Rotterdam,Twente,,,0.0,bet_away_refined_ah,1.925,224679.7142071213,207828.73564158718,settled,2025-09-20 02:00:00+00:00
-,Netherlands Eredivisie,Sparta Rotterdam,Twente,,,0.0,bet_away_refined_ah,1.925,383704.95309586875,354927.08161367866,settled,2025-09-20 02:00:00+00:00
-,Netherlands Eredivisie,Sparta Rotterdam,Twente,,,0.0,bet_away_refined_ah,1.925,359752.59822764754,332771.153360574,settled,2025-09-20 02:00:00+00:00
-,Netherlands Eredivisie,Sparta Rotterdam,Twente,,,0.0,bet_away_refined_ah,1.925,467693.5776739281,432616.55934838357,settled,2025-09-20 02:00:00+00:00
 ,Netherlands Eredivisie,Sparta Rotterdam,Twente,,,0.0,bet_away_refined_ah,1.925,100906.06421318793,93338.10939719883,settled,2025-09-20 02:00:00+00:00
+,Netherlands Eredivisie,Sparta Rotterdam,Twente,,,0.0,bet_away_refined_ah,1.925,383704.95309586875,354927.08161367866,settled,2025-09-20 02:00:00+00:00
+,Saudi Arabia Professional League,Al Ahli,Al Hilal,,,0.25,bet_home_refined_ah,1.925,220340.5579909646,101907.50807082113,settled,2025-09-20 02:00:00+00:00
+,Netherlands Eredivisie,Sparta Rotterdam,Twente,,,0.0,bet_away_refined_ah,1.925,467693.5776739281,432616.55934838357,settled,2025-09-20 02:00:00+00:00
+,Netherlands Eredivisie,Sparta Rotterdam,Twente,,,0.0,bet_away_refined_ah,1.925,614168.754212018,568106.0976461166,settled,2025-09-20 02:00:00+00:00
+,Netherlands Eredivisie,Sparta Rotterdam,Twente,,,0.0,bet_away_refined_ah,1.925,224679.7142071213,207828.73564158718,settled,2025-09-20 02:00:00+00:00
+,Netherlands Eredivisie,Sparta Rotterdam,Twente,,,0.0,bet_away_refined_ah,1.925,359752.59822764754,332771.153360574,settled,2025-09-20 02:00:00+00:00
 ,Denmark Superliga,OB,Fredericia,,,0.75,bet_away_refined_ah,1.925,86649.11357566385,-43324.55678783193,settled,2025-09-20 01:00:00+00:00
 ,Denmark Superliga,OB,Fredericia,,,0.75,bet_away_refined_ah,1.925,233814.86890228005,-116907.43445114003,settled,2025-09-20 01:00:00+00:00
 ,Denmark Superliga,OB,Fredericia,,,0.75,bet_away_refined_ah,1.925,70741.23279772313,-35370.616398861566,settled,2025-09-20 01:00:00+00:00
