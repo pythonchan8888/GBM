@@ -1,1 +1,9 @@
-
+datetime_gmt8,league,league_short,league_flag,league_color,home_name,away_name,odds_1,odds_x,odds_2,league_tier,competition_type,is_future,status,ah_line_home,ah_line_away,ah_odds_home,ah_odds_away,home_score,away_score,has_recommendation,rec_text,line,rec_odds,ev,confidence,kings_call,kings_call_agreement,primary_signal,secondary_signal
+2025-11-21 21:45:00,Saudi Arabia Professional League,Saudi Pro,🇸🇦,#006c35,Al Ittihad,Al Riyadh,0.0,0.0,0.0,3,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-21 22:50:00,Saudi Arabia Professional League,Saudi Pro,🇸🇦,#006c35,Al Kholood,Al Hazm,0.0,0.0,0.0,3,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-22 01:30:00,Saudi Arabia Professional League,Saudi Pro,🇸🇦,#006c35,Al Ahli,Al Quadisiya,0.0,0.0,0.0,3,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-22 02:00:00,Denmark Superliga,Superliga,🇩🇰,#c8102e,Silkeborg,AGF,3.58,3.74,1.75,3,league,True,incomplete,0.75,-0.75,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-22 03:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Mainz 05,Hoffenheim,2.29,3.62,2.8,1,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,True,Hoffenheim +0.25,0.25,1.925,0.20870864062605704,High,,,kings-call,value
+2025-11-22 03:45:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,Nice,Olympique Marseille,3.67,3.69,1.9,1,league,True,incomplete,0.5,-0.5,1.925,1.925,0,0,True,Olympique Marseille -0.5,-0.5,1.925,0.20574550423999471,High,,,kings-call,value
+2025-11-22 04:00:00,Spain La Liga,La Liga,🇪🇸,#ee8900,Valencia CF,Levante UD,0.0,0.0,0.0,1,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-22 04:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Preston North End,Blackburn Rovers,2.36,3.13,3.06,2,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,True,Blackburn Rovers +0.25,0.25,1.925,0.10231507406182566,High,,,hot-pick,value
