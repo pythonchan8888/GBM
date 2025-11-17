@@ -6,9 +6,9 @@ datetime_gmt8,league,league_short,league_flag,league_color,home_name,away_name,o
 2025-11-22 03:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Mainz 05,Hoffenheim,2.29,3.62,2.8,1,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-22 03:45:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,Nice,Olympique Marseille,3.67,3.69,1.9,1,league,True,incomplete,0.5,-0.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-22 04:00:00,Spain La Liga,La Liga,🇪🇸,#ee8900,Valencia CF,Levante UD,0.0,0.0,0.0,1,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-22 04:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Preston North End,Blackburn Rovers,2.36,3.13,3.06,2,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-22 20:30:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Bristol City,Swansea City,2.21,3.2,3.27,2,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-22 20:30:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Charlton Athletic,Southampton,2.63,3.13,2.7,2,league,True,incomplete,0.0,-0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-22 04:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Preston North End,Blackburn Rovers,2.36,3.13,3.06,2,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,True,Blackburn Rovers +0.25,0.25,1.925,0.0697584848274628,High,,,value-bet,
+2025-11-22 20:30:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Bristol City,Swansea City,2.21,3.2,3.27,2,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,True,Swansea City +0.25,0.25,1.925,0.0697584848274628,High,,,value-bet,
+2025-11-22 20:30:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Charlton Athletic,Southampton,2.63,3.13,2.7,2,league,True,incomplete,0.0,-0.0,1.925,1.925,0,0,True,Charlton Athletic 0.0,0.0,1.925,0.1221445642783633,High,,,hot-pick,value
 2025-11-22 20:30:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Coventry City,West Bromwich Albion,1.66,3.83,4.8,2,league,True,incomplete,-1.0,1.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-22 20:30:00,England Premier League,EPL,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#38003c,Burnley,Chelsea,5.8,4.3,1.55,1,league,True,incomplete,1.25,-1.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-22 21:00:00,Spain La Liga,La Liga,🇪🇸,#ee8900,Deportivo Alavés,Celta de Vigo,0.0,0.0,0.0,1,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
@@ -16,41 +16,71 @@ datetime_gmt8,league,league_short,league_flag,league_color,home_name,away_name,o
 2025-11-22 22:00:00,Italy Serie A,Serie A,🇮🇹,#024494,Udinese,Bologna,3.6,3.15,2.11,1,league,True,incomplete,0.5,-0.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-22 22:00:00,Italy Serie A,Serie A,🇮🇹,#024494,Cagliari,Genoa,2.71,2.92,2.78,1,league,True,incomplete,0.0,-0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-22 22:25:00,Saudi Arabia Professional League,Saudi Pro,🇸🇦,#006c35,Al Ittifaq,Al Feiha,0.0,0.0,0.0,3,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-22 22:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Augsburg,Hamburger SV,2.3,3.56,2.83,1,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,True,Hamburger SV +0.25,0.25,1.925,0.1031313792639875,High,,,hot-pick,value
-2025-11-22 22:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Bayern München,Freiburg,1.2,6.5,12.0,1,league,True,incomplete,-2.0,2.0,1.925,1.925,0,0,True,Freiburg +2.0,2.0,1.925,0.3792733439851822,High,,,kings-call,value
+2025-11-22 22:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Augsburg,Hamburger SV,2.3,3.56,2.83,1,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-22 22:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Bayern München,Freiburg,1.2,6.5,12.0,1,league,True,incomplete,-2.0,2.0,1.925,1.925,0,0,True,Freiburg +2.0,2.0,1.925,0.4821829587063089,High,,,kings-call,value
 2025-11-22 22:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Wolfsburg,Bayer Leverkusen,3.1,3.63,2.12,1,league,True,incomplete,0.25,-0.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-22 22:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Borussia Dortmund,Stuttgart,1.7,4.1,4.2,1,league,True,incomplete,-0.75,0.75,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-22 22:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Heidenheim,Borussia M'gladbach,3.26,3.55,2.08,1,league,True,incomplete,0.25,-0.25,1.925,1.925,0,0,True,Borussia M'gladbach -0.25,-0.25,1.925,0.1940746145639339,High,,,kings-call,value
-2025-11-22 23:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Leicester City,Stoke City,2.1,3.19,3.56,2,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,True,Leicester City -0.25,-0.25,1.925,0.1029615407572965,High,,,hot-pick,value
+2025-11-22 22:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Heidenheim,Borussia M'gladbach,3.26,3.55,2.08,1,league,True,incomplete,0.5,-0.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-22 23:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Leicester City,Stoke City,2.1,3.19,3.56,2,league,True,incomplete,-0.5,0.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-22 23:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Oxford United,Middlesbrough,3.66,3.39,1.99,2,league,True,incomplete,0.5,-0.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-22 23:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Birmingham City,Norwich City,1.69,3.76,4.75,2,league,True,incomplete,-0.75,0.75,1.925,1.925,0,0,True,Norwich City +0.75,0.75,1.925,0.2114303732655135,High,,,kings-call,value
+2025-11-22 23:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Birmingham City,Norwich City,1.69,3.76,4.75,2,league,True,incomplete,-1.0,1.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-22 23:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Derby County,Watford,2.52,3.14,2.82,2,league,True,incomplete,0.0,-0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-22 23:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Ipswich Town,Wrexham,1.51,4.1,6.0,2,league,True,incomplete,-1.25,1.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-22 23:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Portsmouth,Millwall,2.74,3.08,2.62,2,league,True,incomplete,0.0,-0.0,1.925,1.925,0,0,True,Portsmouth 0.0,0.0,1.925,0.1447431295626615,High,,,hot-pick,value
+2025-11-22 23:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Ipswich Town,Wrexham,1.51,4.1,6.0,2,league,True,incomplete,-1.0,1.0,1.925,1.925,0,0,True,Wrexham +1.0,1.0,1.925,0.087941850573842,High,,,value-bet,value
+2025-11-22 23:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Portsmouth,Millwall,2.74,3.08,2.62,2,league,True,incomplete,0.0,-0.0,1.925,1.925,0,0,True,Millwall -0.0,-0.0,1.925,0.1181609477905851,High,,,hot-pick,value
 2025-11-22 23:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Queens Park Rangers,Hull City,2.16,3.4,3.2,2,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-22 23:00:00,Scotland Premiership,Premiership,🏴󠁧󠁢󠁳󠁣󠁴󠁿,#005eb8,Kilmarnock,Motherwell,2.72,3.07,2.34,3,league,True,incomplete,0.0,-0.0,1.925,1.925,0,0,True,Motherwell -0.0,-0.0,1.925,0.1219844924440428,High,,,hot-pick,value
-2025-11-22 23:00:00,Scotland Premiership,Premiership,🏴󠁧󠁢󠁳󠁣󠁴󠁿,#005eb8,Dundee United,Falkirk,1.97,3.62,2.99,3,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,True,Falkirk +0.25,0.25,1.925,0.2059001585922701,High,,,kings-call,value
-2025-11-22 23:00:00,Scotland Premiership,Premiership,🏴󠁧󠁢󠁳󠁣󠁴󠁿,#005eb8,Hibernian,Dundee,1.32,4.5,7.2,3,league,True,incomplete,-1.25,1.25,1.925,1.925,0,0,True,Dundee +1.25,1.25,1.925,0.1400715754902624,High,,,hot-pick,value
-2025-11-22 23:00:00,Scotland Premiership,Premiership,🏴󠁧󠁢󠁳󠁣󠁴󠁿,#005eb8,Rangers,Livingston,1.21,5.5,8.8,3,league,True,incomplete,-1.75,1.75,1.925,1.925,0,0,True,Livingston +1.75,1.75,1.925,0.4232301897432278,High,,,kings-call,value
+2025-11-22 23:00:00,Scotland Premiership,Premiership,🏴󠁧󠁢󠁳󠁣󠁴󠁿,#005eb8,Kilmarnock,Motherwell,2.72,3.07,2.34,3,league,True,incomplete,0.25,-0.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-22 23:00:00,Scotland Premiership,Premiership,🏴󠁧󠁢󠁳󠁣󠁴󠁿,#005eb8,Dundee United,Falkirk,1.97,3.62,2.99,3,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,True,Falkirk +0.25,0.25,1.925,0.1434285300443455,High,,,hot-pick,value
+2025-11-22 23:00:00,Scotland Premiership,Premiership,🏴󠁧󠁢󠁳󠁣󠁴󠁿,#005eb8,Hibernian,Dundee,1.32,4.5,7.2,3,league,True,incomplete,-1.5,1.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-22 23:00:00,Scotland Premiership,Premiership,🏴󠁧󠁢󠁳󠁣󠁴󠁿,#005eb8,Rangers,Livingston,1.21,5.5,8.8,3,league,True,incomplete,-1.5,1.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-22 23:00:00,England Premier League,EPL,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#38003c,Wolverhampton Wanderers,Crystal Palace,3.55,3.55,2.05,1,league,True,incomplete,0.5,-0.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-22 23:00:00,England Premier League,EPL,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#38003c,Brighton & Hove Albion,Brentford,1.95,3.55,3.85,1,league,True,incomplete,-0.5,0.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-22 23:00:00,England Premier League,EPL,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#38003c,Fulham,Sunderland,1.9,3.35,4.4,1,league,True,incomplete,-0.75,0.75,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-22 23:00:00,England Premier League,EPL,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#38003c,Liverpool,Nottingham Forest,1.45,4.9,6.6,1,league,True,incomplete,-1.25,1.25,1.925,1.925,0,0,True,Nottingham Forest +1.25,1.25,1.925,0.1094734868504068,High,,,hot-pick,value
+2025-11-22 23:00:00,England Premier League,EPL,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#38003c,Liverpool,Nottingham Forest,1.45,4.9,6.6,1,league,True,incomplete,-1.25,1.25,1.925,1.925,0,0,True,Nottingham Forest +1.25,1.25,1.925,0.1360948225940124,High,,,hot-pick,value
 2025-11-22 23:00:00,England Premier League,EPL,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#38003c,AFC Bournemouth,West Ham United,1.62,4.1,5.2,1,league,True,incomplete,-1.0,1.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-22 23:15:00,Spain La Liga,La Liga,🇪🇸,#ee8900,FC Barcelona,Athletic Club Bilbao,0.0,0.0,0.0,1,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-22 23:30:00,Netherlands Eredivisie,Eredivisie,🇳🇱,#ff6200,NAC Breda,PSV,7.1,5.7,1.33,2,league,True,incomplete,1.5,-1.5,1.925,1.925,0,0,True,NAC Breda +1.5,1.5,1.925,0.5203523800613836,High,,,kings-call,value
-2025-11-23 00:00:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,Lens,Strasbourg,1.97,3.68,3.45,1,league,True,incomplete,-0.5,0.5,1.925,1.925,0,0,True,Strasbourg +0.5,0.5,1.925,0.1238931301441232,High,,,hot-pick,value
+2025-11-22 23:30:00,Netherlands Eredivisie,Eredivisie,🇳🇱,#ff6200,NAC Breda,PSV,7.1,5.7,1.33,2,league,True,incomplete,1.5,-1.5,1.925,1.925,0,0,True,NAC Breda +1.5,1.5,1.925,0.293359375,High,,,kings-call,value
+2025-11-23 00:00:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,Lens,Strasbourg,1.97,3.68,3.45,1,league,True,incomplete,-0.5,0.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-23 01:00:00,Italy Serie A,Serie A,🇮🇹,#024494,Fiorentina,Juventus,3.74,3.36,1.98,1,league,True,incomplete,0.5,-0.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-23 01:30:00,Saudi Arabia Professional League,Saudi Pro,🇸🇦,#006c35,Al Hilal,Al Fateh,0.0,0.0,0.0,3,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-23 01:30:00,Spain La Liga,La Liga,🇪🇸,#ee8900,CA Osasuna,Real Sociedad,0.0,0.0,0.0,1,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-23 01:30:00,England Premier League,EPL,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#38003c,Newcastle United,Manchester City,2.95,3.7,2.25,1,league,True,incomplete,0.25,-0.25,1.925,1.925,0,0,True,Newcastle United +0.25,0.25,1.925,0.1238608200293114,High,,,hot-pick,value
-2025-11-23 01:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Köln,Eintracht Frankfurt,2.88,3.67,2.22,1,league,True,incomplete,0.25,-0.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-23 01:45:00,Netherlands Eredivisie,Eredivisie,🇳🇱,#ff6200,Ajax,Excelsior,1.32,5.6,7.4,2,league,True,incomplete,-1.5,1.5,1.925,1.925,0,0,True,Excelsior +1.5,1.5,1.925,0.5022320284174981,High,,,kings-call,value
-2025-11-23 01:45:00,Netherlands Eredivisie,Eredivisie,🇳🇱,#ff6200,Volendam,Twente,4.8,4.0,1.62,2,league,True,incomplete,0.75,-0.75,1.925,1.925,0,0,True,Volendam +0.75,0.75,1.925,0.2056911138677022,High,,,kings-call,value
+2025-11-23 01:30:00,England Premier League,EPL,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#38003c,Newcastle United,Manchester City,2.95,3.7,2.25,1,league,True,incomplete,0.25,-0.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 01:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,Köln,Eintracht Frankfurt,2.88,3.67,2.22,1,league,True,incomplete,0.25,-0.25,1.925,1.925,0,0,True,Köln +0.25,0.25,1.925,0.1384303679808683,High,,,hot-pick,value
+2025-11-23 01:45:00,Netherlands Eredivisie,Eredivisie,🇳🇱,#ff6200,Ajax,Excelsior,1.32,5.6,7.4,2,league,True,incomplete,-1.5,1.5,1.925,1.925,0,0,True,Excelsior +1.5,1.5,1.925,0.4824852835834161,High,,,kings-call,value
+2025-11-23 01:45:00,Netherlands Eredivisie,Eredivisie,🇳🇱,#ff6200,Volendam,Twente,4.8,4.0,1.62,2,league,True,incomplete,0.75,-0.75,1.925,1.925,0,0,True,Volendam +0.75,0.75,1.925,0.1375,High,,,hot-pick,value
 2025-11-23 02:00:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,Rennes,Monaco,2.51,3.67,2.5,1,league,True,incomplete,0.0,-0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-23 03:45:00,Italy Serie A,Serie A,🇮🇹,#024494,Napoli,Atalanta,2.11,3.21,3.52,1,league,True,incomplete,-0.5,0.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
 2025-11-23 04:00:00,Netherlands Eredivisie,Eredivisie,🇳🇱,#ff6200,Sparta Rotterdam,Fortuna Sittard,1.87,3.72,3.75,2,league,True,incomplete,-0.75,0.75,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-23 04:00:00,Netherlands Eredivisie,Eredivisie,🇳🇱,#ff6200,Heracles,Go Ahead Eagles,2.56,3.61,2.49,2,league,True,incomplete,0.0,-0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 04:00:00,Netherlands Eredivisie,Eredivisie,🇳🇱,#ff6200,Heracles,Go Ahead Eagles,2.56,3.61,2.49,2,league,True,incomplete,0.0,-0.0,1.925,1.925,0,0,True,Go Ahead Eagles -0.0,-0.0,1.925,0.2466037253265208,High,,,kings-call,value
 2025-11-23 04:00:00,Spain La Liga,La Liga,🇪🇸,#ee8900,Villarreal,RCD Mallorca,0.0,0.0,0.0,1,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
-2025-11-23 04:00:00,Scotland Premiership,Premiership,🏴󠁧󠁢󠁳󠁣󠁴󠁿,#005eb8,St. Mirren,Celtic,5.4,4.1,1.45,3,league,True,incomplete,1.0,-1.0,1.925,1.925,0,0,True,Celtic -1.0,-1.0,1.925,0.2023279309180936,High,,,kings-call,value
-2025-11-23 04:05:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,PSG,Le Havre,1.14,8.6,14.0,1,league,True,incomplete,-2.0,2.0,1.925,1.925,0,0,True,Le Havre +2.0,2.0,1.925,0.4852574313648881,High,,,kings-call,value
+2025-11-23 04:00:00,Scotland Premiership,Premiership,🏴󠁧󠁢󠁳󠁣󠁴󠁿,#005eb8,St. Mirren,Celtic,5.4,4.1,1.45,3,league,True,incomplete,1.0,-1.0,1.925,1.925,0,0,True,Celtic -1.0,-1.0,1.925,0.1620952366690596,High,,,kings-call,value
+2025-11-23 04:05:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,PSG,Le Havre,1.14,8.6,14.0,1,league,True,incomplete,-2.0,2.0,1.925,1.925,0,0,True,Le Havre +2.0,2.0,1.925,0.3599501624577667,High,,,kings-call,value
+2025-11-23 19:00:00,Denmark Superliga,Superliga,🇩🇰,#c8102e,København,Brøndby,1.9,3.41,3.31,3,league,True,incomplete,-0.5,0.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 19:15:00,Netherlands Eredivisie,Eredivisie,🇳🇱,#ff6200,Heerenveen,AZ,2.84,3.8,2.2,2,league,True,incomplete,0.25,-0.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 19:30:00,Italy Serie A,Serie A,🇮🇹,#024494,Hellas Verona,Parma,2.25,2.99,3.45,1,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 20:00:00,England Championship,Championship,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#004225,Sheffield Wednesday,Sheffield United,3.88,3.36,1.94,2,league,True,incomplete,0.5,-0.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 21:00:00,Denmark Superliga,Superliga,🇩🇰,#c8102e,Viborg,Vejle,1.74,3.55,3.78,3,league,True,incomplete,-0.75,0.75,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 21:00:00,Spain La Liga,La Liga,🇪🇸,#ee8900,Real Oviedo,Rayo Vallecano,0.0,0.0,0.0,1,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 21:30:00,Netherlands Eredivisie,Eredivisie,🇳🇱,#ff6200,Feyenoord,NEC,1.39,5.1,6.4,2,league,True,incomplete,-1.25,1.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 21:30:00,Netherlands Eredivisie,Eredivisie,🇳🇱,#ff6200,Telstar,Utrecht,3.1,3.64,2.12,2,league,True,incomplete,0.25,-0.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 22:00:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,Auxerre,Olympique Lyonnais,3.7,3.41,1.97,1,league,True,incomplete,0.5,-0.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 22:00:00,England Premier League,EPL,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#38003c,Leeds United,Aston Villa,2.65,3.3,2.7,1,league,True,incomplete,0.0,-0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 22:00:00,Italy Serie A,Serie A,🇮🇹,#024494,Cremonese,Roma,5.4,3.84,1.6,1,league,True,incomplete,1.0,-1.0,1.925,1.925,0,0,True,Cremonese +1.0,1.0,1.925,0.3876862593829251,High,,,kings-call,value
+2025-11-23 22:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,RB Leipzig,Werder Bremen,1.47,4.9,5.3,1,league,True,incomplete,-1.25,1.25,1.925,1.925,0,0,True,Werder Bremen +1.25,1.25,1.925,0.1360948225940124,High,,,hot-pick,value
+2025-11-23 23:00:00,Denmark Superliga,Superliga,🇩🇰,#c8102e,Nordsjælland,Fredericia,1.35,4.8,5.9,3,league,True,incomplete,-1.25,1.25,1.925,1.925,0,0,True,Fredericia +1.25,1.25,1.925,0.2820636044112919,High,,,kings-call,value
+2025-11-23 23:00:00,Scotland Premiership,Premiership,🏴󠁧󠁢󠁳󠁣󠁴󠁿,#005eb8,Aberdeen,Hearts,3.57,3.45,1.82,3,league,True,incomplete,0.5,-0.5,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 23:05:00,Saudi Arabia Professional League,Saudi Pro,🇸🇦,#006c35,Al Akhdoud,Al Shabab,0.0,0.0,0.0,3,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 23:15:00,Spain La Liga,La Liga,🇪🇸,#ee8900,Real Betis,Girona FC,0.0,0.0,0.0,1,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-23 23:45:00,Netherlands Eredivisie,Eredivisie,🇳🇱,#ff6200,Groningen,PEC Zwolle,1.56,3.94,5.7,2,league,True,incomplete,-1.0,1.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-24 00:15:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,Brest,Metz,1.78,3.71,4.2,1,league,True,incomplete,-0.75,0.75,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-24 00:15:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,Nantes,Lorient,2.46,3.36,2.74,1,league,True,incomplete,0.0,-0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-24 00:15:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,Toulouse,Angers SCO,1.57,3.9,5.7,1,league,True,incomplete,-1.0,1.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-24 00:30:00,England Premier League,EPL,🏴󠁧󠁢󠁥󠁮󠁧󠁿,#38003c,Arsenal,Tottenham Hotspur,1.37,4.9,8.5,1,league,True,incomplete,-1.25,1.25,1.925,1.925,0,0,True,Tottenham Hotspur +1.25,1.25,1.925,0.1360948225940124,High,,,hot-pick,value
+2025-11-24 00:30:00,Germany Bundesliga,Bundesliga,🇩🇪,#d20515,St. Pauli,Union Berlin,2.29,3.25,3.08,1,league,True,incomplete,-0.25,0.25,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-24 01:00:00,Denmark Superliga,Superliga,🇩🇰,#c8102e,SønderjyskE,Midtjylland,4.3,4.1,1.55,3,league,True,incomplete,1.0,-1.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-24 01:00:00,Italy Serie A,Serie A,🇮🇹,#024494,Lazio,Lecce,1.63,3.6,5.6,1,league,True,incomplete,-1.0,1.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-24 01:30:00,Saudi Arabia Professional League,Saudi Pro,🇸🇦,#006c35,Al Taawon,Neom SC,0.0,0.0,0.0,3,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-24 01:30:00,Saudi Arabia Professional League,Saudi Pro,🇸🇦,#006c35,Al Nassr,Al Khaleej,0.0,0.0,0.0,3,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-24 01:30:00,Spain La Liga,La Liga,🇪🇸,#ee8900,Getafe CF,Atlético Madrid,0.0,0.0,0.0,1,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-24 03:45:00,France Ligue 1,Ligue 1,🇫🇷,#dae025,Lille,Paris,1.58,4.2,5.0,1,league,True,incomplete,-1.0,1.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-24 03:45:00,Italy Serie A,Serie A,🇮🇹,#024494,Inter Milan,AC Milan,1.82,3.56,4.2,1,league,True,incomplete,-0.75,0.75,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
+2025-11-24 04:00:00,Spain La Liga,La Liga,🇪🇸,#ee8900,Elche CF,Real Madrid,0.0,0.0,0.0,1,league,True,incomplete,0.0,0.0,1.925,1.925,0,0,False,,0.0,0.0,0.0,,,,,
